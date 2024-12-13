@@ -9,6 +9,135 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum EventCategory {
+  Training
+  Friendly
+  League
+  Championship
+}
+
+enum TicketCategory {
+  VIP
+  Regular
+  Free
+}
+
+enum OrderStatus {
+  Pending
+  Paid
+  Cancel
+}
+
+model Organizer {
+  id         Int      @id @default(autoincrement())
+  name       String
+  email      String
+  password   String
+  avatar     String?  @default("https://res.cloudinary.com/doiygpguv/image/upload/v1734056194/ball_asj55y.png")
+  isVerified Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  Event      Event[]
+}
+
+model Event {
+  id          String        @id @default(uuid())
+  title       String
+  category    EventCategory
+  description String
+  location    String
+  venue       String
+  date        DateTime      @db.Date
+  time        DateTime      @db.Time()
+  organizerId Int           @unique
+  organizer   Organizer     @relation(fields: [organizerId], references: [id])
+  Ticket      Ticket[]
+  Order       Order[]
+  Review      Review[]
+}
+
+model Ticket {
+  id            Int            @id @default(autoincrement())
+  category      TicketCategory
+  description   String
+  price         String
+  availableSeat Int
+  eventId       String         @unique
+  event         Event          @relation(fields: [eventId], references: [id])
+  OrderDetail   OrderDetail[]
+}
+
+model Customer {
+  id             Int             @id @default(autoincrement())
+  fullname       String
+  username       String
+  email          String          @unique
+  password       String
+  avatar         String?         @default("https://res.cloudinary.com/doiygpguv/image/upload/v1734056062/avatar-default_efbdwf.png")
+  isVerified     Boolean         @default(false)
+  referralCode   String
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  CustomerPoint  CustomerPoint[]
+  CustomerCoupon CustomerCoupon?
+  Order          Order[]
+  Review         Review[]
+}
+
+model CustomerCoupon {
+  customerId  Int      @id
+  percentage  Int      @default(10)
+  isRedeem    Boolean
+  createdAt   DateTime @default(now())
+  expirededAt DateTime
+  customer    Customer @relation(fields: [customerId], references: [id])
+}
+
+model CustomerPoint {
+  id         Int      @id @default(autoincrement())
+  point      Int      @default(10000)
+  isUsed     Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  expiredAt  DateTime
+  customerId Int
+  customer   Customer @relation(fields: [customerId], references: [id])
+}
+
+model Order {
+  id           Int           @id @default(autoincrement())
+  totalPrice   Int
+  finalPrice   Int
+  status       OrderStatus   @default(Pending)
+  paymentProof String
+  eventId      String
+  event        Event         @relation(fields: [eventId], references: [id])
+  customerId   Int
+  customer     Customer      @relation(fields: [customerId], references: [id])
+  OrderDetail  OrderDetail[]
+}
+
+model OrderDetail {
+  quantity Int
+  ticketId Int
+  ticket   Ticket @relation(fields: [ticketId], references: [id])
+  orderId  Int
+  order    Order  @relation(fields: [orderId], references: [id])
+
+  @@id([ticketId, orderId])
+}
+
+model Review {
+  review     String
+  rating     Int
+  eventId    String
+  event      Event    @relation(fields: [eventId], references: [id])
+  customerId Int
+  customer   Customer @relation(fields: [customerId], references: [id])
+
+  @@id([eventId, customerId])
 }
