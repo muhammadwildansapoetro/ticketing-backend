@@ -50,6 +50,7 @@ model Event {
   title       String
   category    EventCategory
   description String
+  image       String
   location    String
   venue       String
   date        DateTime      @db.Date
