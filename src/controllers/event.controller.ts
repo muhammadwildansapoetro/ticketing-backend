@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { cloudinaryUpload } from "../services/cloudinary";
 import prisma from "../prisma";
+import { cloudinaryUpload } from "../services/cloudinary";
 
 export class EventController {
   async createEvent(req: Request, res: Response) {
