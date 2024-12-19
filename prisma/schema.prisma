@@ -81,13 +81,26 @@ model Customer {
   password       String
   avatar         String?         @default("https://res.cloudinary.com/doiygpguv/image/upload/v1734056062/avatar-default_efbdwf.png")
   isVerified     Boolean         @default(false)
-  referralCode   String
+  referralCode   String?         @unique
+  referralCodeBy String?
   createdAt      DateTime        @default(now())
   updatedAt      DateTime        @updatedAt
+  RefLog       RefLog? @relation(fields: [refLogId], references: [id])
+  refLogId     Int?
   CustomerPoint  CustomerPoint[]
   CustomerCoupon CustomerCoupon?
   Order          Order[]
   Review         Review[]
+}
+
+model RefLog {
+  id        Int      @id @default(autoincrement())
+  pointGet  Int      @default(0)
+  createdAt DateTime @default(now())
+  expiredAt DateTime
+  isUsed    Boolean
+
+  customer Customer[]
 }
 
 model CustomerCoupon {
@@ -95,7 +108,7 @@ model CustomerCoupon {
   percentage  Int      @default(10)
   isRedeem    Boolean
   createdAt   DateTime @default(now())
-  expirededAt DateTime
+  expiredAt DateTime
   customer    Customer @relation(fields: [customerId], references: [id])
 }
 
