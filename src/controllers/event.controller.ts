@@ -2,8 +2,12 @@ import { Request, Response } from "express";
 import { cloudinaryUpload } from "../services/cloudinary";
 import prisma from "../prisma";
 <<<<<<< HEAD
+<<<<<<< HEAD
 import { EventCategory, Prisma } from "prisma/generated/client";
 import { Readable } from "stream";
+=======
+import { cloudinaryUpload } from "../services/cloudinary";
+>>>>>>> e8fdcc7 (prepare deploy (#2))
 =======
 import { cloudinaryUpload } from "../services/cloudinary";
 >>>>>>> e8fdcc7 (prepare deploy (#2))
