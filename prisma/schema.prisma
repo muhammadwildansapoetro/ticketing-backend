@@ -6,6 +6,7 @@
 
 generator client {
   provider = "prisma-client-js"
+  output   = "./generated/client"
 }
 
 datasource db {
@@ -38,7 +39,7 @@ model Organizer {
   name       String
   email      String
   password   String
-  avatar     String?  @default("https://res.cloudinary.com/doiygpguv/image/upload/v1734056194/ball_asj55y.png")
+  avatar     String?  @default("https://res.cloudinary.com/doiygpguv/image/upload/v1734129888/organizer-default-avatar_bm5kg0.png")
   isVerified Boolean  @default(false)
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
@@ -53,24 +54,27 @@ model Event {
   image       String
   location    String
   venue       String
-  date        DateTime      @db.Date
-  time        DateTime      @db.Time()
-  organizerId Int           @unique
-  organizer   Organizer     @relation(fields: [organizerId], references: [id])
+  date        DateTime
+  startTime   DateTime
+  endTime     DateTime
+  organizerId Int
+  createdAt   DateTime      @default(now())
   Ticket      Ticket[]
   Order       Order[]
   Review      Review[]
+  organizer   Organizer     @relation(fields: [organizerId], references: [id])
 }
 
 model Ticket {
-  id            Int            @id @default(autoincrement())
-  category      TicketCategory
-  description   String
-  price         String
-  availableSeat Int
-  eventId       String         @unique
-  event         Event          @relation(fields: [eventId], references: [id])
-  OrderDetail   OrderDetail[]
+  id          Int            @id @default(autoincrement())
+  category    TicketCategory
+  description String
+  price       Int
+  quantity    Int
+  eventId     String
+  createdAt   DateTime       @default(now())
+  OrderDetail OrderDetail[]
+  event       Event          @relation(fields: [eventId], references: [id])
 }
 
 model Customer {
@@ -79,9 +83,10 @@ model Customer {
   username       String
   email          String          @unique
   password       String
-  avatar         String?         @default("https://res.cloudinary.com/doiygpguv/image/upload/v1734056062/avatar-default_efbdwf.png")
+  avatar         String?         @default("https://res.cloudinary.com/doiygpguv/image/upload/v1734129888/customer-default-avatar_kas8rt.png")
   isVerified     Boolean         @default(false)
-  referralCode   String
+  referralCode   String?         @unique
+  referralCodeBy String?
   createdAt      DateTime        @default(now())
   updatedAt      DateTime        @updatedAt
   CustomerPoint  CustomerPoint[]
@@ -91,21 +96,21 @@ model Customer {
 }
 
 model CustomerCoupon {
-  customerId  Int      @id
-  percentage  Int      @default(10)
-  isRedeem    Boolean
-  createdAt   DateTime @default(now())
-  expirededAt DateTime
-  customer    Customer @relation(fields: [customerId], references: [id])
+  customerId Int      @id
+  percentage Int      @default(10)
+  isRedeem   Boolean
+  createdAt  DateTime @default(now())
+  expiredAt  DateTime
+  customer   Customer @relation(fields: [customerId], references: [id])
 }
 
 model CustomerPoint {
   id         Int      @id @default(autoincrement())
   point      Int      @default(10000)
   isUsed     Boolean  @default(false)
+  customerId Int
   createdAt  DateTime @default(now())
   expiredAt  DateTime
-  customerId Int
   customer   Customer @relation(fields: [customerId], references: [id])
 }
 
@@ -116,18 +121,20 @@ model Order {
   status       OrderStatus   @default(Pending)
   paymentProof String
   eventId      String
-  event        Event         @relation(fields: [eventId], references: [id])
   customerId   Int
+  createdAt    DateTime      @default(now())
+  event        Event         @relation(fields: [eventId], references: [id])
   customer     Customer      @relation(fields: [customerId], references: [id])
   OrderDetail  OrderDetail[]
 }
 
 model OrderDetail {
-  quantity Int
-  ticketId Int
-  ticket   Ticket @relation(fields: [ticketId], references: [id])
-  orderId  Int
-  order    Order  @relation(fields: [orderId], references: [id])
+  quantity  Int
+  ticketId  Int
+  orderId   Int
+  createdAt DateTime @default(now())
+  ticket    Ticket   @relation(fields: [ticketId], references: [id])
+  order     Order    @relation(fields: [orderId], references: [id])
 
   @@id([ticketId, orderId])
 }
@@ -136,8 +143,9 @@ model Review {
   review     String
   rating     Int
   eventId    String
-  event      Event    @relation(fields: [eventId], references: [id])
   customerId Int
+  createdAt  DateTime @default(now())
+  event      Event    @relation(fields: [eventId], references: [id])
   customer   Customer @relation(fields: [customerId], references: [id])
 
   @@id([eventId, customerId])
