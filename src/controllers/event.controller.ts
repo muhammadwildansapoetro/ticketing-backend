@@ -96,6 +96,14 @@ export class EventController {
           date: true,
           startTime: true,
           endTime: true,
+          Ticket: {
+            select: {
+              category: true,
+              price: true,
+              quantity: true,
+              description: true,
+            },
+          },
           organizer: {
             select: {
               name: true,
