@@ -2,6 +2,7 @@ import { Router } from "express";
 import { EventController } from "../controllers/event.controller";
 import { upload } from "../services/uploader";
 
+
 export class EventRouter {
   private eventController: EventController;
   private router: Router;
@@ -21,6 +22,7 @@ export class EventRouter {
     );
 
     this.router.get("/:eventId", this.eventController.getEventById);
+
   }
 
   getRouter(): Router {

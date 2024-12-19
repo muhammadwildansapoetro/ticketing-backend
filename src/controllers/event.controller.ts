@@ -52,6 +52,7 @@ export class EventController {
     }
   }
 
+
   async getEvents(req: Request, res: Response) {
     try {
       const events = await prisma.event.findMany({
@@ -59,6 +60,7 @@ export class EventController {
           id: true,
           title: true,
           image: true,
+
           category: true,
           description: true,
           location: true,
@@ -74,6 +76,7 @@ export class EventController {
           },
         },
       });
+
 
       res.status(200).send({ events });
     } catch (error) {
@@ -119,4 +122,5 @@ export class EventController {
       res.status(400).send(error);
     }
   }
+
 }

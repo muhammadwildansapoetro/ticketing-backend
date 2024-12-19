@@ -4,6 +4,7 @@ import cookieParser from "cookie-parser";
 import { EventRouter } from "./routers/event.router";
 import { TicketRouter } from "./routers/ticket.router";
 
+
 const PORT: number = 8000;
 
 const app: Application = express();
@@ -25,6 +26,7 @@ const ticketRouter = new TicketRouter();
 
 app.use("/api/events", eventRouter.getRouter());
 app.use("/api/tickets", ticketRouter.getRouter());
+
 
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}/api`);
