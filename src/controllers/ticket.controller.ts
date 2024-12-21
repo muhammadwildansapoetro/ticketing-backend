@@ -4,19 +4,9 @@ import prisma from "../prisma";
 export class TicketController {
   async createTicket(req: Request, res: Response) {
     try {
-      const { category, description, price, quantity } = req.body;
-
-      const eventId = req.params.eventId;
-      console.log(req.params);
-
+      req.body.eventId = req.params.eventId;
       await prisma.ticket.create({
-        data: {
-          category,
-          description,
-          price,
-          quantity,
-          eventId: eventId,
-        },
+        data: req.body,
       });
       res.status(201).send({ message: "Ticket created successfully" });
     } catch (error) {
@@ -27,21 +17,8 @@ export class TicketController {
 
   async getTickets(req: Request, res: Response) {
     try {
-      const eventId = req.params.eventId;
       const tickets = await prisma.ticket.findMany({
-        select: {
-          id: true,
-          category: true,
-          description: true,
-          price: true,
-          quantity: true,
-          event: {
-            select: {
-              title: true,
-            },
-          },
-        },
-        where: { eventId: eventId },
+        where: { eventId: req.params.eventId },
       });
       res.status(200).send({ tickets });
     } catch (error) {
