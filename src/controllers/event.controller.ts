@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import prisma from "../prisma";
 import { cloudinaryUpload } from "../services/cloudinary";
+import prisma from "../prisma";
 
 export class EventController {
   async createEvent(req: Request, res: Response) {
@@ -27,7 +27,7 @@ export class EventController {
       const formatEndTime = new Date();
       formatEndTime.setUTCHours(endHour - 7, endMinute, 0, 0);
 
-      const organizerId = 1;
+      const organizerId = 8;
 
       const { id } = await prisma.event.create({
         data: {
@@ -71,6 +71,11 @@ export class EventController {
             select: {
               name: true,
               avatar: true,
+            },
+          },
+          Ticket: {
+            select: {
+              price: true,
             },
           },
         },

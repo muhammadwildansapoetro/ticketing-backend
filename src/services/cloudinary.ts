@@ -1,10 +1,12 @@
 import { v2 as cloudinary, UploadApiResponse } from "cloudinary";
 import * as streamifier from "streamifier";
+import dotenv from "dotenv";
+dotenv.config();
 
 cloudinary.config({
-  api_key: process.env.CLOUD_KEY,
-  api_secret: process.env.CLOUD_SECRET,
   cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.API_KEY,
+  api_secret: process.env.API_SECRET,
 });
 
 export const cloudinaryUpload = (

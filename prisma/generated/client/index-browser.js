@@ -140,7 +140,8 @@ exports.Prisma.EventScalarFieldEnum = {
   startTime: 'startTime',
   endTime: 'endTime',
   organizerId: 'organizerId',
-  createdAt: 'createdAt'
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.TicketScalarFieldEnum = {
@@ -150,7 +151,8 @@ exports.Prisma.TicketScalarFieldEnum = {
   price: 'price',
   quantity: 'quantity',
   eventId: 'eventId',
-  createdAt: 'createdAt'
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.CustomerScalarFieldEnum = {
@@ -171,8 +173,9 @@ exports.Prisma.CustomerCouponScalarFieldEnum = {
   customerId: 'customerId',
   percentage: 'percentage',
   isRedeem: 'isRedeem',
+  expiredAt: 'expiredAt',
   createdAt: 'createdAt',
-  expiredAt: 'expiredAt'
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.CustomerPointScalarFieldEnum = {
@@ -180,34 +183,38 @@ exports.Prisma.CustomerPointScalarFieldEnum = {
   point: 'point',
   isUsed: 'isUsed',
   customerId: 'customerId',
+  expiredAt: 'expiredAt',
   createdAt: 'createdAt',
-  expiredAt: 'expiredAt'
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.OrderScalarFieldEnum = {
   id: 'id',
+  customerId: 'customerId',
   totalPrice: 'totalPrice',
   finalPrice: 'finalPrice',
   status: 'status',
-  paymentProof: 'paymentProof',
-  eventId: 'eventId',
-  customerId: 'customerId',
-  createdAt: 'createdAt'
+  expiredAt: 'expiredAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.OrderDetailScalarFieldEnum = {
-  quantity: 'quantity',
-  ticketId: 'ticketId',
   orderId: 'orderId',
-  createdAt: 'createdAt'
+  ticketId: 'ticketId',
+  quantity: 'quantity',
+  subTotalPrice: 'subTotalPrice',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.ReviewScalarFieldEnum = {
+  customerId: 'customerId',
+  eventId: 'eventId',
   review: 'review',
   rating: 'rating',
-  eventId: 'eventId',
-  customerId: 'customerId',
-  createdAt: 'createdAt'
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.SortOrder = {
@@ -232,15 +239,24 @@ exports.EventCategory = exports.$Enums.EventCategory = {
 };
 
 exports.TicketCategory = exports.$Enums.TicketCategory = {
-  VIP: 'VIP',
-  Regular: 'Regular',
-  Free: 'Free'
+  North: 'North',
+  East: 'East',
+  South: 'South',
+  West: 'West'
 };
 
 exports.OrderStatus = exports.$Enums.OrderStatus = {
-  Pending: 'Pending',
+  Unpaid: 'Unpaid',
   Paid: 'Paid',
   Cancel: 'Cancel'
+};
+
+exports.RatingRange = exports.$Enums.RatingRange = {
+  One: 'One',
+  Two: 'Two',
+  Three: 'Three',
+  Four: 'Four',
+  Delete: 'Delete'
 };
 
 exports.Prisma.ModelName = {
