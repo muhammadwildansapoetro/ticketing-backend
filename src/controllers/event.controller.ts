@@ -59,7 +59,6 @@ export class EventController {
           id: true,
           title: true,
           image: true,
-
           category: true,
           description: true,
           location: true,
