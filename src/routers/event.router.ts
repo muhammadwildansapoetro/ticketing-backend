@@ -20,7 +20,7 @@ export class EventRouter {
       this.eventController.createEvent
     );
 
-    this.router.get("/:eventId", this.eventController.getEventById);
+    this.router.get("/:eventId", this.eventController.getEventDetail);
   }
 
   getRouter(): Router {

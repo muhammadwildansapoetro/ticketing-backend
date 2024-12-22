@@ -13,6 +13,8 @@ export class OrderRouter {
 
   private initializeRoutes() {
     this.router.post("/", this.orderController.createOrder);
+    this.router.post("/payment", this.orderController.getOrderToken);
+    this.router.get("/:orderId", this.orderController.getOrderDetail);
   }
 
   getRouter(): Router {

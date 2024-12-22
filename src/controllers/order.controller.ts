@@ -1,5 +1,8 @@
 import { Request, Response } from "express";
 import prisma from "../prisma";
+const midtransClient = require("midtrans-client");
+import dotenv from "dotenv";
+dotenv.config();
 
 export class OrderController {
   async createOrder(req: Request, res: Response) {
@@ -36,10 +39,10 @@ export class OrderController {
     }
   }
 
-  async getOrderById(req: Request, res: Response) {
+  async getOrderDetail(req: Request, res: Response) {
     try {
       const order = await prisma.order.findUnique({
-        where: { id: +req.params.id },
+        where: { id: +req.params.orderId },
         select: {
           totalPrice: true,
           finalPrice: true,
@@ -59,6 +62,9 @@ export class OrderController {
                       date: true,
                       venue: true,
                       location: true,
+                      startTime: true,
+                      endTime: true,
+                      image: true,
                     },
                   },
                 },
@@ -67,6 +73,27 @@ export class OrderController {
           },
         },
       });
+      res.status(200).send({ order });
+    } catch (error) {
+      console.log(error);
+      res.status(400).send(error);
+    }
+  }
+
+  async getOrderToken(req: Request, res: Response) {
+    try {
+      const snap = new midtransClient.Snap({
+        isProduction: false,
+        serverKey: `${process.env.MIDTRANS_SERVER_KEY}`,
+      });
+
+      const parameter = {
+        transaction_details: req.body,
+      };
+
+      const order = await snap.createTransaction(parameter);
+      const orderToken = order.token;
+      res.status(201).send({ token: orderToken });
     } catch (error) {
       console.log(error);
       res.status(400).send(error);
