@@ -13,8 +13,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.EventController = void 0;
-const prisma_1 = __importDefault(require("../prisma"));
 const cloudinary_1 = require("../services/cloudinary");
+const prisma_1 = __importDefault(require("../prisma"));
 class EventController {
     createEvent(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -29,7 +29,7 @@ class EventController {
                 formatStartTime.setUTCHours(startHour - 7, startMinute, 0, 0);
                 const formatEndTime = new Date();
                 formatEndTime.setUTCHours(endHour - 7, endMinute, 0, 0);
-                const organizerId = 1;
+                const organizerId = 8;
                 const { id } = yield prisma_1.default.event.create({
                     data: {
                         image: secure_url,
@@ -75,6 +75,11 @@ class EventController {
                                 avatar: true,
                             },
                         },
+                        Ticket: {
+                            select: {
+                                price: true,
+                            },
+                        },
                     },
                 });
                 res.status(200).send({ events });
@@ -85,10 +90,11 @@ class EventController {
             }
         });
     }
-    getEventById(req, res) {
+    getEventDetail(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const event = yield prisma_1.default.event.findUnique({
+                    where: { id: req.params.eventId },
                     select: {
                         id: true,
                         title: true,
@@ -115,7 +121,6 @@ class EventController {
                             },
                         },
                     },
-                    where: { id: req.params.eventId },
                 });
                 res.status(200).send({ event });
             }

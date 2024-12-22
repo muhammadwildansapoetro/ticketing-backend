@@ -8,6 +8,9 @@ const cors_1 = __importDefault(require("cors"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const event_router_1 = require("./routers/event.router");
 const ticket_router_1 = require("./routers/ticket.router");
+const order_router_1 = require("./routers/order.router");
+const dotenv_1 = __importDefault(require("dotenv"));
+dotenv_1.default.config();
 const PORT = 8000;
 const app = (0, express_1.default)();
 app.use(express_1.default.json());
@@ -21,8 +24,10 @@ app.get("/api", (req, res) => {
 });
 const eventRouter = new event_router_1.EventRouter();
 const ticketRouter = new ticket_router_1.TicketRouter();
+const orderRouter = new order_router_1.OrderRouter();
 app.use("/api/events", eventRouter.getRouter());
 app.use("/api/tickets", ticketRouter.getRouter());
+app.use("/api/orders", orderRouter.getRouter());
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}/api`);
 });

@@ -18,17 +18,9 @@ class TicketController {
     createTicket(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const { category, description, price, quantity } = req.body;
-                const eventId = req.params.eventId;
-                console.log(req.params);
+                req.body.eventId = req.params.eventId;
                 yield prisma_1.default.ticket.create({
-                    data: {
-                        category,
-                        description,
-                        price,
-                        quantity,
-                        eventId: eventId,
-                    },
+                    data: req.body,
                 });
                 res.status(201).send({ message: "Ticket created successfully" });
             }
@@ -41,21 +33,8 @@ class TicketController {
     getTickets(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const eventId = req.params.eventId;
                 const tickets = yield prisma_1.default.ticket.findMany({
-                    select: {
-                        id: true,
-                        category: true,
-                        description: true,
-                        price: true,
-                        quantity: true,
-                        event: {
-                            select: {
-                                title: true,
-                            },
-                        },
-                    },
-                    where: { eventId: eventId },
+                    where: { eventId: req.params.eventId },
                 });
                 res.status(200).send({ tickets });
             }

@@ -13,7 +13,7 @@ class EventRouter {
     initializeRoutes() {
         this.router.get("/", this.eventController.getEvents);
         this.router.post("/", uploader_1.upload.single("image"), this.eventController.createEvent);
-        this.router.get("/:eventId", this.eventController.getEventById);
+        this.router.get("/:eventId", this.eventController.getEventDetail);
     }
     getRouter() {
         return this.router;
