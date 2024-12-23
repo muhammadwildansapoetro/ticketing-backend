@@ -29,7 +29,7 @@ class EventController {
                 formatStartTime.setUTCHours(startHour - 7, startMinute, 0, 0);
                 const formatEndTime = new Date();
                 formatEndTime.setUTCHours(endHour - 7, endMinute, 0, 0);
-                const organizerId = 8;
+                const organizerId = 10;
                 const { id } = yield prisma_1.default.event.create({
                     data: {
                         image: secure_url,
@@ -57,7 +57,13 @@ class EventController {
     getEvents(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
+                const { search } = req.params;
+                const filter = {};
+                if (search) {
+                    filter.title = { contains: search, mode: "insensitive" };
+                }
                 const events = yield prisma_1.default.event.findMany({
+                    where: filter,
                     select: {
                         id: true,
                         title: true,

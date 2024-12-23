@@ -19,6 +19,8 @@ app.use(
 );
 app.use(cookieParser());
 
+console.log(process.env.BASE_URL_FE);
+
 app.get("/api", (req: Request, res: Response) => {
   res.status(200).send("Welcome to MatchTix API");
 });

@@ -19,6 +19,7 @@ app.use((0, cors_1.default)({
     credentials: true,
 }));
 app.use((0, cookie_parser_1.default)());
+console.log(process.env.BASE_URL_FE);
 app.get("/api", (req, res) => {
     res.status(200).send("Welcome to MatchTix API");
 });
