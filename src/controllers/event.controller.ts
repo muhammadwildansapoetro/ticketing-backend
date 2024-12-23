@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { cloudinaryUpload } from "../services/cloudinary";
 import prisma from "../prisma";
+import { Prisma } from "prisma/generated/client";
 
 export class EventController {
   async createEvent(req: Request, res: Response) {
@@ -54,7 +55,14 @@ export class EventController {
 
   async getEvents(req: Request, res: Response) {
     try {
+      const { search } = req.params;
+      const filter: Prisma.EventWhereInput = {};
+      if (search) {
+        filter.title = { contains: search as string, mode: "insensitive" };
+      }
+
       const events = await prisma.event.findMany({
+        where: filter,
         select: {
           id: true,
           title: true,
