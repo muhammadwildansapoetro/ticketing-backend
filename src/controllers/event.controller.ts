@@ -27,7 +27,7 @@ export class EventController {
       const formatEndTime = new Date();
       formatEndTime.setUTCHours(endHour - 7, endMinute, 0, 0);
 
-      const organizerId = 8;
+      const organizerId = 9;
 
       const { id } = await prisma.event.create({
         data: {
