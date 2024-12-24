@@ -94,9 +94,10 @@ export class OrderController {
       if (activeOrder?.status === "Canceled")
         throw "Order canceled due to unpaid payment within 10 minutes.";
 
-      const orderExpireMinute =
-        new Date(`${activeOrder?.expiredAt}`).getTime() - new Date().getTime();
-
+      const orderExpireMinute = Math.ceil(
+        (new Date(activeOrder!.expiredAt).getTime() - new Date().getTime()) /
+          60000
+      );
       const orderDetail = await prisma.orderDetail.findMany({
         where: { orderId: order_id },
         include: {
@@ -132,7 +133,7 @@ export class OrderController {
       );
 
       const parameter = {
-        transaction_detail: {
+        transaction_details: {
           order_id: order_id.toString(),
           gross_amount: gross_amount,
         },
@@ -143,7 +144,7 @@ export class OrderController {
         item_details: item_details,
         expiry: {
           unit: "minutes",
-          duration: new Date(orderExpireMinute).getMinutes(),
+          duration: orderExpireMinute,
         },
       };
 
