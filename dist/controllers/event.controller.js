@@ -19,6 +19,8 @@ class EventController {
     createEvent(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
+                console.log("Incoming file:", req.file);
+                console.log("Incoming request body:", req.body);
                 if (!req.file)
                     throw { message: "Image is required" };
                 const { secure_url } = yield (0, cloudinary_1.cloudinaryUpload)(req.file, "events");
@@ -29,6 +31,10 @@ class EventController {
                 formatStartTime.setUTCHours(startHour - 7, startMinute, 0, 0);
                 const formatEndTime = new Date();
                 formatEndTime.setUTCHours(endHour - 7, endMinute, 0, 0);
+                console.log("Formatted Times:", {
+                    startTime: formatStartTime,
+                    endTime: formatEndTime,
+                });
                 const organizerId = 10;
                 const { id } = yield prisma_1.default.event.create({
                     data: {
@@ -49,7 +55,7 @@ class EventController {
                     .send({ message: "Match created successfully", eventId: id });
             }
             catch (error) {
-                console.log(error);
+                console.log("Prisma error:", error);
                 res.status(400).send(error);
             }
         });
