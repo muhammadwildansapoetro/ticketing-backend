@@ -6,8 +6,11 @@ import { Prisma } from "prisma/generated/client";
 export class EventController {
   async createEvent(req: Request, res: Response) {
     try {
+      console.log("File:", req.file);
       if (!req.file) throw { message: "Image is required" };
+
       const { secure_url } = await cloudinaryUpload(req.file, "events");
+
       const {
         title,
         category,
@@ -27,6 +30,11 @@ export class EventController {
 
       const formatEndTime = new Date();
       formatEndTime.setUTCHours(endHour - 7, endMinute, 0, 0);
+
+      console.log("Formatted Times:", {
+        startTime: formatStartTime,
+        endTime: formatEndTime,
+      });
 
       const organizerId = 10;
 
@@ -48,7 +56,7 @@ export class EventController {
         .status(201)
         .send({ message: "Match created successfully", eventId: id });
     } catch (error) {
-      console.log(error);
+      console.log("Prisma error:", error);
       res.status(400).send(error);
     }
   }
