@@ -6,7 +6,8 @@ import { Prisma } from "prisma/generated/client";
 export class EventController {
   async createEvent(req: Request, res: Response) {
     try {
-      console.log("File:", req.file);
+      console.log("Incoming file:", req.file);
+      console.log("Incoming request body:", req.body);
       if (!req.file) throw { message: "Image is required" };
 
       const { secure_url } = await cloudinaryUpload(req.file, "events");
