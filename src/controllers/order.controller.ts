@@ -24,10 +24,10 @@ export class OrderController {
             subTotalPrice: order.quantity * order.ticket.price,
           },
         });
-        await prisma.ticket.update({
-          data: { quantity: { decrement: order.quantity } },
-          where: { id: order.ticket.id },
-        });
+        // await prisma.ticket.update({
+        //   data: { quantity: { decrement: order.quantity } },
+        //   where: { id: order.ticket.id },
+        // });
       }
 
       res
@@ -48,6 +48,7 @@ export class OrderController {
           finalPrice: true,
           status: true,
           expiredAt: true,
+          customerId: true,
           OrderDetail: {
             select: {
               quantity: true,
@@ -82,20 +83,74 @@ export class OrderController {
 
   async getOrderToken(req: Request, res: Response) {
     try {
+      const { order_id } = req.body;
+      const item_details = [];
+
+      const activeOrder = await prisma.order.findUnique({
+        where: { id: order_id },
+        select: { status: true, expiredAt: true },
+      });
+
+      if (activeOrder?.status === "Canceled")
+        throw "Order canceled due to unpaid payment within 10 minutes.";
+
+      const orderExpireMinute =
+        new Date(`${activeOrder?.expiredAt}`).getTime() - new Date().getTime();
+
+      const orderDetail = await prisma.orderDetail.findMany({
+        where: { orderId: order_id },
+        include: {
+          ticket: {
+            select: { category: true },
+          },
+        },
+      });
+
+      const customer = await prisma.customer.findUnique({
+        where: { id: 1 },
+      });
+
+      for (const ticket of orderDetail) {
+        item_details.push({
+          id: ticket.ticketId.toString(),
+          name: ticket.ticket.category,
+          price: ticket.subTotalPrice / ticket.quantity,
+          quantity: ticket.quantity,
+        });
+      }
+
       const snap = new midtransClient.Snap({
         isProduction: false,
         serverKey: `${process.env.MIDTRANS_SERVER_KEY}`,
       });
 
+      console.log("req body", req.body);
+
+      const gross_amount = item_details.reduce(
+        (total, item) => total + item.price * item.quantity,
+        0
+      );
+
       const parameter = {
-        transaction_details: req.body,
+        transaction_detail: {
+          order_id: order_id.toString(),
+          gross_amount: gross_amount,
+        },
+        customer_details: {
+          first_name: customer?.fullname,
+          email: customer?.email,
+        },
+        item_details: item_details,
+        expiry: {
+          unit: "minutes",
+          duration: new Date(orderExpireMinute).getMinutes(),
+        },
       };
 
       const order = await snap.createTransaction(parameter);
-      const orderToken = order.token;
-      res.status(201).send({ token: orderToken });
+      res.status(200).send({ orderToken: order.token });
     } catch (error) {
-      console.log(error);
+      console.log("Error get order token:", error);
       res.status(400).send(error);
     }
   }

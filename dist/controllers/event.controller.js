@@ -35,7 +35,7 @@ class EventController {
                     startTime: formatStartTime,
                     endTime: formatEndTime,
                 });
-                const organizerId = 10;
+                const organizerId = 12;
                 const { id } = yield prisma_1.default.event.create({
                     data: {
                         image: secure_url,
@@ -55,7 +55,7 @@ class EventController {
                     .send({ message: "Match created successfully", eventId: id });
             }
             catch (error) {
-                console.log("Prisma error:", error);
+                console.log("Error create event:", error);
                 res.status(400).send(error);
             }
         });
@@ -63,13 +63,12 @@ class EventController {
     getEvents(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const { search } = req.params;
-                const filter = {};
-                if (search) {
-                    filter.title = { contains: search, mode: "insensitive" };
-                }
+                // const { search } = req.params;
+                // const filter: Prisma.EventWhereInput = {};
+                // if (search) {
+                //   filter.title = { contains: search as string, mode: "insensitive" };
+                // }
                 const events = yield prisma_1.default.event.findMany({
-                    where: filter,
                     select: {
                         id: true,
                         title: true,
@@ -94,10 +93,10 @@ class EventController {
                         },
                     },
                 });
-                res.status(200).send({ events });
+                res.status(200).send({ events: events });
             }
             catch (error) {
-                console.log(error);
+                console.log("Error get events:", error);
                 res.status(400).send(error);
             }
         });
@@ -137,7 +136,7 @@ class EventController {
                 res.status(200).send({ event });
             }
             catch (error) {
-                console.log(error);
+                console.log("Error get event detail:", error);
                 res.status(400).send(error);
             }
         });

@@ -86,7 +86,7 @@ export type TicketCategory = (typeof TicketCategory)[keyof typeof TicketCategory
 export const OrderStatus: {
   Unpaid: 'Unpaid',
   Paid: 'Paid',
-  Cancel: 'Cancel'
+  Canceled: 'Canceled'
 };
 
 export type OrderStatus = (typeof OrderStatus)[keyof typeof OrderStatus]

@@ -36,10 +36,10 @@ class OrderController {
                             subTotalPrice: order.quantity * order.ticket.price,
                         },
                     });
-                    yield prisma_1.default.ticket.update({
-                        data: { quantity: { decrement: order.quantity } },
-                        where: { id: order.ticket.id },
-                    });
+                    // await prisma.ticket.update({
+                    //   data: { quantity: { decrement: order.quantity } },
+                    //   where: { id: order.ticket.id },
+                    // });
                 }
                 res
                     .status(201)
@@ -61,6 +61,7 @@ class OrderController {
                         finalPrice: true,
                         status: true,
                         expiredAt: true,
+                        customerId: true,
                         OrderDetail: {
                             select: {
                                 quantity: true,
@@ -97,19 +98,60 @@ class OrderController {
     getOrderToken(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
+                const { order_id } = req.body;
+                const item_details = [];
+                const activeOrder = yield prisma_1.default.order.findUnique({
+                    where: { id: order_id },
+                    select: { status: true, expiredAt: true },
+                });
+                if ((activeOrder === null || activeOrder === void 0 ? void 0 : activeOrder.status) === "Canceled")
+                    throw "Order canceled due to unpaid payment within 10 minutes.";
+                const orderExpireMinute = new Date(`${activeOrder === null || activeOrder === void 0 ? void 0 : activeOrder.expiredAt}`).getTime() - new Date().getTime();
+                const orderDetail = yield prisma_1.default.orderDetail.findMany({
+                    where: { orderId: order_id },
+                    include: {
+                        ticket: {
+                            select: { category: true },
+                        },
+                    },
+                });
+                const customer = yield prisma_1.default.customer.findUnique({
+                    where: { id: 1 },
+                });
+                for (const ticket of orderDetail) {
+                    item_details.push({
+                        id: ticket.ticketId.toString(),
+                        name: ticket.ticket.category,
+                        price: ticket.subTotalPrice / ticket.quantity,
+                        quantity: ticket.quantity,
+                    });
+                }
                 const snap = new midtransClient.Snap({
                     isProduction: false,
                     serverKey: `${process.env.MIDTRANS_SERVER_KEY}`,
                 });
+                console.log("req body", req.body);
+                const gross_amount = item_details.reduce((total, item) => total + item.price * item.quantity, 0);
                 const parameter = {
-                    transaction_details: req.body,
+                    transaction_detail: {
+                        order_id: order_id.toString(),
+                        gross_amount: gross_amount,
+                    },
+                    customer_details: {
+                        first_name: customer === null || customer === void 0 ? void 0 : customer.fullname,
+                        email: customer === null || customer === void 0 ? void 0 : customer.email,
+                    },
+                    item_details: item_details,
+                    expiry: {
+                        unit: "minutes",
+                        duration: new Date(orderExpireMinute).getMinutes(),
+                    },
                 };
                 const order = yield snap.createTransaction(parameter);
-                const orderToken = order.token;
-                res.status(201).send({ token: orderToken });
+                res.status(200).send({ orderToken: order.token });
             }
             catch (error) {
-                console.log(error);
+                console.log("Error get order token:", error);
                 res.status(400).send(error);
             }
         });

@@ -37,7 +37,7 @@ export class EventController {
         endTime: formatEndTime,
       });
 
-      const organizerId = 10;
+      const organizerId = 12;
 
       const { id } = await prisma.event.create({
         data: {
@@ -57,21 +57,20 @@ export class EventController {
         .status(201)
         .send({ message: "Match created successfully", eventId: id });
     } catch (error) {
-      console.log("Prisma error:", error);
+      console.log("Error create event:", error);
       res.status(400).send(error);
     }
   }
 
   async getEvents(req: Request, res: Response) {
     try {
-      const { search } = req.params;
-      const filter: Prisma.EventWhereInput = {};
-      if (search) {
-        filter.title = { contains: search as string, mode: "insensitive" };
-      }
+      // const { search } = req.params;
+      // const filter: Prisma.EventWhereInput = {};
+      // if (search) {
+      //   filter.title = { contains: search as string, mode: "insensitive" };
+      // }
 
       const events = await prisma.event.findMany({
-        where: filter,
         select: {
           id: true,
           title: true,
@@ -97,9 +96,9 @@ export class EventController {
         },
       });
 
-      res.status(200).send({ events });
+      res.status(200).send({ events: events });
     } catch (error) {
-      console.log(error);
+      console.log("Error get events:", error);
       res.status(400).send(error);
     }
   }
@@ -137,7 +136,7 @@ export class EventController {
       });
       res.status(200).send({ event });
     } catch (error) {
-      console.log(error);
+      console.log("Error get event detail:", error);
       res.status(400).send(error);
     }
   }

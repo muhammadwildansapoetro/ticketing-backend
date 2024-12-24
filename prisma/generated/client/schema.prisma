@@ -32,7 +32,7 @@ enum TicketCategory {
 enum OrderStatus {
   Unpaid
   Paid
-  Cancel
+  Canceled
 }
 
 enum RatingRange {
