@@ -106,7 +106,8 @@ class OrderController {
                 });
                 if ((activeOrder === null || activeOrder === void 0 ? void 0 : activeOrder.status) === "Canceled")
                     throw "Order canceled due to unpaid payment within 10 minutes.";
-                const orderExpireMinute = new Date(`${activeOrder === null || activeOrder === void 0 ? void 0 : activeOrder.expiredAt}`).getTime() - new Date().getTime();
+                const orderExpireMinute = Math.ceil((new Date(activeOrder.expiredAt).getTime() - new Date().getTime()) /
+                    60000);
                 const orderDetail = yield prisma_1.default.orderDetail.findMany({
                     where: { orderId: order_id },
                     include: {
@@ -133,7 +134,7 @@ class OrderController {
                 console.log("req body", req.body);
                 const gross_amount = item_details.reduce((total, item) => total + item.price * item.quantity, 0);
                 const parameter = {
-                    transaction_detail: {
+                    transaction_details: {
                         order_id: order_id.toString(),
                         gross_amount: gross_amount,
                     },
@@ -144,7 +145,7 @@ class OrderController {
                     item_details: item_details,
                     expiry: {
                         unit: "minutes",
-                        duration: new Date(orderExpireMinute).getMinutes(),
+                        duration: orderExpireMinute,
                     },
                 };
                 const order = yield snap.createTransaction(parameter);
