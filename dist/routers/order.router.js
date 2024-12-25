@@ -12,6 +12,7 @@ class OrderRouter {
     initializeRoutes() {
         this.router.post("/", this.orderController.createOrder);
         this.router.post("/payment", this.orderController.getOrderToken);
+        this.router.post("/midtrans-webhook", this.orderController.updateOrder);
         this.router.get("/:orderId", this.orderController.getOrderDetail);
     }
     getRouter() {

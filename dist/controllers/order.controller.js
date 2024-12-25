@@ -122,7 +122,7 @@ class OrderController {
                 for (const ticket of orderDetail) {
                     item_details.push({
                         id: ticket.ticketId.toString(),
-                        name: ticket.ticket.category,
+                        name: ticket.ticket.category + " Stand",
                         price: ticket.subTotalPrice / ticket.quantity,
                         quantity: ticket.quantity,
                     });
@@ -153,6 +153,42 @@ class OrderController {
             }
             catch (error) {
                 console.log("Error get order token:", error);
+                res.status(400).send(error);
+            }
+        });
+    }
+    updateOrder(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { transaction_status, order_id } = req.body;
+                const orderStatus = transaction_status === "settlement"
+                    ? "Paid"
+                    : transaction_status === "pending"
+                        ? "Unpaid"
+                        : "Canceled";
+                if (orderStatus === "Canceled") {
+                    const tickets = yield prisma_1.default.orderDetail.findMany({
+                        where: { orderId: +order_id },
+                        select: {
+                            quantity: true,
+                            ticketId: true,
+                        },
+                    });
+                    for (const item of tickets) {
+                        yield prisma_1.default.ticket.update({
+                            where: { id: item.ticketId },
+                            data: { quantity: { increment: item.quantity } },
+                        });
+                    }
+                }
+                yield prisma_1.default.order.update({
+                    where: { id: +order_id },
+                    data: { status: orderStatus },
+                });
+                res.status(200).send({ message: "Payment success" });
+            }
+            catch (error) {
+                console.log("Error update order:", error);
                 res.status(400).send(error);
             }
         });
