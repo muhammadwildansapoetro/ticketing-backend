@@ -6,6 +6,7 @@
 
 generator client {
   provider = "prisma-client-js"
+  output   = "./generated/client"
 }
 
 datasource db {
@@ -22,15 +23,24 @@ enum EventCategory {
 }
 
 enum TicketCategory {
-  VIP
-  Regular
-  Free
+  North
+  East
+  South
+  West
 }
 
 enum OrderStatus {
-  Pending
+  Unpaid
   Paid
-  Cancel
+  Canceled
+}
+
+enum RatingRange {
+  One    @map("1")
+  Two    @map("2")
+  Three  @map("3")
+  Four   @map("4")
+  Delete @map("5")
 }
 
 model Organizer {
@@ -42,7 +52,8 @@ model Organizer {
   isVerified Boolean  @default(false)
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
-  Event      Event[]
+
+  Event Event[]
 }
 
 model Event {
@@ -56,32 +67,56 @@ model Event {
   date        DateTime
   startTime   DateTime
   endTime     DateTime
+<<<<<<< HEAD
   createdAt   DateTime      @default(now())
   organizerId Int           @unique
   organizer   Organizer     @relation(fields: [organizerId], references: [id])
   Ticket      Ticket[]
   Order       Order[]
   Review      Review[]
+=======
+  organizerId Int
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  Ticket Ticket[]
+  Review Review[]
+
+  organizer Organizer @relation(fields: [organizerId], references: [id])
+>>>>>>> 59a595c96f5f450c34ea53b287e24bb8428e8a06
 }
 
 model Ticket {
   id          Int            @id @default(autoincrement())
   category    TicketCategory
   description String
+<<<<<<< HEAD
   price       String
   quantity    Int
   createdAt   DateTime       @default(now())
   eventId     String         @unique
   event       Event          @relation(fields: [eventId], references: [id])
   OrderDetail OrderDetail[]
+=======
+  price       Int
+  quantity    Int
+  eventId     String
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  OrderDetail OrderDetail[]
+
+  event Event @relation(fields: [eventId], references: [id])
+>>>>>>> 59a595c96f5f450c34ea53b287e24bb8428e8a06
 }
 
 model Customer {
-  id             Int             @id @default(autoincrement())
+  id             Int      @id @default(autoincrement())
   fullname       String
   username       String
-  email          String          @unique
+  email          String   @unique
   password       String
+<<<<<<< HEAD
   avatar         String?         @default("https://res.cloudinary.com/doiygpguv/image/upload/v1734056062/avatar-default_efbdwf.png")
   isVerified     Boolean         @default(false)
   referralCode   String?         @unique
@@ -89,7 +124,17 @@ model Customer {
   createdAt      DateTime        @default(now())
   updatedAt      DateTime        @updatedAt
   CustomerPoint  CustomerPoint[]
+=======
+  avatar         String?  @default("https://res.cloudinary.com/doiygpguv/image/upload/v1734129888/customer-default-avatar_kas8rt.png")
+  isVerified     Boolean  @default(false)
+  referralCode   String?  @unique
+  referralCodeBy String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+>>>>>>> 59a595c96f5f450c34ea53b287e24bb8428e8a06
   CustomerCoupon CustomerCoupon?
+  CustomerPoint  CustomerPoint[]
   Order          Order[]
   Review         Review[]
 }
@@ -98,51 +143,69 @@ model CustomerCoupon {
   customerId Int      @id
   percentage Int      @default(10)
   isRedeem   Boolean
+<<<<<<< HEAD
   createdAt  DateTime @default(now())
   expiredAt  DateTime
   customer   Customer @relation(fields: [customerId], references: [id])
+=======
+  expiredAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  customer Customer @relation(fields: [customerId], references: [id])
+>>>>>>> 59a595c96f5f450c34ea53b287e24bb8428e8a06
 }
 
 model CustomerPoint {
   id         Int      @id @default(autoincrement())
   point      Int      @default(10000)
   isUsed     Boolean  @default(false)
-  createdAt  DateTime @default(now())
-  expiredAt  DateTime
   customerId Int
-  customer   Customer @relation(fields: [customerId], references: [id])
+  expiredAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  customer Customer @relation(fields: [customerId], references: [id])
 }
 
 model Order {
-  id           Int           @id @default(autoincrement())
-  totalPrice   Int
-  finalPrice   Int
-  status       OrderStatus   @default(Pending)
-  paymentProof String
-  eventId      String
-  event        Event         @relation(fields: [eventId], references: [id])
-  customerId   Int
-  customer     Customer      @relation(fields: [customerId], references: [id])
-  OrderDetail  OrderDetail[]
+  id         Int         @id @default(autoincrement())
+  customerId Int
+  totalPrice Int
+  finalPrice Int
+  status     OrderStatus @default(Unpaid)
+  expiredAt  DateTime
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+
+  customer    Customer      @relation(fields: [customerId], references: [id])
+  OrderDetail OrderDetail[]
 }
 
 model OrderDetail {
-  quantity Int
-  ticketId Int
-  ticket   Ticket @relation(fields: [ticketId], references: [id])
-  orderId  Int
-  order    Order  @relation(fields: [orderId], references: [id])
+  orderId       Int
+  ticketId      Int
+  quantity      Int
+  subTotalPrice Int
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  order  Order  @relation(fields: [orderId], references: [id])
+  ticket Ticket @relation(fields: [ticketId], references: [id])
 
   @@id([ticketId, orderId])
 }
 
 model Review {
-  review     String
-  rating     Int
-  eventId    String
-  event      Event    @relation(fields: [eventId], references: [id])
   customerId Int
-  customer   Customer @relation(fields: [customerId], references: [id])
+  eventId    String
+  review     String
+  rating     RatingRange
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+
+  event    Event    @relation(fields: [eventId], references: [id])
+  customer Customer @relation(fields: [customerId], references: [id])
 
   @@id([eventId, customerId])
 }
