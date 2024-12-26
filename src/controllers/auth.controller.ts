@@ -3,15 +3,55 @@ import prisma from "../prisma";
 import { genSalt, hash, compare } from "bcrypt";
 import { findCustomer } from "../services/customer.service";
 import { sign, verify } from "jsonwebtoken";
+import { transporter } from "../services/mailer";
 import path from "path";
 import fs from "fs";
 import handlebars from "handlebars";
-import { generateReferalCode } from "../utils/generatereferralcode";
-import { transporter } from "../services/mailer";
-// import { findOrganizer } from "../services/organizer.service";
-import { addMonths } from "date-fns";
+import { findOrganizer } from "../services/organizer.service";
 
 export class AuthController {
+  async registerCustomer(req: Request, res: Response) {
+    try {
+      const { fullname, password, confirmPassword, username, email } = req.body;
+      if (password != confirmPassword) throw { message: "Password not match!" };
+
+      const customer = await findCustomer(username, email);
+      if (customer) throw { message: "username or email has been used !" };
+
+      const salt = await genSalt(10);
+      const hashPasword = await hash(password, salt);
+
+      const newCustomer = await prisma.customer.create({
+        data: { fullname, username, email, password: hashPasword },
+      });
+
+      const payload = { id: newCustomer.id };
+      const token = sign(payload, process.env.JWT_KEY!, { expiresIn: "10m" });
+
+      const link = `${process.env.BASE_URL_FE!}/customer/verify/${token}`;
+
+      const templatePath = path.join(
+        __dirname,
+        "../templates",
+        "verifyCustomer.hbs"
+      );
+      const templateSource = fs.readFileSync(templatePath, "utf-8");
+      const compiledTemplate = handlebars.compile(templateSource);
+      const html = compiledTemplate({ username, link });
+
+      await transporter.sendMail({
+        from: "mirzaaliyusuf45@gmail.com",
+        to: email,
+        subject: "Welcome to Blogger 🙌",
+        html,
+      });
+
+      res.status(201).send({ message: "Register Successfully ✅" });
+    } catch (err) {
+      console.log(err);
+      res.status(400).send(err);
+    }
+  }
   async loginCustomer(req: Request, res: Response) {
     try {
       const { data, password } = req.body;
@@ -21,139 +61,162 @@ export class AuthController {
       if (!customer.isVerified) throw { massage: "User not Verif !" };
 
       const isValidPass = await compare(password, customer.password);
-      if (!customer) {
+      if (!isValidPass) {
         throw { massage: "Incorrect Password" };
       }
 
-      const payload = { id: customer.id, type: "user" };
+      const payload = { id: customer.id, type: "customer" };
       const token = sign(payload, process.env.JWT_KEY!, { expiresIn: "1d" });
-      console.log("Generated Token:", token);
-      console.log("Token Payload:", payload);
-
+      const cus = { ...customer, role: "customer" };
       res
         .status(200)
-        .cookie("token", token, {
-          httpOnly: true,
-          maxAge: 24 * 3600 * 1000,
-          path: "/",
-          secure: process.env.NODE_ENV === "production",
-        })
-        .send({ massage: "Login User Succesfully" });
+        .send({ massage: "Login User Succesfully", customer: cus, token });
     } catch (err) {
       console.error(err);
       res.status(400).send("Login Failed");
     }
   }
 
-  //Register User
-
-  async registerCustomer(req: Request, res: Response) {
-    try {
-      const { fullname, username, email, password, confirmPassword, referralCode } = req.body;
-
-      if (password !== confirmPassword)
-        throw { message: "Passwords do not match!" };
-
-      const customer = await findCustomer(username, email);
-      if (customer) throw { message: "Username or email has already been used" };
-
-      const salt = await genSalt(10);
-      const hashPassword = await hash(password, salt);
-
-      const newUserData: any = {
-        fullname,
-        username,
-        email,
-        password: hashPassword,
-        referralCode: generateReferalCode(),
-      };
-
-      // Cek si Reveral Code nya
-      if (referralCode) {
-        const referer = await prisma.customer.findUnique({
-          where: { referralCode },
-        });
-        if (!referer) throw { message: "Invalid referral code" };
-
-        //plus point jika si reveral dipakai
-        await prisma.customerPoint.update({
-          where: { id: referer.id },
-          data: { point: {} },
-        });
-
-        // persentase si kupon jika dipakai
-        const coupon = await prisma.customerCoupon.create({
-          data: {
-            percentage: 10,
-            isRedeem: false,
-            expiredAt: addMonths(new Date(), 3),
-          },
-        });
-        newUserData.percentage = coupon.percentage;
-        newUserData.userCouponId = coupon.id;
-        newUserData.refCodeBy = referer.id;
-
-        // log untuk melihat hasil si referal dari siapa
-        await prisma.refLog.create({
-          data: {
-            pointGet: 10000,
-            expiredAt: addMonths(new Date(), 3),
-            isUsed: false,
-            user: {
-              connect: { id: referer.id },
-            },
-          },
-        });
-      }
-
-      // buat user baru dari hasil data
-      const newCustomer = await prisma.customer.create({ data: newUserData });
-
-      const payload = { id: newCustomer.id };
-      const token = sign(payload, process.env.JWT_KEY!, { expiresIn: "1d" });
-      const linkUser = `http://localhost:3000/verifyuser/${token}`;
-
-      const templatePath = path.join(
-        __dirname,
-        "../templates",
-        "verifyUser.hbs"
-      );
-      const templateSource = fs.readFileSync(templatePath, "utf-8");
-      const compiledTemplate = handlebars.compile(templateSource);
-      const html = compiledTemplate({
-        username,
-        linkUser,
-        refCode: newCustomer.referralCode,
-      });
-
-      // Mailer transport
-      await transporter.sendMail({
-        from: "dattariqf@gmail.com",
-        to: email,
-        subject: "Welcome To TIKO",
-        html,
-      });
-
-      res.status(201).json({ massage: "Registration Succesfull" });
-    } catch (err: any) {
-      console.error(err);
-      res.status(400).json({ massage: "Internal server error" });
-    }
-  }
-
   async verifyCustomer(req: Request, res: Response) {
     try {
       const { token } = req.params;
-      const verifiedUser: any = verify(token, process.env.JWT_KEY!);
-      await prisma.customer.update({
-        data: { isVerified: true },
-        where: { id: verifiedUser.id },
+      const verifiedCustomer: any = verify(token, process.env.JWT_KEY!);
+      // console.log(verifiedCustomer)
+
+      const customer = await prisma.customer.findUnique({
+        where: { id: verifiedCustomer.id },
       });
+      if (customer?.isVerified == false) {
+        await prisma.customer.update({
+          data: { isVerified: true },
+          where: { id: customer.id },
+        });
+      }
+      if (customer?.isVerified == true) {
+        throw { message: "Your account have verified" };
+      }
       res.status(200).send({ message: "Verify Successfully" });
     } catch (err) {
       console.log(err);
       res.status(400).send(err);
     }
   }
-}
+
+  ////////////////////////////////////////////// Organizer //////////////////////////////////////////////////////
+  async registerOrganizer(req: Request, res: Response) {
+    try {
+      const { password, confirmPassword, name, email } = req.body;
+      if (password != confirmPassword) throw { message: "Password not match!" };
+
+      const organizer = await findOrganizer(name, email);
+      if (organizer) throw { message: "username or email has been used !" };
+
+      const salt = await genSalt(10);
+      const hashPasword = await hash(password, salt);
+
+      const newOrganizer = await prisma.organizer.create({
+        data: { name, email, password: hashPasword },
+      });
+
+      const payload = { id: newOrganizer.id };
+      const token = sign(payload, process.env.JWT_KEY!, { expiresIn: "1d" });
+
+      const link = `${process.env.BASE_URL_FE!}/organizer/verify/${token}`;
+
+      const templatePath = path.join(
+        __dirname,
+        "../templates",
+        "verifyOrganizer.hbs"
+      );
+      const templateSource = fs.readFileSync(templatePath, "utf-8");
+      const compiledTemplate = handlebars.compile(templateSource);
+      const html = compiledTemplate({ name, link });
+
+      await transporter.sendMail({
+        from: "mirzaaliyusuf45@gmail.com",
+        to: email,
+        subject: "Welcome to Blogger 🙌",
+        html,
+      });
+
+      res.status(201).send({ message: "Register Successfully ✅" });
+    } catch (err) {
+      console.log(err);
+      res.status(400).send(err);
+    }
+  }
+
+  async loginOrganizer(req: Request, res: Response) {
+    try {
+      const { data, password } = req.body;
+      const organizer = await findOrganizer(data, data);
+
+      if (!organizer) throw { massage: "User not found !" };
+      if (!organizer.isVerified) throw { massage: "User not Verif !" };
+
+      const isValidPass = await compare(password, organizer.password);
+      if (!isValidPass) {
+        throw { massage: "Incorrect Password" };
+      }
+
+      const payload = { id: organizer.id, type: "organizer" };
+      const token = sign(payload, process.env.JWT_KEY!, { expiresIn: "1d" });
+      const Orga = { ...organizer, role: "organizer" };
+      res
+        .status(200)
+        .send({ massage: "Login User Succesfully", organizer: Orga, token });
+    } catch (err) {
+      console.error(err);
+      res.status(400).send("Login Failed");
+    }
+  }
+
+  async verifyOrganizer(req: Request, res: Response) {
+    try {
+      const { token } = req.params;
+      const verifiedOrganizer: any = verify(token, process.env.JWT_KEY!);
+      // console.log(verifiedOrganizer)
+
+      const organizer = await prisma.organizer.findUnique({
+        where: { id: verifiedOrganizer.id },
+      });
+      if (organizer?.isVerified == false) {
+        await prisma.organizer.update({
+          data: { isVerified: true },
+          where: { id: organizer.id },
+        });
+      }
+      if (organizer?.isVerified == true) {
+        throw { message: "Your account have verified" };
+      }
+      res.status(200).send({ message: "Verify Successfully" });
+    } catch (err) {
+      console.log(err);
+      res.status(400).send(err);
+    }
+  }
+  async getSession(req: Request, res: Response) {
+    try {
+      const role = req.mix?.role;
+
+      let acc: any = {};
+
+      if (role == "customer") {
+        acc = await prisma.customer.findUnique({
+          where: { id: req.mix?.id },
+        });
+      } 
+      else if (role == "organizer") {
+        acc = await prisma.organizer.findUnique({
+          where: { id: req.mix?.id },
+        });
+      }
+      acc.role = role;
+
+      res.status(200).send({ acc });
+    } catch (error) {
+      console.log(error);
+      res.status(400).send(error);
+    }
+  } 
 }

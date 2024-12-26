@@ -1,10 +1,11 @@
 import express, { Application, Request, Response } from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import { EventRouter } from "./routers/event.router";
+// import { EventRouter } from "./routers/event.router";
 // import { AuthRouter } from "./routers/auth.router";
 import { CustomerRouter } from "./routers/customer.router"
 import { AuthRouter } from "./routers/auth.router";
+import { OrganizerRouter } from "./routers/organizer.router";
 
 const PORT: number = 8000;
 
@@ -22,13 +23,15 @@ app.get("/api", (req: Request, res: Response) => {
   res.status(200).send("Welcome to MatchTix API");
 });
 
-const eventRouter = new EventRouter();
+// const eventRouter = new EventRouter();
 const authRouter = new AuthRouter();
 const customerRouter = new CustomerRouter();
+const organizerRouter = new OrganizerRouter()
 
-app.use("/api/events", eventRouter.getRouter());
+// app.use("/api/events", eventRouter.getRouter());
 app.use("/api/auth", authRouter.getRouter());
 app.use("/api/customers", customerRouter.getRouter());
+app.use("/api/organizer", organizerRouter.getRouter())
 
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}/api`);

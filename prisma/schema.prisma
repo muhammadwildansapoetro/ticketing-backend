@@ -38,7 +38,7 @@ model Organizer {
   name       String
   email      String
   password   String
-  avatar     String?  @default("https://res.cloudinary.com/doiygpguv/image/upload/v1734056194/ball_asj55y.png")
+  avatar     String?  @default("https://res.cloudinary.com/doiygpguv/image/upload/v1734129888/organizer-default-avatar_bm5kg0.png")
   isVerified Boolean  @default(false)
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
@@ -53,8 +53,10 @@ model Event {
   image       String
   location    String
   venue       String
-  date        DateTime      @db.Date
-  time        DateTime      @db.Time()
+  date        DateTime
+  startTime   DateTime
+  endTime     DateTime
+  createdAt   DateTime      @default(now())
   organizerId Int           @unique
   organizer   Organizer     @relation(fields: [organizerId], references: [id])
   Ticket      Ticket[]
@@ -63,14 +65,15 @@ model Event {
 }
 
 model Ticket {
-  id            Int            @id @default(autoincrement())
-  category      TicketCategory
-  description   String
-  price         String
-  availableSeat Int
-  eventId       String         @unique
-  event         Event          @relation(fields: [eventId], references: [id])
-  OrderDetail   OrderDetail[]
+  id          Int            @id @default(autoincrement())
+  category    TicketCategory
+  description String
+  price       String
+  quantity    Int
+  createdAt   DateTime       @default(now())
+  eventId     String         @unique
+  event       Event          @relation(fields: [eventId], references: [id])
+  OrderDetail OrderDetail[]
 }
 
 model Customer {
@@ -85,31 +88,19 @@ model Customer {
   referralCodeBy String?
   createdAt      DateTime        @default(now())
   updatedAt      DateTime        @updatedAt
-  RefLog       RefLog? @relation(fields: [refLogId], references: [id])
-  refLogId     Int?
   CustomerPoint  CustomerPoint[]
   CustomerCoupon CustomerCoupon?
   Order          Order[]
   Review         Review[]
 }
 
-model RefLog {
-  id        Int      @id @default(autoincrement())
-  pointGet  Int      @default(0)
-  createdAt DateTime @default(now())
-  expiredAt DateTime
-  isUsed    Boolean
-
-  customer Customer[]
-}
-
 model CustomerCoupon {
-  customerId  Int      @id
-  percentage  Int      @default(10)
-  isRedeem    Boolean
-  createdAt   DateTime @default(now())
-  expiredAt DateTime
-  customer    Customer @relation(fields: [customerId], references: [id])
+  customerId Int      @id
+  percentage Int      @default(10)
+  isRedeem   Boolean
+  createdAt  DateTime @default(now())
+  expiredAt  DateTime
+  customer   Customer @relation(fields: [customerId], references: [id])
 }
 
 model CustomerPoint {

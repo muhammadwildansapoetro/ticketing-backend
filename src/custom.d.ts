@@ -2,20 +2,22 @@ import { Customer } from "@prisma/client";
 import { Request } from "express";
 import 'express';
 
-export type CustomerPayload = {
+export type CustomerandOrganizerPayload = {
     id: number;
-    role: RoleUser;
+    role: "customer" | "organizer";
 };
 
 export type OrganizerPayload= {
-    id: string;
+    id: number;
+    // role: "organizer"
+
 
 };
 
 declare global {
     namespace Express {
         export interface Request {
-            customer?: CustomerPayload;
+            mix?: CustomerandOrganizerPayload;
             organizer?: OrganizerPayload; 
         }
     }

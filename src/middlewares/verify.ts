@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { verify } from "jsonwebtoken";
-import { CustomerPayload } from "../custom";
+import { CustomerandOrganizerPayload } from "../custom";
 
 export const verifyToken = async (
   req: Request,
@@ -8,13 +8,15 @@ export const verifyToken = async (
   next: NextFunction
 ) => {
   try {
-    // const token = req.header("Authorization")?.replace("Bearer ", "");
-    const token = req.cookies?.token;
-    if (!token) throw "Unauthorize!";
+    const token = req.header("Authorization")?.replace("Bearer ", "");
+    // const token = req.cookies?.token;
+    if (!token) throw {message: "Unauthorize!"};
 
-    const verifiedUser = verify(token, process.env.JWT_KEY!);
+    const verifiedCustomer = verify(token, process.env.JWT_KEY!);
+    // const verifiedOrganizer = verify(token, process.env.JWT_KEY!);
 
-    req.customer = verifiedUser as CustomerPayload;
+    req.mix = verifiedCustomer as CustomerandOrganizerPayload;
+    // req.organizer = verifiedOrganizer  as OrganizerPayload;
 
     next();
   } catch (error) {
@@ -23,14 +25,14 @@ export const verifyToken = async (
   }
 };
 
-export const checkAdmin = (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-    if (req.customer?.role == "Admin"){
-        next();
-    } else {
-        res.status(403).send("Unauthorize, Admin Only!");
-    }
-};
+// export const checkAdmin = (
+//   req: Request,
+//   res: Response,
+//   next: NextFunction
+// ) => {
+//     if (req.customer?.role == "Admin"){
+//         next();
+//     } else {
+//         res.status(403).send("Unauthorize, Admin Only!");
+//     }
+// };

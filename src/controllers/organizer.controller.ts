@@ -2,65 +2,65 @@ import { Prisma } from "@prisma/client";
 import { Request, Response } from "express";
 import prisma from "../prisma";
 
-export class CustomerController {
-  async getCustomers(req: Request, res: Response) {
+export class OrganizerController {
+  async getOrganizer(req: Request, res: Response) {
     try {
       const { search, page = 1, limit = 5 } = req.query;
-      const filter: Prisma.CustomerWhereInput = {};
+      const filter: Prisma.OrganizerWhereInput = {};
       if (search) {
         filter.OR = [
-          { username: { contains: search as string, mode: "insensitive" } },
+          { name: { contains: search as string, mode: "insensitive" } },
           { email: { contains: search as string, mode: "insensitive" } },
         ];
       }
-      const countCostumer = await prisma.customer.aggregate({ _count: { _all: true } });
-      const total_page = Math.ceil(countCostumer._count._all / +limit);
-      const customers = await prisma.customer.findMany({
+      const countOrganizer = await prisma.organizer.aggregate({ _count: { _all: true } });
+      const total_page = Math.ceil(countOrganizer._count._all / +limit);
+      const organizer = await prisma.organizer.findMany({
         where: filter,
         orderBy: { id: "asc" },
         take: +limit,
         skip: +limit * (+page - 1),
       });
-      res.status(200).send({ total_page, page, customers });
+      res.status(200).send({ total_page, page, organizer });
     } catch (err) {
       console.log(err);
       res.status(400).send(err);
     }
   }
-  async getCustomerId(req: Request, res: Response) {
+  async getOrganizerId(req: Request, res: Response) {
     try {
-      const customer = await prisma.customer.findUnique({
+      const organizer = await prisma.organizer.findUnique({
         where: { id: req.mix?.id },
       });
-      res.status(200).send({ customer });
+      res.status(200).send({ organizer });
     } catch (err) {
       console.log(err);
       res.status(400).send(err);
     }
   }
-  async createCustomer(req: Request, res: Response) {
+  async createOrganizer(req: Request, res: Response) {
     try {
-      await prisma.customer.create({ data: req.body });
+      await prisma.organizer.create({ data: req.body });
       res.status(201).send({message: "User created ✅"});
     } catch (err) {
       console.log(err);
       res.status(400).send(err);
     }
   }
-  async editCustomer(req: Request, res: Response) {
+  async editOrganizer(req: Request, res: Response) {
     try {
       const { id } = req.params;
-      await prisma.customer.update({ data: req.body, where: { id: +id } });
+      await prisma.organizer.update({ data: req.body, where: { id: +id } });
       res.status(200).send({message: "User updated ✅"});
     } catch (err) {
       console.log(err);
       res.status(400).send(err);
     }
   }
-  async deleteCustomer(req: Request, res: Response) {
+  async deleteOrganizer(req: Request, res: Response) {
     try {
       const { id } = req.params;
-      await prisma.customer.delete({ where: { id: +id } });
+      await prisma.organizer.delete({ where: { id: +id } });
       res.status(200).send({message: "User deleted ✅"});
     } catch (err) {
       console.log(err);

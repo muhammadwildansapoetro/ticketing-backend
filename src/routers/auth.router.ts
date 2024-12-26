@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { AuthController } from "../controllers/auth.controller";
+import { verifyToken } from "../middlewares/verify";
 
 export class AuthRouter {
   private authController: AuthController;
@@ -12,10 +13,27 @@ export class AuthRouter {
   }
 
   private initializeRoutes() {
-    // this.router.post("/register", this.authController.registerUser);
-    this.router.post("/login", this.authController.loginUser);
+    this.router.get("/session", verifyToken, this.authController.getSession)
+    this.router.post(
+      "/customer/register",
+      this.authController.registerCustomer
+    );
+    this.router.post("/customer/sign-in", this.authController.loginCustomer);
+    this.router.patch(
+      "/customer/verify/:token",
+      this.authController.verifyCustomer
+    );
+    // this.router.post("/register/organizer", this.authController.registerCustomer);
+    this.router.post(
+      "/organizer/register",
+      this.authController.registerOrganizer
+    );
+    this.router.post("/organizer/sign-in", this.authController.loginOrganizer);
 
-    this.router.patch("/verify/:token", this.authController.verifyUser);
+    this.router.patch(
+      "/organizer/verify/:token",
+      this.authController.verifyOrganizer
+    );
   }
 
   getRouter(): Router {
