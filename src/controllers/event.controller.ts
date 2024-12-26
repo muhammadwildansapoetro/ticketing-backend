@@ -28,13 +28,20 @@
 import { Request, Response } from "express";
 import { cloudinaryUpload } from "../services/cloudinary";
 import prisma from "../prisma";
+<<<<<<< HEAD
 import { Prisma } from "prisma/generated/client";
+=======
+import { EventCategory, Prisma } from "prisma/generated/client";
+>>>>>>> e0ef3122cab57ca796bfe197c28b9d38dab6db7e
 
 export class EventController {
   async createEvent(req: Request, res: Response) {
     try {
+<<<<<<< HEAD
       console.log("Incoming file:", req.file);
       console.log("Incoming request body:", req.body);
+=======
+>>>>>>> e0ef3122cab57ca796bfe197c28b9d38dab6db7e
       if (!req.file) throw { message: "Image is required" };
 
       const { secure_url } = await cloudinaryUpload(req.file, "events");
@@ -91,13 +98,28 @@ export class EventController {
 
   async getEvents(req: Request, res: Response) {
     try {
+<<<<<<< HEAD
       // const { search } = req.params;
       // const filter: Prisma.EventWhereInput = {};
       // if (search) {
       //   filter.title = { contains: search as string, mode: "insensitive" };
       // }
+=======
+      const { search, category, location } = req.query;
+      const filter: Prisma.EventWhereInput = {};
+      if (search) {
+        filter.title = { contains: search as string, mode: "insensitive" };
+      }
+      if (category) {
+        filter.category = { equals: category as EventCategory };
+      }
+      if (location) {
+        filter.location = { equals: location as string, mode: "insensitive" };
+      }
+>>>>>>> e0ef3122cab57ca796bfe197c28b9d38dab6db7e
 
       const events = await prisma.event.findMany({
+        where: filter,
         select: {
           id: true,
           title: true,

@@ -13,7 +13,10 @@ import { TicketRouter } from "./routers/ticket.router";
 import { OrderRouter } from "./routers/order.router";
 import dotenv from "dotenv";
 dotenv.config();
+<<<<<<< HEAD
 >>>>>>> 59a595c96f5f450c34ea53b287e24bb8428e8a06
+=======
+>>>>>>> e0ef3122cab57ca796bfe197c28b9d38dab6db7e
 
 const PORT: number = 8000;
 
@@ -52,7 +55,10 @@ const orderRouter = new OrderRouter();
 app.use("/api/events", eventRouter.getRouter());
 app.use("/api/tickets", ticketRouter.getRouter());
 app.use("/api/orders", orderRouter.getRouter());
+<<<<<<< HEAD
 >>>>>>> 59a595c96f5f450c34ea53b287e24bb8428e8a06
+=======
+>>>>>>> e0ef3122cab57ca796bfe197c28b9d38dab6db7e
 
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}/api`);
