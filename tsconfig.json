@@ -10,6 +10,6 @@
     "baseUrl": ".",
     "types": ["./src/custom.d.ts"]
   },
-  "include": ["**/*.ts"],
+  "include": ["src/**/*.ts"],
   "exclude": ["node_modules"]
 }
