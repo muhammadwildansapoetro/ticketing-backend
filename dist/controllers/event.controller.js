@@ -19,11 +19,11 @@ class EventController {
     createEvent(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                console.log("Incoming file:", req.file);
-                console.log("Incoming request body:", req.body);
                 if (!req.file)
                     throw { message: "Image is required" };
-                const { secure_url } = yield (0, cloudinary_1.cloudinaryUpload)(req.file, "events");
+                // Assert the type of req.file
+                const file = req.file;
+                const { secure_url } = yield (0, cloudinary_1.cloudinaryUpload)(file, "events");
                 const { title, category, date, startTime, endTime, location, venue, description, } = req.body;
                 const [startHour, startMinute] = startTime.split(":").map(Number);
                 const [endHour, endMinute] = endTime.split(":").map(Number);
@@ -63,12 +63,19 @@ class EventController {
     getEvents(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                // const { search } = req.params;
-                // const filter: Prisma.EventWhereInput = {};
-                // if (search) {
-                //   filter.title = { contains: search as string, mode: "insensitive" };
-                // }
+                const { search, category, location } = req.query;
+                const filter = {};
+                if (search) {
+                    filter.title = { contains: search, mode: "insensitive" };
+                }
+                if (category) {
+                    filter.category = { equals: category };
+                }
+                if (location) {
+                    filter.location = { equals: location, mode: "insensitive" };
+                }
                 const events = yield prisma_1.default.event.findMany({
+                    where: filter,
                     select: {
                         id: true,
                         title: true,

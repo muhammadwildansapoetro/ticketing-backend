@@ -36,10 +36,10 @@ class OrderController {
                             subTotalPrice: order.quantity * order.ticket.price,
                         },
                     });
-                    // await prisma.ticket.update({
-                    //   data: { quantity: { decrement: order.quantity } },
-                    //   where: { id: order.ticket.id },
-                    // });
+                    yield prisma_1.default.ticket.update({
+                        data: { quantity: { decrement: order.quantity } },
+                        where: { id: order.ticket.id },
+                    });
                 }
                 res
                     .status(201)
