@@ -65,7 +65,7 @@ export class EventController {
 
   async getEvents(req: Request, res: Response) {
     try {
-      const limit = 2;
+      const limit = 12;
       const { page = "1" } = req.query;
       const { search, category, location } = req.query;
       const filter: Prisma.EventWhereInput = {};

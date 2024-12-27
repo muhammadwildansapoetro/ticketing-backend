@@ -62,7 +62,7 @@ class EventController {
     getEvents(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const limit = 2;
+                const limit = 12;
                 const { page = "1" } = req.query;
                 const { search, category, location } = req.query;
                 const filter = {};
