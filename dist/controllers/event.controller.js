@@ -21,7 +21,6 @@ class EventController {
             try {
                 if (!req.file)
                     throw { message: "Image is required" };
-                // Assert the type of req.file
                 const file = req.file;
                 const { secure_url } = yield (0, cloudinary_1.cloudinaryUpload)(file, "events");
                 const { title, category, date, startTime, endTime, location, venue, description, } = req.body;
@@ -63,6 +62,8 @@ class EventController {
     getEvents(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
+                const limit = 2;
+                const { page = "1" } = req.query;
                 const { search, category, location } = req.query;
                 const filter = {};
                 if (search) {
@@ -74,33 +75,40 @@ class EventController {
                 if (location) {
                     filter.location = { equals: location, mode: "insensitive" };
                 }
-                const events = yield prisma_1.default.event.findMany({
-                    where: filter,
-                    select: {
-                        id: true,
-                        title: true,
-                        image: true,
-                        category: true,
-                        description: true,
-                        location: true,
-                        venue: true,
-                        date: true,
-                        startTime: true,
-                        endTime: true,
-                        organizer: {
-                            select: {
-                                name: true,
-                                avatar: true,
+                const [events, totalEvents] = yield Promise.all([
+                    prisma_1.default.event.findMany({
+                        where: filter,
+                        take: limit,
+                        skip: +limit * (+page - 1),
+                        select: {
+                            id: true,
+                            title: true,
+                            image: true,
+                            category: true,
+                            description: true,
+                            location: true,
+                            venue: true,
+                            date: true,
+                            startTime: true,
+                            endTime: true,
+                            organizer: {
+                                select: {
+                                    name: true,
+                                    avatar: true,
+                                },
+                            },
+                            Ticket: {
+                                select: {
+                                    price: true,
+                                },
                             },
                         },
-                        Ticket: {
-                            select: {
-                                price: true,
-                            },
-                        },
-                    },
-                });
-                res.status(200).send({ events: events });
+                    }),
+                    prisma_1.default.event.count({ where: filter }),
+                ]);
+                const totalPages = Math.ceil(totalEvents / limit);
+                console.log("total events:", totalEvents);
+                res.status(200).send({ events, totalPages });
             }
             catch (error) {
                 console.log("Error get events:", error);
