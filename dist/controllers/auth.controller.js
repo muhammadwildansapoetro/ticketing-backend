@@ -26,7 +26,7 @@ class AuthController {
     registerCustomer(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const { fullname, password, confirmPassword, username, email, referralCode } = req.body;
+                const { fullname, password, confirmPassword, username, email, referralCode, } = req.body;
                 if (password != confirmPassword)
                     throw { message: "Password not match!" };
                 const customer = yield (0, customer_service_1.findCustomer)(username, email);
@@ -49,7 +49,9 @@ class AuthController {
                 // Handle referral logic
                 if (referralCode) {
                     // Find the customer who owns the referral code
-                    const referrer = yield prisma_1.default.customer.findUnique({ where: { referralCode } });
+                    const referrer = yield prisma_1.default.customer.findUnique({
+                        where: { referralCode },
+                    });
                     if (!referrer)
                         throw { message: "Invalid referral code!" };
                     // Create 10,000 points for the referrer

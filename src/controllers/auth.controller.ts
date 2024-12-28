@@ -12,7 +12,14 @@ import { findOrganizer } from "../services/organizer.service";
 export class AuthController {
   async registerCustomer(req: Request, res: Response) {
     try {
-      const { fullname, password, confirmPassword, username, email, referralCode } = req.body;
+      const {
+        fullname,
+        password,
+        confirmPassword,
+        username,
+        email,
+        referralCode,
+      } = req.body;
       if (password != confirmPassword) throw { message: "Password not match!" };
 
       const customer = await findCustomer(username, email);
@@ -22,7 +29,8 @@ export class AuthController {
       const hashPassword = await hash(password, salt);
 
       // Generate referral code for the new customer
-      const generatedReferralCode = username + Math.random().toString(36).substring(2, 8);
+      const generatedReferralCode =
+        username + Math.random().toString(36).substring(2, 8);
 
       // Create new customer
       const newCustomer = await prisma.customer.create({
@@ -38,7 +46,9 @@ export class AuthController {
       // Handle referral logic
       if (referralCode) {
         // Find the customer who owns the referral code
-        const referrer = await prisma.customer.findUnique({ where: { referralCode } });
+        const referrer = await prisma.customer.findUnique({
+          where: { referralCode },
+        });
 
         if (!referrer) throw { message: "Invalid referral code!" };
 
@@ -147,6 +157,7 @@ export class AuthController {
   }
 
   ////////////////////////////////////////////// Organizer //////////////////////////////////////////////////////
+
   async registerOrganizer(req: Request, res: Response) {
     try {
       const { password, confirmPassword, name, email } = req.body;
@@ -249,8 +260,7 @@ export class AuthController {
         acc = await prisma.customer.findUnique({
           where: { id: req.user?.id },
         });
-      } 
-      else if (role == "organizer") {
+      } else if (role == "organizer") {
         acc = await prisma.organizer.findUnique({
           where: { id: req.user?.id },
         });
@@ -262,5 +272,5 @@ export class AuthController {
       console.log(error);
       res.status(400).send(error);
     }
-  } 
+  }
 }

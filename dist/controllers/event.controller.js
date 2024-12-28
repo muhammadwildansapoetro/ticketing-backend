@@ -59,44 +59,6 @@ class EventController {
             }
         });
     }
-    createEvent(req, res) {
-        return __awaiter(this, void 0, void 0, function* () {
-            try {
-                if (!req.file)
-                    throw { message: "Image is required" };
-                const { secure_url } = yield (0, cloudinary_1.cloudinaryUpload)(req.file, "events");
-                const { title, category, date, startTime, endTime, location, venue, description, } = req.body;
-                const [startHour, startMinute] = startTime.split(":").map(Number);
-                const [endHour, endMinute] = endTime.split(":").map(Number);
-                const formatStartTime = new Date();
-                formatStartTime.setUTCHours(startHour - 7, startMinute, 0, 0);
-                const formatEndTime = new Date();
-                formatEndTime.setUTCHours(endHour - 7, endMinute, 0, 0);
-                const organizerId = 8;
-                const { id } = yield prisma_1.default.event.create({
-                    data: {
-                        image: secure_url,
-                        title,
-                        category,
-                        date: new Date(date),
-                        startTime: formatStartTime,
-                        endTime: formatEndTime,
-                        location,
-                        venue,
-                        description,
-                        organizerId: organizerId,
-                    },
-                });
-                res
-                    .status(201)
-                    .send({ message: "Match created successfully", eventId: id });
-            }
-            catch (error) {
-                console.log(error);
-                res.status(400).send(error);
-            }
-        });
-    }
     getEvents(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
@@ -162,7 +124,6 @@ class EventController {
                         id: true,
                         title: true,
                         image: true,
-                        image: true,
                         category: true,
                         description: true,
                         location: true,
@@ -184,22 +145,9 @@ class EventController {
                                 avatar: true,
                             },
                         },
-                        startTime: true,
-                        endTime: true,
-                        organizer: {
-                            select: {
-                                name: true,
-                                avatar: true,
-                            },
-                        },
-                        Ticket: {
-                            select: {
-                                price: true,
-                            },
-                        },
                     },
                 });
-                res.status(200).send({ events });
+                res.status(200).send({ event });
             }
             catch (error) {
                 console.log("Error get event detail:", error);
