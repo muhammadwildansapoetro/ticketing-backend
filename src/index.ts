@@ -1,7 +1,7 @@
 import express, { Application, Request, Response } from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import { CustomerRouter } from "./routers/customer.router"
+import { CustomerRouter } from "./routers/customer.router";
 import { AuthRouter } from "./routers/auth.router";
 import { OrganizerRouter } from "./routers/organizer.router";
 import { EventRouter } from "./routers/event.router";
@@ -34,16 +34,19 @@ const ticketRouter = new TicketRouter();
 const orderRouter = new OrderRouter();
 const authRouter = new AuthRouter();
 const customerRouter = new CustomerRouter();
-const organizerRouter = new OrganizerRouter()
-
+const organizerRouter = new OrganizerRouter();
 
 app.use("/api/auth", authRouter.getRouter());
 app.use("/api/customers", customerRouter.getRouter());
-app.use("/api/organizer", organizerRouter.getRouter())
+app.use("/api/organizer", organizerRouter.getRouter());
 app.use("/api/events", eventRouter.getRouter());
 app.use("/api/tickets", ticketRouter.getRouter());
 app.use("/api/orders", orderRouter.getRouter());
 app.use("/api/events", eventRouter.getRouter());
+app.use("/api/tickets", ticketRouter.getRouter());
+app.use("/api/orders", orderRouter.getRouter());
+app.use("/api/tickets", ticketRouter.getRouter());
+app.use("/api/orders", orderRouter.getRouter());
 
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}/api`);

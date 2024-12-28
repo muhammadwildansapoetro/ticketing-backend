@@ -8,7 +8,9 @@ export class EventController {
   async createEvent(req: Request, res: Response) {
     try {
       if (!req.file) throw { message: "Image is required" };
+
       const file = req.file as Express.Multer.File & { stream: Readable };
+
       const { secure_url } = await cloudinaryUpload(file, "events");
 
       const {
@@ -63,8 +65,11 @@ export class EventController {
 
   async getEvents(req: Request, res: Response) {
     try {
+      const limit = 12;
+      const { page = "1" } = req.query;
       const { search, category, location } = req.query;
       const filter: Prisma.EventWhereInput = {};
+
       if (search) {
         filter.title = { contains: search as string, mode: "insensitive" };
       }
@@ -75,34 +80,41 @@ export class EventController {
         filter.location = { equals: location as string, mode: "insensitive" };
       }
 
-      const events = await prisma.event.findMany({
-        where: filter,
-        select: {
-          id: true,
-          title: true,
-          image: true,
-          category: true,
-          description: true,
-          location: true,
-          venue: true,
-          date: true,
-          startTime: true,
-          endTime: true,
-          organizer: {
-            select: {
-              name: true,
-              avatar: true,
+      const [events, totalEvents] = await Promise.all([
+        prisma.event.findMany({
+          where: filter,
+          take: limit,
+          skip: +limit * (+page - 1),
+          select: {
+            id: true,
+            title: true,
+            image: true,
+            category: true,
+            description: true,
+            location: true,
+            venue: true,
+            date: true,
+            startTime: true,
+            endTime: true,
+            organizer: {
+              select: {
+                name: true,
+                avatar: true,
+              },
+            },
+            Ticket: {
+              select: {
+                price: true,
+              },
             },
           },
-          Ticket: {
-            select: {
-              price: true,
-            },
-          },
-        },
-      });
+        }),
+        prisma.event.count({ where: filter }),
+      ]);
 
-      res.status(200).send({ events: events });
+      const totalPages = Math.ceil(totalEvents / limit);
+
+      res.status(200).send({ events, totalPages });
     } catch (error) {
       console.log("Error get events:", error);
       res.status(400).send(error);

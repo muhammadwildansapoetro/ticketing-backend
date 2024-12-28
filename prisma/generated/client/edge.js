@@ -31,11 +31,11 @@ exports.Prisma = Prisma
 exports.$Enums = {}
 
 /**
- * Prisma Client JS version: 6.1.0
+ * Prisma Client JS version: 6.0.1
  * Query Engine version: 5dbef10bdbfb579e07d35cc85fb1518d357cb99e
  */
 Prisma.prismaVersion = {
-  client: "6.1.0",
+  client: "6.0.1",
   engine: "5dbef10bdbfb579e07d35cc85fb1518d357cb99e"
 }
 
@@ -121,8 +121,8 @@ exports.Prisma.TicketScalarFieldEnum = {
   description: 'description',
   price: 'price',
   quantity: 'quantity',
-  createdAt: 'createdAt',
   eventId: 'eventId',
+  createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
 
@@ -144,8 +144,8 @@ exports.Prisma.CustomerCouponScalarFieldEnum = {
   customerId: 'customerId',
   percentage: 'percentage',
   isRedeem: 'isRedeem',
-  createdAt: 'createdAt',
   expiredAt: 'expiredAt',
+  createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
 
@@ -252,7 +252,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "E:\\Git-Collab\\ticketing-backend\\prisma\\generated\\client",
+      "value": "/Users/muhammadwildansapoetro/Documents/Learning/JCWD0508/Ticketing-Backend/matchtix-api/prisma/generated/client",
       "fromEnvVar": null
     },
     "config": {
@@ -261,12 +261,12 @@ const config = {
     "binaryTargets": [
       {
         "fromEnvVar": null,
-        "value": "windows",
+        "value": "darwin-arm64",
         "native": true
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "E:\\Git-Collab\\ticketing-backend\\prisma\\schema.prisma",
+    "sourceFilePath": "/Users/muhammadwildansapoetro/Documents/Learning/JCWD0508/Ticketing-Backend/matchtix-api/prisma/schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
@@ -274,7 +274,7 @@ const config = {
     "schemaEnvPath": "../../../.env"
   },
   "relativePath": "../..",
-  "clientVersion": "6.1.0",
+  "clientVersion": "6.0.1",
   "engineVersion": "5dbef10bdbfb579e07d35cc85fb1518d357cb99e",
   "datasourceNames": [
     "db"

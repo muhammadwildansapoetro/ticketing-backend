@@ -82,28 +82,32 @@ model Ticket {
   category    TicketCategory
   description String
   price       Int
+  price       Int
   quantity    Int
+  eventId     String
   createdAt   DateTime       @default(now())
-  eventId     String         @unique
-  event       Event          @relation(fields: [eventId], references: [id])
-  OrderDetail OrderDetail[]
   updatedAt   DateTime       @updatedAt
+
+  OrderDetail OrderDetail[]
+
+  event Event @relation(fields: [eventId], references: [id])
 }
 
 model Customer {
-  id             Int             @id @default(autoincrement())
+  id             Int      @id @default(autoincrement())
   fullname       String
   username       String
-  email          String          @unique
+  email          String   @unique
   password       String
   avatar         String?         @default("https://res.cloudinary.com/doiygpguv/image/upload/v1734056062/avatar-default_efbdwf.png")
   isVerified     Boolean         @default(false)
   referralCode   String
   referralCodeBy String?
-  createdAt      DateTime        @default(now())
-  updatedAt      DateTime        @updatedAt
-  CustomerPoint  CustomerPoint[]
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
   CustomerCoupon CustomerCoupon?
+  CustomerPoint  CustomerPoint[]
   Order          Order[]
   Review         Review[]
 }
@@ -112,10 +116,11 @@ model CustomerCoupon {
   customerId Int      @id
   percentage Int      @default(10)
   isRedeem   Boolean
-  createdAt  DateTime @default(now())
   expiredAt  DateTime
-  customer   Customer @relation(fields: [customerId], references: [id])
+  createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
+
+  customer Customer @relation(fields: [customerId], references: [id])
 }
 
 model CustomerPoint {
@@ -131,14 +136,15 @@ model CustomerPoint {
 }
 
 model Order {
-  id          Int           @id @default(autoincrement())
-  customerId  Int
-  totalPrice  Int
-  finalPrice  Int
-  status      OrderStatus   @default(Unpaid)
-  expiredAt   DateTime
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
+  id         Int         @id @default(autoincrement())
+  customerId Int
+  totalPrice Int
+  finalPrice Int
+  status     OrderStatus @default(Unpaid)
+  expiredAt  DateTime
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+
   customer    Customer      @relation(fields: [customerId], references: [id])
   OrderDetail OrderDetail[]
 }

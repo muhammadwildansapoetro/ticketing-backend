@@ -40,6 +40,10 @@ app.use("/api/events", eventRouter.getRouter());
 app.use("/api/tickets", ticketRouter.getRouter());
 app.use("/api/orders", orderRouter.getRouter());
 app.use("/api/events", eventRouter.getRouter());
+app.use("/api/tickets", ticketRouter.getRouter());
+app.use("/api/orders", orderRouter.getRouter());
+app.use("/api/tickets", ticketRouter.getRouter());
+app.use("/api/orders", orderRouter.getRouter());
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}/api`);
 });

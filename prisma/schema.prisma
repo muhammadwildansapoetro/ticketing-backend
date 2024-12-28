@@ -82,12 +82,15 @@ model Ticket {
   category    TicketCategory
   description String
   price       Int
+  price       Int
   quantity    Int
+  eventId     String
   createdAt   DateTime       @default(now())
-  eventId     String         @unique
-  event       Event          @relation(fields: [eventId], references: [id])
-  OrderDetail OrderDetail[]
   updatedAt   DateTime       @updatedAt
+
+  OrderDetail OrderDetail[]
+
+  event Event @relation(fields: [eventId], references: [id])
 }
 
 model Customer {
@@ -100,10 +103,11 @@ model Customer {
   isVerified     Boolean         @default(false)
   referralCode   String       
   referralCodeBy String?
-  createdAt      DateTime        @default(now())
-  updatedAt      DateTime        @updatedAt
-  CustomerPoint  CustomerPoint[]
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
   CustomerCoupon CustomerCoupon?
+  CustomerPoint  CustomerPoint[]
   Order          Order[]
   Review         Review[]
 }
@@ -112,10 +116,11 @@ model CustomerCoupon {
   customerId Int      @id
   percentage Int      @default(10)
   isRedeem   Boolean
-  createdAt  DateTime @default(now())
   expiredAt  DateTime
-  customer   Customer @relation(fields: [customerId], references: [id])
+  createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
+
+  customer Customer @relation(fields: [customerId], references: [id])
 }
 
 model CustomerPoint {
@@ -139,6 +144,7 @@ model Order {
   expiredAt  DateTime
   createdAt  DateTime    @default(now())
   updatedAt  DateTime    @updatedAt
+
   customer    Customer      @relation(fields: [customerId], references: [id])
   OrderDetail OrderDetail[]
 }
