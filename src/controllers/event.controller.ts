@@ -113,7 +113,6 @@ export class EventController {
       ]);
 
       const totalPages = Math.ceil(totalEvents / limit);
-      console.log("total events:", totalEvents);
 
       res.status(200).send({ events, totalPages });
     } catch (error) {
