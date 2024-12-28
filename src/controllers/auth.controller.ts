@@ -104,7 +104,7 @@ export class AuthController {
       await transporter.sendMail({
         from: "mirzaaliyusuf45@gmail.com",
         to: email,
-        subject: "Welcome to Blogger 🙌",
+        subject: "Welcome to MatchTix!",
         html,
       });
       res.status(201).send({ message: "Register Successfully ✅" });
@@ -198,7 +198,7 @@ export class AuthController {
       await transporter.sendMail({
         from: "mirzaaliyusuf45@gmail.com",
         to: email,
-        subject: "Welcome to Blogger 🙌",
+        subject: "Welcome to MatchTix",
         html,
       });
 
