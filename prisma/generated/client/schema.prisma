@@ -82,7 +82,6 @@ model Ticket {
   category    TicketCategory
   description String
   price       Int
-  price       Int
   quantity    Int
   eventId     String
   createdAt   DateTime       @default(now())
