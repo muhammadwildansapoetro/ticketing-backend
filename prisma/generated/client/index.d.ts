@@ -5149,7 +5149,7 @@ export namespace Prisma {
     password: string
     avatar: string | null
     isVerified: boolean
-    referralCode: string | null
+    referralCode: string
     referralCodeBy: string | null
     createdAt: Date
     updatedAt: Date
@@ -5246,7 +5246,7 @@ export namespace Prisma {
       password: string
       avatar: string | null
       isVerified: boolean
-      referralCode: string | null
+      referralCode: string
       referralCodeBy: string | null
       createdAt: Date
       updatedAt: Date
@@ -11619,7 +11619,7 @@ export namespace Prisma {
     password?: StringFilter<"Customer"> | string
     avatar?: StringNullableFilter<"Customer"> | string | null
     isVerified?: BoolFilter<"Customer"> | boolean
-    referralCode?: StringNullableFilter<"Customer"> | string | null
+    referralCode?: StringFilter<"Customer"> | string
     referralCodeBy?: StringNullableFilter<"Customer"> | string | null
     createdAt?: DateTimeFilter<"Customer"> | Date | string
     updatedAt?: DateTimeFilter<"Customer"> | Date | string
@@ -11637,7 +11637,7 @@ export namespace Prisma {
     password?: SortOrder
     avatar?: SortOrderInput | SortOrder
     isVerified?: SortOrder
-    referralCode?: SortOrderInput | SortOrder
+    referralCode?: SortOrder
     referralCodeBy?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -11650,7 +11650,6 @@ export namespace Prisma {
   export type CustomerWhereUniqueInput = Prisma.AtLeast<{
     id?: number
     email?: string
-    referralCode?: string
     AND?: CustomerWhereInput | CustomerWhereInput[]
     OR?: CustomerWhereInput[]
     NOT?: CustomerWhereInput | CustomerWhereInput[]
@@ -11659,6 +11658,7 @@ export namespace Prisma {
     password?: StringFilter<"Customer"> | string
     avatar?: StringNullableFilter<"Customer"> | string | null
     isVerified?: BoolFilter<"Customer"> | boolean
+    referralCode?: StringFilter<"Customer"> | string
     referralCodeBy?: StringNullableFilter<"Customer"> | string | null
     createdAt?: DateTimeFilter<"Customer"> | Date | string
     updatedAt?: DateTimeFilter<"Customer"> | Date | string
@@ -11666,7 +11666,7 @@ export namespace Prisma {
     CustomerPoint?: CustomerPointListRelationFilter
     Order?: OrderListRelationFilter
     Review?: ReviewListRelationFilter
-  }, "id" | "email" | "referralCode">
+  }, "id" | "email">
 
   export type CustomerOrderByWithAggregationInput = {
     id?: SortOrder
@@ -11676,7 +11676,7 @@ export namespace Prisma {
     password?: SortOrder
     avatar?: SortOrderInput | SortOrder
     isVerified?: SortOrder
-    referralCode?: SortOrderInput | SortOrder
+    referralCode?: SortOrder
     referralCodeBy?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -11698,7 +11698,7 @@ export namespace Prisma {
     password?: StringWithAggregatesFilter<"Customer"> | string
     avatar?: StringNullableWithAggregatesFilter<"Customer"> | string | null
     isVerified?: BoolWithAggregatesFilter<"Customer"> | boolean
-    referralCode?: StringNullableWithAggregatesFilter<"Customer"> | string | null
+    referralCode?: StringWithAggregatesFilter<"Customer"> | string
     referralCodeBy?: StringNullableWithAggregatesFilter<"Customer"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Customer"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Customer"> | Date | string
@@ -12321,7 +12321,7 @@ export namespace Prisma {
     password: string
     avatar?: string | null
     isVerified?: boolean
-    referralCode?: string | null
+    referralCode: string
     referralCodeBy?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -12339,7 +12339,7 @@ export namespace Prisma {
     password: string
     avatar?: string | null
     isVerified?: boolean
-    referralCode?: string | null
+    referralCode: string
     referralCodeBy?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -12356,7 +12356,7 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     avatar?: NullableStringFieldUpdateOperationsInput | string | null
     isVerified?: BoolFieldUpdateOperationsInput | boolean
-    referralCode?: NullableStringFieldUpdateOperationsInput | string | null
+    referralCode?: StringFieldUpdateOperationsInput | string
     referralCodeBy?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -12374,7 +12374,7 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     avatar?: NullableStringFieldUpdateOperationsInput | string | null
     isVerified?: BoolFieldUpdateOperationsInput | boolean
-    referralCode?: NullableStringFieldUpdateOperationsInput | string | null
+    referralCode?: StringFieldUpdateOperationsInput | string
     referralCodeBy?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -12392,7 +12392,7 @@ export namespace Prisma {
     password: string
     avatar?: string | null
     isVerified?: boolean
-    referralCode?: string | null
+    referralCode: string
     referralCodeBy?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -12405,7 +12405,7 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     avatar?: NullableStringFieldUpdateOperationsInput | string | null
     isVerified?: BoolFieldUpdateOperationsInput | boolean
-    referralCode?: NullableStringFieldUpdateOperationsInput | string | null
+    referralCode?: StringFieldUpdateOperationsInput | string
     referralCodeBy?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -12419,7 +12419,7 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     avatar?: NullableStringFieldUpdateOperationsInput | string | null
     isVerified?: BoolFieldUpdateOperationsInput | boolean
-    referralCode?: NullableStringFieldUpdateOperationsInput | string | null
+    referralCode?: StringFieldUpdateOperationsInput | string
     referralCodeBy?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -14805,7 +14805,7 @@ export namespace Prisma {
     password: string
     avatar?: string | null
     isVerified?: boolean
-    referralCode?: string | null
+    referralCode: string
     referralCodeBy?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -14822,7 +14822,7 @@ export namespace Prisma {
     password: string
     avatar?: string | null
     isVerified?: boolean
-    referralCode?: string | null
+    referralCode: string
     referralCodeBy?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -14854,7 +14854,7 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     avatar?: NullableStringFieldUpdateOperationsInput | string | null
     isVerified?: BoolFieldUpdateOperationsInput | boolean
-    referralCode?: NullableStringFieldUpdateOperationsInput | string | null
+    referralCode?: StringFieldUpdateOperationsInput | string
     referralCodeBy?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -14871,7 +14871,7 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     avatar?: NullableStringFieldUpdateOperationsInput | string | null
     isVerified?: BoolFieldUpdateOperationsInput | boolean
-    referralCode?: NullableStringFieldUpdateOperationsInput | string | null
+    referralCode?: StringFieldUpdateOperationsInput | string
     referralCodeBy?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -14887,7 +14887,7 @@ export namespace Prisma {
     password: string
     avatar?: string | null
     isVerified?: boolean
-    referralCode?: string | null
+    referralCode: string
     referralCodeBy?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -14904,7 +14904,7 @@ export namespace Prisma {
     password: string
     avatar?: string | null
     isVerified?: boolean
-    referralCode?: string | null
+    referralCode: string
     referralCodeBy?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -14936,7 +14936,7 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     avatar?: NullableStringFieldUpdateOperationsInput | string | null
     isVerified?: BoolFieldUpdateOperationsInput | boolean
-    referralCode?: NullableStringFieldUpdateOperationsInput | string | null
+    referralCode?: StringFieldUpdateOperationsInput | string
     referralCodeBy?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -14953,7 +14953,7 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     avatar?: NullableStringFieldUpdateOperationsInput | string | null
     isVerified?: BoolFieldUpdateOperationsInput | boolean
-    referralCode?: NullableStringFieldUpdateOperationsInput | string | null
+    referralCode?: StringFieldUpdateOperationsInput | string
     referralCodeBy?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -14969,7 +14969,7 @@ export namespace Prisma {
     password: string
     avatar?: string | null
     isVerified?: boolean
-    referralCode?: string | null
+    referralCode: string
     referralCodeBy?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -14986,7 +14986,7 @@ export namespace Prisma {
     password: string
     avatar?: string | null
     isVerified?: boolean
-    referralCode?: string | null
+    referralCode: string
     referralCodeBy?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -15044,7 +15044,7 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     avatar?: NullableStringFieldUpdateOperationsInput | string | null
     isVerified?: BoolFieldUpdateOperationsInput | boolean
-    referralCode?: NullableStringFieldUpdateOperationsInput | string | null
+    referralCode?: StringFieldUpdateOperationsInput | string
     referralCodeBy?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -15061,7 +15061,7 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     avatar?: NullableStringFieldUpdateOperationsInput | string | null
     isVerified?: BoolFieldUpdateOperationsInput | boolean
-    referralCode?: NullableStringFieldUpdateOperationsInput | string | null
+    referralCode?: StringFieldUpdateOperationsInput | string
     referralCodeBy?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -15248,7 +15248,7 @@ export namespace Prisma {
     password: string
     avatar?: string | null
     isVerified?: boolean
-    referralCode?: string | null
+    referralCode: string
     referralCodeBy?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -15265,7 +15265,7 @@ export namespace Prisma {
     password: string
     avatar?: string | null
     isVerified?: boolean
-    referralCode?: string | null
+    referralCode: string
     referralCodeBy?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -15342,7 +15342,7 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     avatar?: NullableStringFieldUpdateOperationsInput | string | null
     isVerified?: BoolFieldUpdateOperationsInput | boolean
-    referralCode?: NullableStringFieldUpdateOperationsInput | string | null
+    referralCode?: StringFieldUpdateOperationsInput | string
     referralCodeBy?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -15359,7 +15359,7 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     avatar?: NullableStringFieldUpdateOperationsInput | string | null
     isVerified?: BoolFieldUpdateOperationsInput | boolean
-    referralCode?: NullableStringFieldUpdateOperationsInput | string | null
+    referralCode?: StringFieldUpdateOperationsInput | string
     referralCodeBy?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
