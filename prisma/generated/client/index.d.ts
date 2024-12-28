@@ -3917,11 +3917,13 @@ export namespace Prisma {
 
   export type TicketAvgAggregateOutputType = {
     id: number | null
+    price: number | null
     quantity: number | null
   }
 
   export type TicketSumAggregateOutputType = {
     id: number | null
+    price: number | null
     quantity: number | null
   }
 
@@ -3929,7 +3931,7 @@ export namespace Prisma {
     id: number | null
     category: $Enums.TicketCategory | null
     description: string | null
-    price: string | null
+    price: number | null
     quantity: number | null
     createdAt: Date | null
     eventId: string | null
@@ -3940,7 +3942,7 @@ export namespace Prisma {
     id: number | null
     category: $Enums.TicketCategory | null
     description: string | null
-    price: string | null
+    price: number | null
     quantity: number | null
     createdAt: Date | null
     eventId: string | null
@@ -3962,11 +3964,13 @@ export namespace Prisma {
 
   export type TicketAvgAggregateInputType = {
     id?: true
+    price?: true
     quantity?: true
   }
 
   export type TicketSumAggregateInputType = {
     id?: true
+    price?: true
     quantity?: true
   }
 
@@ -4094,7 +4098,7 @@ export namespace Prisma {
     id: number
     category: $Enums.TicketCategory
     description: string
-    price: string
+    price: number
     quantity: number
     createdAt: Date
     eventId: string
@@ -4176,7 +4180,7 @@ export namespace Prisma {
       id: number
       category: $Enums.TicketCategory
       description: string
-      price: string
+      price: number
       quantity: number
       createdAt: Date
       eventId: string
@@ -4579,7 +4583,7 @@ export namespace Prisma {
     readonly id: FieldRef<"Ticket", 'Int'>
     readonly category: FieldRef<"Ticket", 'TicketCategory'>
     readonly description: FieldRef<"Ticket", 'String'>
-    readonly price: FieldRef<"Ticket", 'String'>
+    readonly price: FieldRef<"Ticket", 'Int'>
     readonly quantity: FieldRef<"Ticket", 'Int'>
     readonly createdAt: FieldRef<"Ticket", 'DateTime'>
     readonly eventId: FieldRef<"Ticket", 'String'>
@@ -5145,7 +5149,7 @@ export namespace Prisma {
     password: string
     avatar: string | null
     isVerified: boolean
-    referralCode: string | null
+    referralCode: string
     referralCodeBy: string | null
     createdAt: Date
     updatedAt: Date
@@ -5242,7 +5246,7 @@ export namespace Prisma {
       password: string
       avatar: string | null
       isVerified: boolean
-      referralCode: string | null
+      referralCode: string
       referralCodeBy: string | null
       createdAt: Date
       updatedAt: Date
@@ -11536,7 +11540,7 @@ export namespace Prisma {
     id?: IntFilter<"Ticket"> | number
     category?: EnumTicketCategoryFilter<"Ticket"> | $Enums.TicketCategory
     description?: StringFilter<"Ticket"> | string
-    price?: StringFilter<"Ticket"> | string
+    price?: IntFilter<"Ticket"> | number
     quantity?: IntFilter<"Ticket"> | number
     createdAt?: DateTimeFilter<"Ticket"> | Date | string
     eventId?: StringFilter<"Ticket"> | string
@@ -11566,7 +11570,7 @@ export namespace Prisma {
     NOT?: TicketWhereInput | TicketWhereInput[]
     category?: EnumTicketCategoryFilter<"Ticket"> | $Enums.TicketCategory
     description?: StringFilter<"Ticket"> | string
-    price?: StringFilter<"Ticket"> | string
+    price?: IntFilter<"Ticket"> | number
     quantity?: IntFilter<"Ticket"> | number
     createdAt?: DateTimeFilter<"Ticket"> | Date | string
     updatedAt?: DateTimeFilter<"Ticket"> | Date | string
@@ -11597,7 +11601,7 @@ export namespace Prisma {
     id?: IntWithAggregatesFilter<"Ticket"> | number
     category?: EnumTicketCategoryWithAggregatesFilter<"Ticket"> | $Enums.TicketCategory
     description?: StringWithAggregatesFilter<"Ticket"> | string
-    price?: StringWithAggregatesFilter<"Ticket"> | string
+    price?: IntWithAggregatesFilter<"Ticket"> | number
     quantity?: IntWithAggregatesFilter<"Ticket"> | number
     createdAt?: DateTimeWithAggregatesFilter<"Ticket"> | Date | string
     eventId?: StringWithAggregatesFilter<"Ticket"> | string
@@ -11615,7 +11619,7 @@ export namespace Prisma {
     password?: StringFilter<"Customer"> | string
     avatar?: StringNullableFilter<"Customer"> | string | null
     isVerified?: BoolFilter<"Customer"> | boolean
-    referralCode?: StringNullableFilter<"Customer"> | string | null
+    referralCode?: StringFilter<"Customer"> | string
     referralCodeBy?: StringNullableFilter<"Customer"> | string | null
     createdAt?: DateTimeFilter<"Customer"> | Date | string
     updatedAt?: DateTimeFilter<"Customer"> | Date | string
@@ -11633,7 +11637,7 @@ export namespace Prisma {
     password?: SortOrder
     avatar?: SortOrderInput | SortOrder
     isVerified?: SortOrder
-    referralCode?: SortOrderInput | SortOrder
+    referralCode?: SortOrder
     referralCodeBy?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -11646,7 +11650,6 @@ export namespace Prisma {
   export type CustomerWhereUniqueInput = Prisma.AtLeast<{
     id?: number
     email?: string
-    referralCode?: string
     AND?: CustomerWhereInput | CustomerWhereInput[]
     OR?: CustomerWhereInput[]
     NOT?: CustomerWhereInput | CustomerWhereInput[]
@@ -11655,6 +11658,7 @@ export namespace Prisma {
     password?: StringFilter<"Customer"> | string
     avatar?: StringNullableFilter<"Customer"> | string | null
     isVerified?: BoolFilter<"Customer"> | boolean
+    referralCode?: StringFilter<"Customer"> | string
     referralCodeBy?: StringNullableFilter<"Customer"> | string | null
     createdAt?: DateTimeFilter<"Customer"> | Date | string
     updatedAt?: DateTimeFilter<"Customer"> | Date | string
@@ -11662,7 +11666,7 @@ export namespace Prisma {
     CustomerCoupon?: XOR<CustomerCouponNullableScalarRelationFilter, CustomerCouponWhereInput> | null
     Order?: OrderListRelationFilter
     Review?: ReviewListRelationFilter
-  }, "id" | "email" | "referralCode">
+  }, "id" | "email">
 
   export type CustomerOrderByWithAggregationInput = {
     id?: SortOrder
@@ -11672,7 +11676,7 @@ export namespace Prisma {
     password?: SortOrder
     avatar?: SortOrderInput | SortOrder
     isVerified?: SortOrder
-    referralCode?: SortOrderInput | SortOrder
+    referralCode?: SortOrder
     referralCodeBy?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -11694,7 +11698,7 @@ export namespace Prisma {
     password?: StringWithAggregatesFilter<"Customer"> | string
     avatar?: StringNullableWithAggregatesFilter<"Customer"> | string | null
     isVerified?: BoolWithAggregatesFilter<"Customer"> | boolean
-    referralCode?: StringNullableWithAggregatesFilter<"Customer"> | string | null
+    referralCode?: StringWithAggregatesFilter<"Customer"> | string
     referralCodeBy?: StringNullableWithAggregatesFilter<"Customer"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Customer"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Customer"> | Date | string
@@ -12236,7 +12240,7 @@ export namespace Prisma {
   export type TicketCreateInput = {
     category: $Enums.TicketCategory
     description: string
-    price: string
+    price: number
     quantity: number
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -12248,7 +12252,7 @@ export namespace Prisma {
     id?: number
     category: $Enums.TicketCategory
     description: string
-    price: string
+    price: number
     quantity: number
     createdAt?: Date | string
     eventId: string
@@ -12259,7 +12263,7 @@ export namespace Prisma {
   export type TicketUpdateInput = {
     category?: EnumTicketCategoryFieldUpdateOperationsInput | $Enums.TicketCategory
     description?: StringFieldUpdateOperationsInput | string
-    price?: StringFieldUpdateOperationsInput | string
+    price?: IntFieldUpdateOperationsInput | number
     quantity?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -12271,7 +12275,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     category?: EnumTicketCategoryFieldUpdateOperationsInput | $Enums.TicketCategory
     description?: StringFieldUpdateOperationsInput | string
-    price?: StringFieldUpdateOperationsInput | string
+    price?: IntFieldUpdateOperationsInput | number
     quantity?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     eventId?: StringFieldUpdateOperationsInput | string
@@ -12283,7 +12287,7 @@ export namespace Prisma {
     id?: number
     category: $Enums.TicketCategory
     description: string
-    price: string
+    price: number
     quantity: number
     createdAt?: Date | string
     eventId: string
@@ -12293,7 +12297,7 @@ export namespace Prisma {
   export type TicketUpdateManyMutationInput = {
     category?: EnumTicketCategoryFieldUpdateOperationsInput | $Enums.TicketCategory
     description?: StringFieldUpdateOperationsInput | string
-    price?: StringFieldUpdateOperationsInput | string
+    price?: IntFieldUpdateOperationsInput | number
     quantity?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -12303,7 +12307,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     category?: EnumTicketCategoryFieldUpdateOperationsInput | $Enums.TicketCategory
     description?: StringFieldUpdateOperationsInput | string
-    price?: StringFieldUpdateOperationsInput | string
+    price?: IntFieldUpdateOperationsInput | number
     quantity?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     eventId?: StringFieldUpdateOperationsInput | string
@@ -12317,7 +12321,7 @@ export namespace Prisma {
     password: string
     avatar?: string | null
     isVerified?: boolean
-    referralCode?: string | null
+    referralCode: string
     referralCodeBy?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -12335,7 +12339,7 @@ export namespace Prisma {
     password: string
     avatar?: string | null
     isVerified?: boolean
-    referralCode?: string | null
+    referralCode: string
     referralCodeBy?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -12352,7 +12356,7 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     avatar?: NullableStringFieldUpdateOperationsInput | string | null
     isVerified?: BoolFieldUpdateOperationsInput | boolean
-    referralCode?: NullableStringFieldUpdateOperationsInput | string | null
+    referralCode?: StringFieldUpdateOperationsInput | string
     referralCodeBy?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -12370,7 +12374,7 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     avatar?: NullableStringFieldUpdateOperationsInput | string | null
     isVerified?: BoolFieldUpdateOperationsInput | boolean
-    referralCode?: NullableStringFieldUpdateOperationsInput | string | null
+    referralCode?: StringFieldUpdateOperationsInput | string
     referralCodeBy?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -12388,7 +12392,7 @@ export namespace Prisma {
     password: string
     avatar?: string | null
     isVerified?: boolean
-    referralCode?: string | null
+    referralCode: string
     referralCodeBy?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -12401,7 +12405,7 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     avatar?: NullableStringFieldUpdateOperationsInput | string | null
     isVerified?: BoolFieldUpdateOperationsInput | boolean
-    referralCode?: NullableStringFieldUpdateOperationsInput | string | null
+    referralCode?: StringFieldUpdateOperationsInput | string
     referralCodeBy?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -12415,7 +12419,7 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     avatar?: NullableStringFieldUpdateOperationsInput | string | null
     isVerified?: BoolFieldUpdateOperationsInput | boolean
-    referralCode?: NullableStringFieldUpdateOperationsInput | string | null
+    referralCode?: StringFieldUpdateOperationsInput | string
     referralCodeBy?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -13068,6 +13072,7 @@ export namespace Prisma {
 
   export type TicketAvgOrderByAggregateInput = {
     id?: SortOrder
+    price?: SortOrder
     quantity?: SortOrder
   }
 
@@ -13095,6 +13100,7 @@ export namespace Prisma {
 
   export type TicketSumOrderByAggregateInput = {
     id?: SortOrder
+    price?: SortOrder
     quantity?: SortOrder
   }
 
@@ -14277,7 +14283,7 @@ export namespace Prisma {
   export type TicketCreateWithoutEventInput = {
     category: $Enums.TicketCategory
     description: string
-    price: string
+    price: number
     quantity: number
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -14288,7 +14294,7 @@ export namespace Prisma {
     id?: number
     category: $Enums.TicketCategory
     description: string
-    price: string
+    price: number
     quantity: number
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -14380,7 +14386,7 @@ export namespace Prisma {
     id?: IntFilter<"Ticket"> | number
     category?: EnumTicketCategoryFilter<"Ticket"> | $Enums.TicketCategory
     description?: StringFilter<"Ticket"> | string
-    price?: StringFilter<"Ticket"> | string
+    price?: IntFilter<"Ticket"> | number
     quantity?: IntFilter<"Ticket"> | number
     createdAt?: DateTimeFilter<"Ticket"> | Date | string
     eventId?: StringFilter<"Ticket"> | string
@@ -14799,7 +14805,7 @@ export namespace Prisma {
     password: string
     avatar?: string | null
     isVerified?: boolean
-    referralCode?: string | null
+    referralCode: string
     referralCodeBy?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -14816,7 +14822,7 @@ export namespace Prisma {
     password: string
     avatar?: string | null
     isVerified?: boolean
-    referralCode?: string | null
+    referralCode: string
     referralCodeBy?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -14848,7 +14854,7 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     avatar?: NullableStringFieldUpdateOperationsInput | string | null
     isVerified?: BoolFieldUpdateOperationsInput | boolean
-    referralCode?: NullableStringFieldUpdateOperationsInput | string | null
+    referralCode?: StringFieldUpdateOperationsInput | string
     referralCodeBy?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -14865,7 +14871,7 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     avatar?: NullableStringFieldUpdateOperationsInput | string | null
     isVerified?: BoolFieldUpdateOperationsInput | boolean
-    referralCode?: NullableStringFieldUpdateOperationsInput | string | null
+    referralCode?: StringFieldUpdateOperationsInput | string
     referralCodeBy?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -14881,7 +14887,7 @@ export namespace Prisma {
     password: string
     avatar?: string | null
     isVerified?: boolean
-    referralCode?: string | null
+    referralCode: string
     referralCodeBy?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -14898,7 +14904,7 @@ export namespace Prisma {
     password: string
     avatar?: string | null
     isVerified?: boolean
-    referralCode?: string | null
+    referralCode: string
     referralCodeBy?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -14930,7 +14936,7 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     avatar?: NullableStringFieldUpdateOperationsInput | string | null
     isVerified?: BoolFieldUpdateOperationsInput | boolean
-    referralCode?: NullableStringFieldUpdateOperationsInput | string | null
+    referralCode?: StringFieldUpdateOperationsInput | string
     referralCodeBy?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -14947,7 +14953,7 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     avatar?: NullableStringFieldUpdateOperationsInput | string | null
     isVerified?: BoolFieldUpdateOperationsInput | boolean
-    referralCode?: NullableStringFieldUpdateOperationsInput | string | null
+    referralCode?: StringFieldUpdateOperationsInput | string
     referralCodeBy?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -14963,7 +14969,7 @@ export namespace Prisma {
     password: string
     avatar?: string | null
     isVerified?: boolean
-    referralCode?: string | null
+    referralCode: string
     referralCodeBy?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -14980,7 +14986,7 @@ export namespace Prisma {
     password: string
     avatar?: string | null
     isVerified?: boolean
-    referralCode?: string | null
+    referralCode: string
     referralCodeBy?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -15038,7 +15044,7 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     avatar?: NullableStringFieldUpdateOperationsInput | string | null
     isVerified?: BoolFieldUpdateOperationsInput | boolean
-    referralCode?: NullableStringFieldUpdateOperationsInput | string | null
+    referralCode?: StringFieldUpdateOperationsInput | string
     referralCodeBy?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -15055,7 +15061,7 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     avatar?: NullableStringFieldUpdateOperationsInput | string | null
     isVerified?: BoolFieldUpdateOperationsInput | boolean
-    referralCode?: NullableStringFieldUpdateOperationsInput | string | null
+    referralCode?: StringFieldUpdateOperationsInput | string
     referralCodeBy?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -15109,7 +15115,7 @@ export namespace Prisma {
   export type TicketCreateWithoutOrderDetailInput = {
     category: $Enums.TicketCategory
     description: string
-    price: string
+    price: number
     quantity: number
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -15120,7 +15126,7 @@ export namespace Prisma {
     id?: number
     category: $Enums.TicketCategory
     description: string
-    price: string
+    price: number
     quantity: number
     createdAt?: Date | string
     eventId: string
@@ -15178,7 +15184,7 @@ export namespace Prisma {
   export type TicketUpdateWithoutOrderDetailInput = {
     category?: EnumTicketCategoryFieldUpdateOperationsInput | $Enums.TicketCategory
     description?: StringFieldUpdateOperationsInput | string
-    price?: StringFieldUpdateOperationsInput | string
+    price?: IntFieldUpdateOperationsInput | number
     quantity?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -15189,7 +15195,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     category?: EnumTicketCategoryFieldUpdateOperationsInput | $Enums.TicketCategory
     description?: StringFieldUpdateOperationsInput | string
-    price?: StringFieldUpdateOperationsInput | string
+    price?: IntFieldUpdateOperationsInput | number
     quantity?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     eventId?: StringFieldUpdateOperationsInput | string
@@ -15242,7 +15248,7 @@ export namespace Prisma {
     password: string
     avatar?: string | null
     isVerified?: boolean
-    referralCode?: string | null
+    referralCode: string
     referralCodeBy?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -15259,7 +15265,7 @@ export namespace Prisma {
     password: string
     avatar?: string | null
     isVerified?: boolean
-    referralCode?: string | null
+    referralCode: string
     referralCodeBy?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -15336,7 +15342,7 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     avatar?: NullableStringFieldUpdateOperationsInput | string | null
     isVerified?: BoolFieldUpdateOperationsInput | boolean
-    referralCode?: NullableStringFieldUpdateOperationsInput | string | null
+    referralCode?: StringFieldUpdateOperationsInput | string
     referralCodeBy?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -15353,7 +15359,7 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     avatar?: NullableStringFieldUpdateOperationsInput | string | null
     isVerified?: BoolFieldUpdateOperationsInput | boolean
-    referralCode?: NullableStringFieldUpdateOperationsInput | string | null
+    referralCode?: StringFieldUpdateOperationsInput | string
     referralCodeBy?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -15430,7 +15436,7 @@ export namespace Prisma {
     id?: number
     category: $Enums.TicketCategory
     description: string
-    price: string
+    price: number
     quantity: number
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -15447,7 +15453,7 @@ export namespace Prisma {
   export type TicketUpdateWithoutEventInput = {
     category?: EnumTicketCategoryFieldUpdateOperationsInput | $Enums.TicketCategory
     description?: StringFieldUpdateOperationsInput | string
-    price?: StringFieldUpdateOperationsInput | string
+    price?: IntFieldUpdateOperationsInput | number
     quantity?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -15458,7 +15464,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     category?: EnumTicketCategoryFieldUpdateOperationsInput | $Enums.TicketCategory
     description?: StringFieldUpdateOperationsInput | string
-    price?: StringFieldUpdateOperationsInput | string
+    price?: IntFieldUpdateOperationsInput | number
     quantity?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -15469,7 +15475,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     category?: EnumTicketCategoryFieldUpdateOperationsInput | $Enums.TicketCategory
     description?: StringFieldUpdateOperationsInput | string
-    price?: StringFieldUpdateOperationsInput | string
+    price?: IntFieldUpdateOperationsInput | number
     quantity?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string

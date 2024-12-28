@@ -81,7 +81,7 @@ model Ticket {
   id          Int            @id @default(autoincrement())
   category    TicketCategory
   description String
-  price       String
+  price       Int
   quantity    Int
   createdAt   DateTime       @default(now())
   eventId     String         @unique
@@ -98,7 +98,7 @@ model Customer {
   password       String
   avatar         String?         @default("https://res.cloudinary.com/doiygpguv/image/upload/v1734056062/avatar-default_efbdwf.png")
   isVerified     Boolean         @default(false)
-  referralCode   String?         @unique
+  referralCode   String
   referralCodeBy String?
   createdAt      DateTime        @default(now())
   updatedAt      DateTime        @updatedAt

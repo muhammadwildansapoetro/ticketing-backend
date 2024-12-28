@@ -1,18 +1,26 @@
 import { Request, Response } from "express";
 import prisma from "../prisma";
 import { genSalt, hash, compare } from "bcrypt";
-import { findCustomer } from "../services/customer.service";
+import { findCustomer, findRefCode } from "../services/customer.service";
 import { sign, verify } from "jsonwebtoken";
 import { transporter } from "../services/mailer";
 import path from "path";
 import fs from "fs";
 import handlebars from "handlebars";
 import { findOrganizer } from "../services/organizer.service";
+import { generator } from "../services/auth.service";
 
 export class AuthController {
   async registerCustomer(req: Request, res: Response) {
     try {
-      const { fullname, password, confirmPassword, username, email, referralCode } = req.body;
+      let {
+        fullname,
+        password,
+        confirmPassword,
+        username,
+        email,
+        referralCodeBy,
+      } = req.body;
       if (password != confirmPassword) throw { message: "Password not match!" };
 
       const customer = await findCustomer(username, email);
@@ -22,7 +30,17 @@ export class AuthController {
       const hashPassword = await hash(password, salt);
 
       // Generate referral code for the new customer
-      const generatedReferralCode = username + Math.random().toString(36).substring(2, 8);
+      // const generatedReferralCode = Math.random().toString(36).slice(2, 8).toUpperCase();
+      let newRefCode = generator();
+      const refCode = await findRefCode(newRefCode);
+      if (refCode) newRefCode = generator();
+
+      if (referralCodeBy) {
+        const isRefCode = await findRefCode(referralCodeBy);
+        if (!isRefCode) throw { message: "ReferralCode is not found" };
+      }
+
+      if (referralCodeBy == "") referralCodeBy = null;
 
       // Create new customer
       const newCustomer = await prisma.customer.create({
@@ -31,46 +49,46 @@ export class AuthController {
           username,
           email,
           password: hashPassword,
-          referralCode: generatedReferralCode,
+          referralCode: newRefCode,
+          referralCodeBy,
         },
       });
 
       // Handle referral logic
-      if (referralCode) {
-        // Find the customer who owns the referral code
-        const referrer = await prisma.customer.findUnique({ where: { referralCode } });
+      // if (referralCode) {
+      //   // Find the customer who owns the referral code
+      //   const referrer = await prisma.customer.findUnique({ where: { referralCode } });
 
-        if (!referrer) throw { message: "Invalid referral code!" };
+      //   if (!referrer) throw { message: "Invalid referral code!" };
 
-        // Create 10,000 points for the referrer
-        const pointExpiryDate = new Date();
-        pointExpiryDate.setMonth(pointExpiryDate.getMonth() + 3);
+      //   // Create 10,000 points for the referrer
+      //   const pointExpiryDate = new Date();
+      //   pointExpiryDate.setMonth(pointExpiryDate.getMonth() + 3);
 
-        await prisma.customerPoint.create({
-          data: {
-            customerId: referrer.id,
-            point: 10000,
-            expiredAt: pointExpiryDate,
-          },
-        });
+      //   await prisma.customerPoint.create({
+      //     data: {
+      //       customerId: referrer.id,
+      //       point: 10000,
+      //       expiredAt: pointExpiryDate,
+      //     },
+      //   });
 
-        // Create a 10% discount coupon for the new customer
-        const couponExpiryDate = new Date();
-        couponExpiryDate.setMonth(couponExpiryDate.getMonth() + 3);
+      // Create a 10% discount coupon for the new customer
+      const couponExpiryDate = new Date();
+      couponExpiryDate.setMonth(couponExpiryDate.getMonth() + 3);
 
-        await prisma.customerCoupon.create({
-          data: {
-            customerId: newCustomer.id,
-            percentage: 10,
-            isRedeem: false,
-            expiredAt: couponExpiryDate,
-          },
-        });
-      }
+      await prisma.customerCoupon.create({
+        data: {
+          customerId: newCustomer.id,
+          percentage: 10,
+          isRedeem: false,
+          expiredAt: couponExpiryDate,
+        },
+      });
 
       // Send verification email
       const payload = { id: newCustomer.id };
-      const token = sign(payload, process.env.JWT_KEY!, { expiresIn: "10m" });
+      const token = sign(payload, process.env.JWT_KEY!, { expiresIn: "1d" });
 
       const link = `${process.env.BASE_URL_FE!}/customer/verify/${token}`;
 
@@ -89,13 +107,13 @@ export class AuthController {
         subject: "Welcome to Blogger 🙌",
         html,
       });
-
       res.status(201).send({ message: "Register Successfully ✅" });
-    } catch (err) {
-      console.log(err);
-      res.status(400).send(err);
+    } catch (error) {
+      console.log(error);
+      res.status(400).send(error);
     }
   }
+
   async loginCustomer(req: Request, res: Response) {
     try {
       const { data, password } = req.body;
@@ -147,6 +165,7 @@ export class AuthController {
   }
 
   ////////////////////////////////////////////// Organizer //////////////////////////////////////////////////////
+
   async registerOrganizer(req: Request, res: Response) {
     try {
       const { password, confirmPassword, name, email } = req.body;
@@ -239,6 +258,7 @@ export class AuthController {
       res.status(400).send(err);
     }
   }
+
   async getSession(req: Request, res: Response) {
     try {
       const role = req.user?.role;
@@ -249,8 +269,7 @@ export class AuthController {
         acc = await prisma.customer.findUnique({
           where: { id: req.user?.id },
         });
-      } 
-      else if (role == "organizer") {
+      } else if (role == "organizer") {
         acc = await prisma.organizer.findUnique({
           where: { id: req.user?.id },
         });
@@ -262,5 +281,5 @@ export class AuthController {
       console.log(error);
       res.status(400).send(error);
     }
-  } 
+  }
 }
