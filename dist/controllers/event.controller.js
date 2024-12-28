@@ -155,45 +155,5 @@ class EventController {
             }
         });
     }
-    getEventById(req, res) {
-        return __awaiter(this, void 0, void 0, function* () {
-            try {
-                const event = yield prisma_1.default.event.findUnique({
-                    select: {
-                        id: true,
-                        title: true,
-                        image: true,
-                        category: true,
-                        description: true,
-                        location: true,
-                        venue: true,
-                        date: true,
-                        startTime: true,
-                        endTime: true,
-                        Ticket: {
-                            select: {
-                                category: true,
-                                price: true,
-                                quantity: true,
-                                description: true,
-                            },
-                        },
-                        organizer: {
-                            select: {
-                                name: true,
-                                avatar: true,
-                            },
-                        },
-                    },
-                    where: { id: req.params.eventId },
-                });
-                res.status(200).send({ event });
-            }
-            catch (error) {
-                console.log("Error get event detail:", error);
-                res.status(400).send(error);
-            }
-        });
-    }
 }
 exports.EventController = EventController;
