@@ -17,11 +17,11 @@ exports.Prisma = Prisma
 exports.$Enums = {}
 
 /**
- * Prisma Client JS version: 6.0.1
+ * Prisma Client JS version: 6.1.0
  * Query Engine version: 5dbef10bdbfb579e07d35cc85fb1518d357cb99e
  */
 Prisma.prismaVersion = {
-  client: "6.0.1",
+  client: "6.1.0",
   engine: "5dbef10bdbfb579e07d35cc85fb1518d357cb99e"
 }
 
@@ -150,8 +150,8 @@ exports.Prisma.TicketScalarFieldEnum = {
   description: 'description',
   price: 'price',
   quantity: 'quantity',
-  eventId: 'eventId',
   createdAt: 'createdAt',
+  eventId: 'eventId',
   updatedAt: 'updatedAt'
 };
 
@@ -173,8 +173,8 @@ exports.Prisma.CustomerCouponScalarFieldEnum = {
   customerId: 'customerId',
   percentage: 'percentage',
   isRedeem: 'isRedeem',
-  expiredAt: 'expiredAt',
   createdAt: 'createdAt',
+  expiredAt: 'expiredAt',
   updatedAt: 'updatedAt'
 };
 

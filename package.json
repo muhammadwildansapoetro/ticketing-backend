@@ -18,67 +18,23 @@
     "@types/cookie-parser": "^1.4.8",
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.0",
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "@types/express-validator": "^2.20.33",
+    "@types/jsonwebtoken": "^9.0.7",
     "@types/node": "^22.10.1",
-    "@types/nodemailer": "^6.4.17",
-    "prisma": "^6.0.1",
-=======
-    "@types/multer": "^1.4.12",
-    "@types/node": "^22.10.1",
-    "@types/nodemailer": "^6.4.17",
     "@types/streamifier": "^0.1.2",
->>>>>>> 59a595c96f5f450c34ea53b287e24bb8428e8a06
-=======
-    "@types/multer": "^1.4.12",
-    "@types/node": "^22.10.1",
-    "@types/nodemailer": "^6.4.17",
-    "@types/streamifier": "^0.1.2",
->>>>>>> e0ef3122cab57ca796bfe197c28b9d38dab6db7e
     "ts-node": "^10.9.2",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.7.2"
   },
   "dependencies": {
-    "@prisma/client": "^6.0.1",
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "@types/jsonwebtoken": "^9.0.7",
-    "bcrypt": "^5.1.1",
+    "@prisma/client": "^6.1.0",
+    "cloudinary": "^2.5.1",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
-    "date-fns": "^4.1.0",
+    "dotenv": "^16.4.7",
     "express": "^4.21.1",
-    "express-validator": "^7.2.0",
-    "handlebar": "^1.0.0",
     "handlebars": "^4.7.8",
     "jsonwebtoken": "^9.0.2",
-    "mailer": "^0.6.7",
-    "nodemailer": "^6.9.16"
-=======
-    "bcrypt": "^5.1.1",
-    "cloudinary": "^2.5.1",
-    "cookie-parser": "^1.4.7",
-    "cors": "^2.8.5",
-    "dotenv": "^16.4.7",
-    "express": "^4.21.1",
-=======
-    "bcrypt": "^5.1.1",
-    "cloudinary": "^2.5.1",
-    "cookie-parser": "^1.4.7",
-    "cors": "^2.8.5",
-    "dotenv": "^16.4.7",
-    "express": "^4.21.1",
->>>>>>> e0ef3122cab57ca796bfe197c28b9d38dab6db7e
-    "midtrans-client": "^1.4.2",
-    "multer": "^1.4.5-lts.1",
-    "nodemailer": "^6.9.16",
     "prisma": "^6.0.1",
     "streamifier": "^0.1.1"
-<<<<<<< HEAD
->>>>>>> 59a595c96f5f450c34ea53b287e24bb8428e8a06
-=======
->>>>>>> e0ef3122cab57ca796bfe197c28b9d38dab6db7e
   }
 }

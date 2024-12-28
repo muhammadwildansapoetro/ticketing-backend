@@ -12,19 +12,63 @@ import { findOrganizer } from "../services/organizer.service";
 export class AuthController {
   async registerCustomer(req: Request, res: Response) {
     try {
-      const { fullname, password, confirmPassword, username, email } = req.body;
+      const { fullname, password, confirmPassword, username, email, referralCode } = req.body;
       if (password != confirmPassword) throw { message: "Password not match!" };
 
       const customer = await findCustomer(username, email);
-      if (customer) throw { message: "username or email has been used !" };
+      if (customer) throw { message: "Username or email has been used!" };
 
       const salt = await genSalt(10);
-      const hashPasword = await hash(password, salt);
+      const hashPassword = await hash(password, salt);
 
+      // Generate referral code for the new customer
+      const generatedReferralCode = username + Math.random().toString(36).substring(2, 8);
+
+      // Create new customer
       const newCustomer = await prisma.customer.create({
-        data: { fullname, username, email, password: hashPasword },
+        data: {
+          fullname,
+          username,
+          email,
+          password: hashPassword,
+          referralCode: generatedReferralCode,
+        },
       });
 
+      // Handle referral logic
+      if (referralCode) {
+        // Find the customer who owns the referral code
+        const referrer = await prisma.customer.findUnique({ where: { referralCode } });
+
+        if (!referrer) throw { message: "Invalid referral code!" };
+
+        // Create 10,000 points for the referrer
+        const pointExpiryDate = new Date();
+        pointExpiryDate.setMonth(pointExpiryDate.getMonth() + 3);
+
+        await prisma.customerPoint.create({
+          data: {
+            customerId: referrer.id,
+            point: 10000,
+            expiredAt: pointExpiryDate,
+          },
+        });
+
+        // Create a 10% discount coupon for the new customer
+        const couponExpiryDate = new Date();
+        couponExpiryDate.setMonth(couponExpiryDate.getMonth() + 3);
+
+        await prisma.customerCoupon.create({
+          data: {
+            customerId: newCustomer.id,
+            percentage: 10,
+            isRedeem: false,
+            expiredAt: couponExpiryDate,
+          },
+        });
+      }
+
+      // Send verification email
       const payload = { id: newCustomer.id };
       const token = sign(payload, process.env.JWT_KEY!, { expiresIn: "10m" });
 

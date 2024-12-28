@@ -1,6 +1,6 @@
-import { Prisma } from "@prisma/client";
+import  prisma  from "../prisma";
 import { Request, Response } from "express";
-import prisma from "../prisma";
+import { Prisma } from "prisma/generated/client";
 
 export class CustomerController {
   async getCustomers(req: Request, res: Response) {

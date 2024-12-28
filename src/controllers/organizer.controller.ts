@@ -1,6 +1,6 @@
-import { Prisma } from "@prisma/client";
 import { Request, Response } from "express";
 import prisma from "../prisma";
+import { Prisma } from "prisma/generated/client";
 
 export class OrganizerController {
   async getOrganizer(req: Request, res: Response) {
@@ -18,7 +18,7 @@ export class OrganizerController {
       const organizer = await prisma.organizer.findMany({
         where: filter,
         orderBy: { id: "asc" },
-        take: +limit,
+        take: +limit, 
         skip: +limit * (+page - 1),
       });
       res.status(200).send({ total_page, page, organizer });

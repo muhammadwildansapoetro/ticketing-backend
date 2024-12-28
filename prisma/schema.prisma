@@ -67,17 +67,6 @@ model Event {
   date        DateTime
   startTime   DateTime
   endTime     DateTime
-<<<<<<< HEAD
-<<<<<<< HEAD
-  createdAt   DateTime      @default(now())
-  organizerId Int           @unique
-  organizer   Organizer     @relation(fields: [organizerId], references: [id])
-  Ticket      Ticket[]
-  Order       Order[]
-  Review      Review[]
-=======
-=======
->>>>>>> e0ef3122cab57ca796bfe197c28b9d38dab6db7e
   organizerId Int
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
@@ -86,40 +75,19 @@ model Event {
   Review Review[]
 
   organizer Organizer @relation(fields: [organizerId], references: [id])
-<<<<<<< HEAD
->>>>>>> 59a595c96f5f450c34ea53b287e24bb8428e8a06
-=======
->>>>>>> e0ef3122cab57ca796bfe197c28b9d38dab6db7e
 }
 
 model Ticket {
   id          Int            @id @default(autoincrement())
   category    TicketCategory
   description String
-<<<<<<< HEAD
-<<<<<<< HEAD
   price       String
   quantity    Int
   createdAt   DateTime       @default(now())
   eventId     String         @unique
   event       Event          @relation(fields: [eventId], references: [id])
   OrderDetail OrderDetail[]
-=======
-=======
->>>>>>> e0ef3122cab57ca796bfe197c28b9d38dab6db7e
-  price       Int
-  quantity    Int
-  eventId     String
-  createdAt   DateTime       @default(now())
   updatedAt   DateTime       @updatedAt
-
-  OrderDetail OrderDetail[]
-
-  event Event @relation(fields: [eventId], references: [id])
-<<<<<<< HEAD
->>>>>>> 59a595c96f5f450c34ea53b287e24bb8428e8a06
-=======
->>>>>>> e0ef3122cab57ca796bfe197c28b9d38dab6db7e
 }
 
 model Customer {
@@ -128,8 +96,6 @@ model Customer {
   username       String
   email          String   @unique
   password       String
-<<<<<<< HEAD
-<<<<<<< HEAD
   avatar         String?         @default("https://res.cloudinary.com/doiygpguv/image/upload/v1734056062/avatar-default_efbdwf.png")
   isVerified     Boolean         @default(false)
   referralCode   String?         @unique
@@ -137,22 +103,7 @@ model Customer {
   createdAt      DateTime        @default(now())
   updatedAt      DateTime        @updatedAt
   CustomerPoint  CustomerPoint[]
-=======
-=======
->>>>>>> e0ef3122cab57ca796bfe197c28b9d38dab6db7e
-  avatar         String?  @default("https://res.cloudinary.com/doiygpguv/image/upload/v1734129888/customer-default-avatar_kas8rt.png")
-  isVerified     Boolean  @default(false)
-  referralCode   String?  @unique
-  referralCodeBy String?
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
-
-<<<<<<< HEAD
->>>>>>> 59a595c96f5f450c34ea53b287e24bb8428e8a06
-=======
->>>>>>> e0ef3122cab57ca796bfe197c28b9d38dab6db7e
   CustomerCoupon CustomerCoupon?
-  CustomerPoint  CustomerPoint[]
   Order          Order[]
   Review         Review[]
 }
@@ -161,23 +112,10 @@ model CustomerCoupon {
   customerId Int      @id
   percentage Int      @default(10)
   isRedeem   Boolean
-<<<<<<< HEAD
-<<<<<<< HEAD
   createdAt  DateTime @default(now())
   expiredAt  DateTime
   customer   Customer @relation(fields: [customerId], references: [id])
-=======
-=======
->>>>>>> e0ef3122cab57ca796bfe197c28b9d38dab6db7e
-  expiredAt  DateTime
-  createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
-
-  customer Customer @relation(fields: [customerId], references: [id])
-<<<<<<< HEAD
->>>>>>> 59a595c96f5f450c34ea53b287e24bb8428e8a06
-=======
->>>>>>> e0ef3122cab57ca796bfe197c28b9d38dab6db7e
 }
 
 model CustomerPoint {
@@ -201,7 +139,6 @@ model Order {
   expiredAt  DateTime
   createdAt  DateTime    @default(now())
   updatedAt  DateTime    @updatedAt
-
   customer    Customer      @relation(fields: [customerId], references: [id])
   OrderDetail OrderDetail[]
 }

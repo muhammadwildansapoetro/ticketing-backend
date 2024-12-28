@@ -81,32 +81,29 @@ model Ticket {
   id          Int            @id @default(autoincrement())
   category    TicketCategory
   description String
-  price       Int
+  price       String
   quantity    Int
-  eventId     String
   createdAt   DateTime       @default(now())
-  updatedAt   DateTime       @updatedAt
-
+  eventId     String         @unique
+  event       Event          @relation(fields: [eventId], references: [id])
   OrderDetail OrderDetail[]
-
-  event Event @relation(fields: [eventId], references: [id])
+  updatedAt   DateTime       @updatedAt
 }
 
 model Customer {
-  id             Int      @id @default(autoincrement())
+  id             Int             @id @default(autoincrement())
   fullname       String
   username       String
-  email          String   @unique
+  email          String          @unique
   password       String
-  avatar         String?  @default("https://res.cloudinary.com/doiygpguv/image/upload/v1734129888/customer-default-avatar_kas8rt.png")
-  isVerified     Boolean  @default(false)
-  referralCode   String?  @unique
+  avatar         String?         @default("https://res.cloudinary.com/doiygpguv/image/upload/v1734056062/avatar-default_efbdwf.png")
+  isVerified     Boolean         @default(false)
+  referralCode   String?         @unique
   referralCodeBy String?
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
-
-  CustomerCoupon CustomerCoupon?
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
   CustomerPoint  CustomerPoint[]
+  CustomerCoupon CustomerCoupon?
   Order          Order[]
   Review         Review[]
 }
@@ -115,11 +112,10 @@ model CustomerCoupon {
   customerId Int      @id
   percentage Int      @default(10)
   isRedeem   Boolean
-  expiredAt  DateTime
   createdAt  DateTime @default(now())
+  expiredAt  DateTime
+  customer   Customer @relation(fields: [customerId], references: [id])
   updatedAt  DateTime @updatedAt
-
-  customer Customer @relation(fields: [customerId], references: [id])
 }
 
 model CustomerPoint {
@@ -135,15 +131,14 @@ model CustomerPoint {
 }
 
 model Order {
-  id         Int         @id @default(autoincrement())
-  customerId Int
-  totalPrice Int
-  finalPrice Int
-  status     OrderStatus @default(Unpaid)
-  expiredAt  DateTime
-  createdAt  DateTime    @default(now())
-  updatedAt  DateTime    @updatedAt
-
+  id          Int           @id @default(autoincrement())
+  customerId  Int
+  totalPrice  Int
+  finalPrice  Int
+  status      OrderStatus   @default(Unpaid)
+  expiredAt   DateTime
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
   customer    Customer      @relation(fields: [customerId], references: [id])
   OrderDetail OrderDetail[]
 }
