@@ -241,18 +241,18 @@ export class AuthController {
   }
   async getSession(req: Request, res: Response) {
     try {
-      const role = req.mix?.role;
+      const role = req.user?.role;
 
       let acc: any = {};
 
       if (role == "customer") {
         acc = await prisma.customer.findUnique({
-          where: { id: req.mix?.id },
+          where: { id: req.user?.id },
         });
       } 
       else if (role == "organizer") {
         acc = await prisma.organizer.findUnique({
-          where: { id: req.mix?.id },
+          where: { id: req.user?.id },
         });
       }
       acc.role = role;

@@ -30,7 +30,7 @@ export class CustomerController {
   async getCustomerId(req: Request, res: Response) {
     try {
       const customer = await prisma.customer.findUnique({
-        where: { id: req.mix?.id },
+        where: { id: req.user?.id },
       });
       res.status(200).send({ customer });
     } catch (err) {

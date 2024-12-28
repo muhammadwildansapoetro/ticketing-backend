@@ -30,7 +30,7 @@ export class OrganizerController {
   async getOrganizerId(req: Request, res: Response) {
     try {
       const organizer = await prisma.organizer.findUnique({
-        where: { id: req.mix?.id },
+        where: { id: req.user?.id },
       });
       res.status(200).send({ organizer });
     } catch (err) {

@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { verify } from "jsonwebtoken";
-import { CustomerandOrganizerPayload } from "../custom";
+import { mixPayload } from "../custom";
 
 export const verifyToken = async (
   req: Request,
@@ -15,7 +15,7 @@ export const verifyToken = async (
     const verifiedCustomer = verify(token, process.env.JWT_KEY!);
     // const verifiedOrganizer = verify(token, process.env.JWT_KEY!);
 
-    req.mix = verifiedCustomer as CustomerandOrganizerPayload;
+    req.user = verifiedCustomer as mixPayload;
     // req.organizer = verifiedOrganizer  as OrganizerPayload;
 
     next();
@@ -30,7 +30,7 @@ export const verifyToken = async (
 //   res: Response,
 //   next: NextFunction
 // ) => {
-//     if (req.customer?.role == "Admin"){
+//     if (req.user?.role == "customer" ){
 //         next();
 //     } else {
 //         res.status(403).send("Unauthorize, Admin Only!");

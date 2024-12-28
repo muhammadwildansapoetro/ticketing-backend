@@ -2,13 +2,14 @@ import { Request, Response } from "express";
 import { cloudinaryUpload } from "../services/cloudinary";
 import prisma from "../prisma";
 import { EventCategory, Prisma } from "prisma/generated/client";
+import { Readable } from "stream";
 
 export class EventController {
   async createEvent(req: Request, res: Response) {
     try {
       if (!req.file) throw { message: "Image is required" };
-
-      const { secure_url } = await cloudinaryUpload(req.file, "events");
+      const file = req.file as Express.Multer.File & { stream: Readable };
+      const { secure_url } = await cloudinaryUpload(file, "events");
 
       const {
         title,

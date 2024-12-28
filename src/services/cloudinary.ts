@@ -9,22 +9,22 @@ cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
 });
 
-// export const cloudinaryUpload = (
-//   file: Express.Multer.File,
-//   folder: string
-// ): Promise<UploadApiResponse> => {
-//   return new Promise((resolve, reject) => {
-//     const uploadStream = cloudinary.uploader.upload_stream(
-//       { folder },
-//       (error, result) => {
-//         if (error) return reject(error);
-//         resolve(result as UploadApiResponse);
-//       }
-//     );
+export const cloudinaryUpload = (
+  file: Express.Multer.File,
+  folder: string
+): Promise<UploadApiResponse> => {
+  return new Promise((resolve, reject) => {
+    const uploadStream = cloudinary.uploader.upload_stream(
+      { folder },
+      (error, result) => {
+        if (error) return reject(error);
+        resolve(result as UploadApiResponse);
+      }
+    );
 
-//     streamifier.createReadStream(file.buffer).pipe(uploadStream);
-//   });
-// };
+    streamifier.createReadStream(file.buffer).pipe(uploadStream);
+  });
+};
 
 export const cloudinaryRemove = async (secure_url: string) => {
   const publicId = extractPublicIdFormUrl(secure_url);
