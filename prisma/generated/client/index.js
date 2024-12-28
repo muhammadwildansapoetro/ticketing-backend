@@ -220,7 +220,7 @@ exports.TicketCategory = exports.$Enums.TicketCategory = {
 exports.OrderStatus = exports.$Enums.OrderStatus = {
   Unpaid: 'Unpaid',
   Paid: 'Paid',
-  Canceled: 'Canceled'
+  Cancel: 'Canceled'
 };
 
 exports.RatingRange = exports.$Enums.RatingRange = {
