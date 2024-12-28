@@ -259,14 +259,6 @@ exports.RatingRange = exports.$Enums.RatingRange = {
   Delete: 'Delete'
 };
 
-exports.RatingRange = exports.$Enums.RatingRange = {
-  One: 'One',
-  Two: 'Two',
-  Three: 'Three',
-  Four: 'Four',
-  Delete: 'Delete'
-};
-
 exports.Prisma.ModelName = {
   Organizer: 'Organizer',
   Event: 'Event',

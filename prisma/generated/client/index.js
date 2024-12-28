@@ -220,7 +220,7 @@ exports.TicketCategory = exports.$Enums.TicketCategory = {
 exports.OrderStatus = exports.$Enums.OrderStatus = {
   Unpaid: 'Unpaid',
   Paid: 'Paid',
-  Cancel: 'Canceled'
+  Canceled: 'Canceled'
 };
 
 exports.RatingRange = exports.$Enums.RatingRange = {
@@ -271,7 +271,7 @@ const config = {
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
-    "rootEnvPath": null,
+    "rootEnvPath": "../../../.env",
     "schemaEnvPath": "../../../.env"
   },
   "relativePath": "../..",
