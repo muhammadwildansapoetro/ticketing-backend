@@ -54,25 +54,6 @@ export class AuthController {
         },
       });
 
-      // Handle referral logic
-      // if (referralCode) {
-      //   // Find the customer who owns the referral code
-      //   const referrer = await prisma.customer.findUnique({ where: { referralCode } });
-
-      //   if (!referrer) throw { message: "Invalid referral code!" };
-
-      //   // Create 10,000 points for the referrer
-      //   const pointExpiryDate = new Date();
-      //   pointExpiryDate.setMonth(pointExpiryDate.getMonth() + 3);
-
-      //   await prisma.customerPoint.create({
-      //     data: {
-      //       customerId: referrer.id,
-      //       point: 10000,
-      //       expiredAt: pointExpiryDate,
-      //     },
-      //   });
-
       // Create a 10% discount coupon for the new customer
       const couponExpiryDate = new Date();
       couponExpiryDate.setMonth(couponExpiryDate.getMonth() + 3);
@@ -104,10 +85,10 @@ export class AuthController {
       await transporter.sendMail({
         from: "mirzaaliyusuf45@gmail.com",
         to: email,
-        subject: "Welcome to Blogger 🙌",
+        subject: "Welcome to MatchTix",
         html,
       });
-      res.status(201).send({ message: "Register Successfully ✅" });
+      res.status(201).send({ message: "Register Successfully" });
     } catch (error) {
       console.log(error);
       res.status(400).send(error);
@@ -127,7 +108,7 @@ export class AuthController {
         throw { massage: "Incorrect Password" };
       }
 
-      const payload = { id: customer.id, type: "customer" };
+      const payload = { id: customer.id, role: "customer" };
       const token = sign(payload, process.env.JWT_KEY!, { expiresIn: "1d" });
       const cus = { ...customer, role: "customer" };
       res
@@ -198,7 +179,7 @@ export class AuthController {
       await transporter.sendMail({
         from: "mirzaaliyusuf45@gmail.com",
         to: email,
-        subject: "Welcome to Blogger 🙌",
+        subject: "Welcome to MatchTix",
         html,
       });
 
@@ -222,7 +203,7 @@ export class AuthController {
         throw { massage: "Incorrect Password" };
       }
 
-      const payload = { id: organizer.id, type: "organizer" };
+      const payload = { id: organizer.id, role: "organizer" };
       const token = sign(payload, process.env.JWT_KEY!, { expiresIn: "1d" });
       const Orga = { ...organizer, role: "organizer" };
       res
@@ -263,20 +244,20 @@ export class AuthController {
     try {
       const role = req.user?.role;
 
-      let acc: any = {};
+      let user: any = {};
 
       if (role == "customer") {
-        acc = await prisma.customer.findUnique({
+        user = await prisma.customer.findUnique({
           where: { id: req.user?.id },
         });
       } else if (role == "organizer") {
-        acc = await prisma.organizer.findUnique({
+        user = await prisma.organizer.findUnique({
           where: { id: req.user?.id },
         });
       }
-      acc.role = role;
+      user.role = role;
 
-      res.status(200).send({ acc });
+      res.status(200).send({ user });
     } catch (error) {
       console.log(error);
       res.status(400).send(error);

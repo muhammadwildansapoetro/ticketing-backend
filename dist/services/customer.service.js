@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.findCustomer = void 0;
+exports.findRefCode = exports.findCustomer = void 0;
 const prisma_1 = __importDefault(require("../prisma"));
 const findCustomer = (username, email) => __awaiter(void 0, void 0, void 0, function* () {
     const customer = yield prisma_1.default.customer.findFirst({
@@ -21,3 +21,8 @@ const findCustomer = (username, email) => __awaiter(void 0, void 0, void 0, func
     return customer;
 });
 exports.findCustomer = findCustomer;
+const findRefCode = (referralCode) => __awaiter(void 0, void 0, void 0, function* () {
+    const refCodeData = yield prisma_1.default.customer.findFirst({ where: { referralCode: referralCode } });
+    return refCodeData;
+});
+exports.findRefCode = findRefCode;

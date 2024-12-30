@@ -36,11 +36,11 @@ enum OrderStatus {
 }
 
 enum RatingRange {
-  One    @map("1")
-  Two    @map("2")
-  Three  @map("3")
-  Four   @map("4")
-  Delete @map("5")
+  One   @map("1")
+  Two   @map("2")
+  Three @map("3")
+  Four  @map("4")
+  Five  @map("5")
 }
 
 model Organizer {
@@ -98,9 +98,9 @@ model Customer {
   username       String
   email          String   @unique
   password       String
-  avatar         String?         @default("https://res.cloudinary.com/doiygpguv/image/upload/v1734056062/avatar-default_efbdwf.png")
-  isVerified     Boolean         @default(false)
-  referralCode   String       
+  avatar         String?  @default("https://res.cloudinary.com/doiygpguv/image/upload/v1734056062/avatar-default_efbdwf.png")
+  isVerified     Boolean  @default(false)
+  referralCode   String
   referralCodeBy String?
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt

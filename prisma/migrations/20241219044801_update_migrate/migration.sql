@@ -9,7 +9,7 @@
 
 */
 -- AlterTable
-ALTER TABLE "Customer" ADD COLUMN     "refLogId" INTEGER,
+ALTER TABLE "Customer" 
 ADD COLUMN     "referralCodeBy" TEXT,
 ALTER COLUMN "referralCode" DROP NOT NULL;
 
