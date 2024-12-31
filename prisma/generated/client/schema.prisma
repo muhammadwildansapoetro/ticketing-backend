@@ -5,8 +5,9 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client-js"
-  output   = "./generated/client"
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "windows"]
+  output        = "./generated/client"
 }
 
 datasource db {
@@ -98,9 +99,9 @@ model Customer {
   username       String
   email          String   @unique
   password       String
-  avatar         String?         @default("https://res.cloudinary.com/doiygpguv/image/upload/v1734056062/avatar-default_efbdwf.png")
-  isVerified     Boolean         @default(false)
-  referralCode   String
+  avatar         String?  @default("https://res.cloudinary.com/doiygpguv/image/upload/v1734056062/avatar-default_efbdwf.png")
+  isVerified     Boolean  @default(false)
+  referralCode   String   @unique
   referralCodeBy String?
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt

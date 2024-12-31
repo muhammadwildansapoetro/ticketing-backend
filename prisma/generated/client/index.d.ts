@@ -390,7 +390,7 @@ export namespace Prisma {
   export import Exact = $Public.Exact
 
   /**
-   * Prisma Client JS version: 6.0.1
+   * Prisma Client JS version: 6.1.0
    * Query Engine version: 5dbef10bdbfb579e07d35cc85fb1518d357cb99e
    */
   export type PrismaVersion = {
@@ -11650,6 +11650,7 @@ export namespace Prisma {
   export type CustomerWhereUniqueInput = Prisma.AtLeast<{
     id?: number
     email?: string
+    referralCode?: string
     AND?: CustomerWhereInput | CustomerWhereInput[]
     OR?: CustomerWhereInput[]
     NOT?: CustomerWhereInput | CustomerWhereInput[]
@@ -11658,7 +11659,6 @@ export namespace Prisma {
     password?: StringFilter<"Customer"> | string
     avatar?: StringNullableFilter<"Customer"> | string | null
     isVerified?: BoolFilter<"Customer"> | boolean
-    referralCode?: StringFilter<"Customer"> | string
     referralCodeBy?: StringNullableFilter<"Customer"> | string | null
     createdAt?: DateTimeFilter<"Customer"> | Date | string
     updatedAt?: DateTimeFilter<"Customer"> | Date | string
@@ -11666,7 +11666,7 @@ export namespace Prisma {
     CustomerPoint?: CustomerPointListRelationFilter
     Order?: OrderListRelationFilter
     Review?: ReviewListRelationFilter
-  }, "id" | "email">
+  }, "id" | "email" | "referralCode">
 
   export type CustomerOrderByWithAggregationInput = {
     id?: SortOrder

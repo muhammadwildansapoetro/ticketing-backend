@@ -22,11 +22,12 @@ const path_1 = __importDefault(require("path"));
 const fs_1 = __importDefault(require("fs"));
 const handlebars_1 = __importDefault(require("handlebars"));
 const organizer_service_1 = require("../services/organizer.service");
+const auth_service_1 = require("../services/auth.service");
 class AuthController {
     registerCustomer(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const { fullname, password, confirmPassword, username, email, referralCode, } = req.body;
+                let { fullname, password, confirmPassword, username, email, referralCodeBy, } = req.body;
                 if (password != confirmPassword)
                     throw { message: "Password not match!" };
                 const customer = yield (0, customer_service_1.findCustomer)(username, email);
@@ -35,7 +36,18 @@ class AuthController {
                 const salt = yield (0, bcrypt_1.genSalt)(10);
                 const hashPassword = yield (0, bcrypt_1.hash)(password, salt);
                 // Generate referral code for the new customer
-                const generatedReferralCode = username + Math.random().toString(36).substring(2, 8);
+                // const generatedReferralCode = Math.random().toString(36).slice(2, 8).toUpperCase();
+                let newRefCode = (0, auth_service_1.generator)();
+                const refCode = yield (0, customer_service_1.findRefCode)(newRefCode);
+                if (refCode)
+                    newRefCode = (0, auth_service_1.generator)();
+                if (referralCodeBy) {
+                    const isRefCode = yield (0, customer_service_1.findRefCode)(referralCodeBy);
+                    if (!isRefCode)
+                        throw { message: "ReferralCode is not found" };
+                }
+                if (referralCodeBy == "")
+                    referralCodeBy = null;
                 // Create new customer
                 const newCustomer = yield prisma_1.default.customer.create({
                     data: {
@@ -43,42 +55,39 @@ class AuthController {
                         username,
                         email,
                         password: hashPassword,
-                        referralCode: generatedReferralCode,
+                        referralCode: newRefCode,
+                        referralCodeBy,
                     },
                 });
                 // Handle referral logic
-                if (referralCode) {
-                    // Find the customer who owns the referral code
-                    const referrer = yield prisma_1.default.customer.findUnique({
-                        where: { referralCode },
-                    });
-                    if (!referrer)
-                        throw { message: "Invalid referral code!" };
-                    // Create 10,000 points for the referrer
-                    const pointExpiryDate = new Date();
-                    pointExpiryDate.setMonth(pointExpiryDate.getMonth() + 3);
-                    yield prisma_1.default.customerPoint.create({
-                        data: {
-                            customerId: referrer.id,
-                            point: 10000,
-                            expiredAt: pointExpiryDate,
-                        },
-                    });
-                    // Create a 10% discount coupon for the new customer
-                    const couponExpiryDate = new Date();
-                    couponExpiryDate.setMonth(couponExpiryDate.getMonth() + 3);
-                    yield prisma_1.default.customerCoupon.create({
-                        data: {
-                            customerId: newCustomer.id,
-                            percentage: 10,
-                            isRedeem: false,
-                            expiredAt: couponExpiryDate,
-                        },
-                    });
-                }
+                // if (referralCode) {
+                //   // Find the customer who owns the referral code
+                //   const referrer = await prisma.customer.findUnique({ where: { referralCode } });
+                //   if (!referrer) throw { message: "Invalid referral code!" };
+                //   // Create 10,000 points for the referrer
+                //   const pointExpiryDate = new Date();
+                //   pointExpiryDate.setMonth(pointExpiryDate.getMonth() + 3);
+                //   await prisma.customerPoint.create({
+                //     data: {
+                //       customerId: referrer.id,
+                //       point: 10000,
+                //       expiredAt: pointExpiryDate,
+                //     },
+                //   });
+                // Create a 10% discount coupon for the new customer
+                const couponExpiryDate = new Date();
+                couponExpiryDate.setMonth(couponExpiryDate.getMonth() + 3);
+                yield prisma_1.default.customerCoupon.create({
+                    data: {
+                        customerId: newCustomer.id,
+                        percentage: 10,
+                        isRedeem: false,
+                        expiredAt: couponExpiryDate,
+                    },
+                });
                 // Send verification email
                 const payload = { id: newCustomer.id };
-                const token = (0, jsonwebtoken_1.sign)(payload, process.env.JWT_KEY, { expiresIn: "10m" });
+                const token = (0, jsonwebtoken_1.sign)(payload, process.env.JWT_KEY, { expiresIn: "1d" });
                 const link = `${process.env.BASE_URL_FE}/customer/verify/${token}`;
                 const templatePath = path_1.default.join(__dirname, "../templates", "verifyCustomer.hbs");
                 const templateSource = fs_1.default.readFileSync(templatePath, "utf-8");
@@ -87,14 +96,14 @@ class AuthController {
                 yield mailer_1.transporter.sendMail({
                     from: "mirzaaliyusuf45@gmail.com",
                     to: email,
-                    subject: "Welcome to Blogger 🙌",
+                    subject: "Welcome to MatcTix 🙌",
                     html,
                 });
                 res.status(201).send({ message: "Register Successfully ✅" });
             }
-            catch (err) {
-                console.log(err);
-                res.status(400).send(err);
+            catch (error) {
+                console.log(error);
+                res.status(400).send(error);
             }
         });
     }
@@ -175,7 +184,7 @@ class AuthController {
                 yield mailer_1.transporter.sendMail({
                     from: "mirzaaliyusuf45@gmail.com",
                     to: email,
-                    subject: "Welcome to Blogger 🙌",
+                    subject: "Welcome to MatcTix 🙌",
                     html,
                 });
                 res.status(201).send({ message: "Register Successfully ✅" });
