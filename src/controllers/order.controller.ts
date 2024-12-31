@@ -196,28 +196,12 @@ export class OrderController {
           ? "Unpaid"
           : "Canceled";
 
-      if (orderStatus === "Canceled") {
-        const tickets = await prisma.orderDetail.findMany({
-          where: { orderId: +order_id },
-          select: {
-            quantity: true,
-            ticketId: true,
-          },
-        });
-        for (const item of tickets) {
-          await prisma.ticket.update({
-            where: { id: item.ticketId },
-            data: { quantity: { increment: item.quantity } },
-          });
-        }
-      }
-
       await prisma.order.update({
         where: { id: +order_id },
         data: { status: orderStatus },
       });
 
-      res.status(200).send({ message: "Payment success" });
+      res.status(200).send({ message: "Order status updated successfully." });
     } catch (error) {
       console.log("Error update order:", error);
       res.status(400).send(error);
