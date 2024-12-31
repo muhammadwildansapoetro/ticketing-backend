@@ -9,6 +9,8 @@ import fs from "fs";
 import handlebars from "handlebars";
 import { findOrganizer } from "../services/organizer.service";
 import { generator } from "../services/auth.service";
+import dotenv from "dotenv";
+dotenv.config();
 
 export class AuthController {
   async registerCustomer(req: Request, res: Response) {
