@@ -33,12 +33,8 @@ export class EventController {
       const formatEndTime = new Date();
       formatEndTime.setUTCHours(endHour - 7, endMinute, 0, 0);
 
-      console.log("Formatted Times:", {
-        startTime: formatStartTime,
-        endTime: formatEndTime,
-      });
-
-      const organizerId = 12;
+      const organizerId = req.user?.id!;
+      console.log("organizer ID", organizerId);
 
       const { id } = await prisma.event.create({
         data: {
@@ -142,6 +138,9 @@ export class EventController {
               price: true,
               quantity: true,
               description: true,
+              discountPercentage: true,
+              discountStartDate: true,
+              discountEndDate: true,
             },
           },
           organizer: {

@@ -20,8 +20,9 @@ dotenv_1.default.config();
 class OrderController {
     createOrder(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
+            var _a;
             try {
-                const customerId = 1;
+                const customerId = (_a = req.user) === null || _a === void 0 ? void 0 : _a.id;
                 const { totalPrice, finalPrice, orderCart } = req.body;
                 const expiredAt = new Date(new Date().getTime() + 10 * 60 * 1000);
                 const { id } = yield prisma_1.default.order.create({

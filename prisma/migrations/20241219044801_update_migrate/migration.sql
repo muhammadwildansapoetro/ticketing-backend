@@ -8,18 +8,8 @@
   - Added the required column `quantity` to the `Ticket` table without a default value. This is not possible if the table is not empty.
 
 */
--- AlterTable
-ALTER TABLE "Customer" ADD COLUMN     "refLogId" INTEGER,
-ADD COLUMN     "referralCodeBy" TEXT,
-ALTER COLUMN "referralCode" DROP NOT NULL;
-
--- AlterTable
-ALTER TABLE "CustomerCoupon" DROP COLUMN "expirededAt",
-ADD COLUMN     "expiredAt" TIMESTAMP(3) NOT NULL;
 
 -- AlterTable
 ALTER TABLE "Ticket" DROP COLUMN "availableSeat",
 ADD COLUMN     "quantity" INTEGER NOT NULL;
 
--- CreateIndex
-CREATE UNIQUE INDEX "Customer_referralCode_key" ON "Customer"("referralCode");

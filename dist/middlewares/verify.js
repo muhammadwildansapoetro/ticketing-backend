@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.verifyToken = void 0;
+exports.customerCheck = exports.organizerCheck = exports.verifyToken = void 0;
 const jsonwebtoken_1 = require("jsonwebtoken");
 const verifyToken = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
@@ -27,3 +27,23 @@ const verifyToken = (req, res, next) => __awaiter(void 0, void 0, void 0, functi
     }
 });
 exports.verifyToken = verifyToken;
+const organizerCheck = (req, res, next) => {
+    var _a;
+    if (((_a = req.user) === null || _a === void 0 ? void 0 : _a.role) === "organizer") {
+        next();
+    }
+    else {
+        res.status(400).send({ message: "Unauthorize, organizer only" });
+    }
+};
+exports.organizerCheck = organizerCheck;
+const customerCheck = (req, res, next) => {
+    var _a;
+    if (((_a = req.user) === null || _a === void 0 ? void 0 : _a.role) === "customer") {
+        next();
+    }
+    else {
+        res.status(400).send({ message: "Unauthorize, customer only" });
+    }
+};
+exports.customerCheck = customerCheck;

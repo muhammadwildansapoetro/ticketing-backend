@@ -29,7 +29,7 @@ export class AuthController {
       const salt = await genSalt(10);
       const hashPassword = await hash(password, salt);
 
-      // Generate referral code for the new customer
+      if (referralCodeBy == "") referralCodeBy = null;
       // const generatedReferralCode = Math.random().toString(36).slice(2, 8).toUpperCase();
       let newRefCode = generator();
       const refCode = await findRefCode(newRefCode);
@@ -72,10 +72,10 @@ export class AuthController {
       await transporter.sendMail({
         from: "mirzaaliyusuf45@gmail.com",
         to: email,
-        subject: "Welcome to MatcTix 🙌",
+        subject: "Welcome to MatchTix",
         html,
       });
-      res.status(201).send({ message: "Register Successfully ✅" });
+      res.status(201).send({ message: "Register Successfully" });
     } catch (error) {
       console.log(error);
       res.status(400).send(error);
@@ -95,7 +95,7 @@ export class AuthController {
         throw { massage: "Incorrect Password" };
       }
 
-      const payload = { id: customer.id, type: "customer" };
+      const payload = { id: customer.id, role: "customer" };
       const token = sign(payload, process.env.JWT_KEY!, { expiresIn: "1d" });
       const cus = { ...customer, role: "customer" };
       res
@@ -121,30 +121,34 @@ export class AuthController {
           data: { isVerified: true },
           where: { id: customer?.id },
         });
-        const InputRefCode = customer?.referralCodeBy
-        
+        const InputRefCode = customer?.referralCodeBy;
+
         if (InputRefCode) {
           //count the expired Date
           const RefCustomer = await findRefCode(InputRefCode);
           if (RefCustomer) {
-            const DateNow = new Date().getTime()
-            const expiredAt = new Date(DateNow + "3d")
+            const DateNow = new Date().getTime();
+            const expiredAt = new Date(DateNow + "3d");
 
             //api posting refferall customer point
             await prisma.customerPoint.create({
-              data: { customerId: RefCustomer.id, expiredAt: expiredAt}
-            })
+              data: { customerId: RefCustomer.id, expiredAt: expiredAt },
+            });
 
             //api posting verified customer coupon
             await prisma.customerCoupon.create({
-              data: {customerId: verifiedCustomer.id, expiredAt: expiredAt, isRedeem: false}
-            })
+              data: {
+                customerId: verifiedCustomer.id,
+                expiredAt: expiredAt,
+                isRedeem: false,
+              },
+            });
           }
         }
         // Create a 10% discount coupon for the new customer
         // const couponExpiryDate = new Date();
         // couponExpiryDate.setMonth(couponExpiryDate.getMonth() + 3);
-  
+
         // await prisma.customerCoupon.create({
         //   data: {
         //     customerId: newCustomer.id,
@@ -198,18 +202,18 @@ export class AuthController {
       await transporter.sendMail({
         from: "mirzaaliyusuf45@gmail.com",
         to: email,
-        subject: "Welcome to MatcTix 🙌",
+        subject: "Welcome to MatchTix",
         html,
       });
 
-      res.status(201).send({ message: "Register Successfully ✅" });
+      res.status(201).send({ message: "Register Successfully" });
     } catch (err) {
       console.log(err);
       res.status(400).send(err);
     }
   }
 
-  async loginOrganizer(req: Request, res: Response) {
+  async signInOrganizer(req: Request, res: Response) {
     try {
       const { data, password } = req.body;
       const organizer = await findOrganizer(data, data);
@@ -222,7 +226,7 @@ export class AuthController {
         throw { massage: "Incorrect Password" };
       }
 
-      const payload = { id: organizer.id, type: "organizer" };
+      const payload = { id: organizer.id, role: "organizer" };
       const token = sign(payload, process.env.JWT_KEY!, { expiresIn: "1d" });
       const Orga = { ...organizer, role: "organizer" };
       res

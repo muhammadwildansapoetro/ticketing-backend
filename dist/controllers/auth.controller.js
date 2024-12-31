@@ -35,7 +35,8 @@ class AuthController {
                     throw { message: "Username or email has been used!" };
                 const salt = yield (0, bcrypt_1.genSalt)(10);
                 const hashPassword = yield (0, bcrypt_1.hash)(password, salt);
-                // Generate referral code for the new customer
+                if (referralCodeBy == "")
+                    referralCodeBy = null;
                 // const generatedReferralCode = Math.random().toString(36).slice(2, 8).toUpperCase();
                 let newRefCode = (0, auth_service_1.generator)();
                 const refCode = yield (0, customer_service_1.findRefCode)(newRefCode);
@@ -59,32 +60,6 @@ class AuthController {
                         referralCodeBy,
                     },
                 });
-                // Handle referral logic
-                // if (referralCode) {
-                //   // Find the customer who owns the referral code
-                //   const referrer = await prisma.customer.findUnique({ where: { referralCode } });
-                //   if (!referrer) throw { message: "Invalid referral code!" };
-                //   // Create 10,000 points for the referrer
-                //   const pointExpiryDate = new Date();
-                //   pointExpiryDate.setMonth(pointExpiryDate.getMonth() + 3);
-                //   await prisma.customerPoint.create({
-                //     data: {
-                //       customerId: referrer.id,
-                //       point: 10000,
-                //       expiredAt: pointExpiryDate,
-                //     },
-                //   });
-                // Create a 10% discount coupon for the new customer
-                const couponExpiryDate = new Date();
-                couponExpiryDate.setMonth(couponExpiryDate.getMonth() + 3);
-                yield prisma_1.default.customerCoupon.create({
-                    data: {
-                        customerId: newCustomer.id,
-                        percentage: 10,
-                        isRedeem: false,
-                        expiredAt: couponExpiryDate,
-                    },
-                });
                 // Send verification email
                 const payload = { id: newCustomer.id };
                 const token = (0, jsonwebtoken_1.sign)(payload, process.env.JWT_KEY, { expiresIn: "1d" });
@@ -96,10 +71,10 @@ class AuthController {
                 yield mailer_1.transporter.sendMail({
                     from: "mirzaaliyusuf45@gmail.com",
                     to: email,
-                    subject: "Welcome to MatcTix 🙌",
+                    subject: "Welcome to MatchTix",
                     html,
                 });
-                res.status(201).send({ message: "Register Successfully ✅" });
+                res.status(201).send({ message: "Register Successfully" });
             }
             catch (error) {
                 console.log(error);
@@ -120,7 +95,7 @@ class AuthController {
                 if (!isValidPass) {
                     throw { massage: "Incorrect Password" };
                 }
-                const payload = { id: customer.id, type: "customer" };
+                const payload = { id: customer.id, role: "customer" };
                 const token = (0, jsonwebtoken_1.sign)(payload, process.env.JWT_KEY, { expiresIn: "1d" });
                 const cus = Object.assign(Object.assign({}, customer), { role: "customer" });
                 res
@@ -145,8 +120,40 @@ class AuthController {
                 if ((customer === null || customer === void 0 ? void 0 : customer.isVerified) == false) {
                     yield prisma_1.default.customer.update({
                         data: { isVerified: true },
-                        where: { id: customer.id },
+                        where: { id: customer === null || customer === void 0 ? void 0 : customer.id },
                     });
+                    const InputRefCode = customer === null || customer === void 0 ? void 0 : customer.referralCodeBy;
+                    if (InputRefCode) {
+                        //count the expired Date
+                        const RefCustomer = yield (0, customer_service_1.findRefCode)(InputRefCode);
+                        if (RefCustomer) {
+                            const DateNow = new Date().getTime();
+                            const expiredAt = new Date(DateNow + "3d");
+                            //api posting refferall customer point
+                            yield prisma_1.default.customerPoint.create({
+                                data: { customerId: RefCustomer.id, expiredAt: expiredAt },
+                            });
+                            //api posting verified customer coupon
+                            yield prisma_1.default.customerCoupon.create({
+                                data: {
+                                    customerId: verifiedCustomer.id,
+                                    expiredAt: expiredAt,
+                                    isRedeem: false,
+                                },
+                            });
+                        }
+                    }
+                    // Create a 10% discount coupon for the new customer
+                    // const couponExpiryDate = new Date();
+                    // couponExpiryDate.setMonth(couponExpiryDate.getMonth() + 3);
+                    // await prisma.customerCoupon.create({
+                    //   data: {
+                    //     customerId: newCustomer.id,
+                    //     percentage: 10,
+                    //     isRedeem: false,
+                    //     expiredAt: couponExpiryDate,
+                    //   },
+                    // });
                 }
                 if ((customer === null || customer === void 0 ? void 0 : customer.isVerified) == true) {
                     throw { message: "Your account have verified" };
@@ -184,10 +191,10 @@ class AuthController {
                 yield mailer_1.transporter.sendMail({
                     from: "mirzaaliyusuf45@gmail.com",
                     to: email,
-                    subject: "Welcome to MatcTix 🙌",
+                    subject: "Welcome to MatchTix",
                     html,
                 });
-                res.status(201).send({ message: "Register Successfully ✅" });
+                res.status(201).send({ message: "Register Successfully" });
             }
             catch (err) {
                 console.log(err);
@@ -195,7 +202,7 @@ class AuthController {
             }
         });
     }
-    loginOrganizer(req, res) {
+    signInOrganizer(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const { data, password } = req.body;
@@ -208,7 +215,7 @@ class AuthController {
                 if (!isValidPass) {
                     throw { massage: "Incorrect Password" };
                 }
-                const payload = { id: organizer.id, type: "organizer" };
+                const payload = { id: organizer.id, role: "organizer" };
                 const token = (0, jsonwebtoken_1.sign)(payload, process.env.JWT_KEY, { expiresIn: "1d" });
                 const Orga = Object.assign(Object.assign({}, organizer), { role: "organizer" });
                 res
@@ -252,19 +259,19 @@ class AuthController {
             var _a, _b, _c;
             try {
                 const role = (_a = req.user) === null || _a === void 0 ? void 0 : _a.role;
-                let acc = {};
+                let user = {};
                 if (role == "customer") {
-                    acc = yield prisma_1.default.customer.findUnique({
+                    user = yield prisma_1.default.customer.findUnique({
                         where: { id: (_b = req.user) === null || _b === void 0 ? void 0 : _b.id },
                     });
                 }
                 else if (role == "organizer") {
-                    acc = yield prisma_1.default.organizer.findUnique({
+                    user = yield prisma_1.default.organizer.findUnique({
                         where: { id: (_c = req.user) === null || _c === void 0 ? void 0 : _c.id },
                     });
                 }
-                acc.role = role;
-                res.status(200).send({ acc });
+                user.role = role;
+                res.status(200).send({ user });
             }
             catch (error) {
                 console.log(error);

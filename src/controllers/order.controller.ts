@@ -7,7 +7,7 @@ dotenv.config();
 export class OrderController {
   async createOrder(req: Request, res: Response) {
     try {
-      const customerId = 1;
+      const customerId = req.user?.id!;
       const { totalPrice, finalPrice, orderCart } = req.body;
       const expiredAt = new Date(new Date().getTime() + 10 * 60 * 1000);
 

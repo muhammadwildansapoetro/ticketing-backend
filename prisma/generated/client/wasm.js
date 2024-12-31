@@ -150,6 +150,9 @@ exports.Prisma.TicketScalarFieldEnum = {
   description: 'description',
   price: 'price',
   quantity: 'quantity',
+  discountPercentage: 'discountPercentage',
+  discountStartDate: 'discountStartDate',
+  discountEndDate: 'discountEndDate',
   eventId: 'eventId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -256,7 +259,7 @@ exports.RatingRange = exports.$Enums.RatingRange = {
   Two: 'Two',
   Three: 'Three',
   Four: 'Four',
-  Delete: 'Delete'
+  Five: 'Five'
 };
 
 exports.Prisma.ModelName = {

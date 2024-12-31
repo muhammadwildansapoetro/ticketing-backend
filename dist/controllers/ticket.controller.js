@@ -18,9 +18,9 @@ class TicketController {
     createTicket(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                req.body.eventId = req.params.eventId;
+                const reqBody = Object.assign(Object.assign({}, req.body), { eventId: req.params.eventId, discountStartDate: new Date(req.body.discountStartDate), discountEndDate: new Date(req.body.discountEndDate) });
                 yield prisma_1.default.ticket.create({
-                    data: req.body,
+                    data: reqBody,
                 });
                 res.status(201).send({ message: "Ticket created successfully" });
             }
