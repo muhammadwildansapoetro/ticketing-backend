@@ -16,7 +16,7 @@ const verifyToken = (req, res, next) => __awaiter(void 0, void 0, void 0, functi
     try {
         const token = (_a = req.header("Authorization")) === null || _a === void 0 ? void 0 : _a.replace("Bearer ", "");
         if (!token)
-            throw { message: "Unauthorize!" };
+            throw { message: "Unauthorize" };
         const verifiedUser = (0, jsonwebtoken_1.verify)(token, process.env.JWT_KEY);
         req.user = verifiedUser;
         next();

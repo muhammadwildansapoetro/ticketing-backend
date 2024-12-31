@@ -32,7 +32,6 @@ class EventController {
                 const formatEndTime = new Date();
                 formatEndTime.setUTCHours(endHour - 7, endMinute, 0, 0);
                 const organizerId = (_a = req.user) === null || _a === void 0 ? void 0 : _a.id;
-                console.log("organizer ID", organizerId);
                 const { id } = yield prisma_1.default.event.create({
                     data: {
                         image: secure_url,

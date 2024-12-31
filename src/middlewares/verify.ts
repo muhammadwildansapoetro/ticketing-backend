@@ -9,7 +9,7 @@ export const verifyToken = async (
 ) => {
   try {
     const token = req.header("Authorization")?.replace("Bearer ", "");
-    if (!token) throw { message: "Unauthorize!" };
+    if (!token) throw { message: "Unauthorize" };
 
     const verifiedUser = verify(token, process.env.JWT_KEY!);
 

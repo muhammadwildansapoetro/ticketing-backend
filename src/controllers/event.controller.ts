@@ -34,7 +34,6 @@ export class EventController {
       formatEndTime.setUTCHours(endHour - 7, endMinute, 0, 0);
 
       const organizerId = req.user?.id!;
-      console.log("organizer ID", organizerId);
 
       const { id } = await prisma.event.create({
         data: {

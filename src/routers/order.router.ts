@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { OrderController } from "../controllers/order.controller";
+import { customerCheck, verifyToken } from "../middlewares/verify";
 
 export class OrderRouter {
   private orderController: OrderController;
@@ -12,8 +13,18 @@ export class OrderRouter {
   }
 
   private initializeRoutes() {
-    this.router.post("/", this.orderController.createOrder);
-    this.router.post("/payment", this.orderController.getOrderToken);
+    this.router.post(
+      "/",
+      verifyToken,
+      customerCheck,
+      this.orderController.createOrder
+    );
+    this.router.post(
+      "/payment",
+      verifyToken,
+      customerCheck,
+      this.orderController.getOrderToken
+    );
     this.router.post("/midtrans-webhook", this.orderController.updateOrder);
     this.router.get("/:orderId", this.orderController.getOrderDetail);
   }
