@@ -92,7 +92,7 @@ class AuthController {
             }
         });
     }
-    loginCustomer(req, res) {
+    signInCustomer(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const { data, password } = req.body;
@@ -110,11 +110,11 @@ class AuthController {
                 const cus = Object.assign(Object.assign({}, customer), { role: "customer" });
                 res
                     .status(200)
-                    .send({ massage: "Login User Succesfully", customer: cus, token });
+                    .send({ massage: "Signed in Succesfully", customer: cus, token });
             }
             catch (err) {
                 console.error(err);
-                res.status(400).send("Login Failed");
+                res.status(400).send({ message: "Sign in Failed" });
             }
         });
     }
@@ -123,7 +123,6 @@ class AuthController {
             try {
                 const { token } = req.params;
                 const verifiedCustomer = (0, jsonwebtoken_1.verify)(token, process.env.JWT_KEY);
-                // console.log(verifiedCustomer)
                 const customer = yield prisma_1.default.customer.findUnique({
                     where: { id: verifiedCustomer.id },
                 });
@@ -198,11 +197,11 @@ class AuthController {
                 const Orga = Object.assign(Object.assign({}, organizer), { role: "organizer" });
                 res
                     .status(200)
-                    .send({ massage: "Login User Succesfully", organizer: Orga, token });
+                    .send({ massage: "Sign in User Succesfully", organizer: Orga, token });
             }
             catch (err) {
                 console.error(err);
-                res.status(400).send("Login Failed");
+                res.status(400).send("Sign in Failed");
             }
         });
     }

@@ -13,7 +13,7 @@ class AuthRouter {
     initializeRoutes() {
         this.router.get("/session", verify_1.verifyToken, this.authController.getSession);
         this.router.post("/customer/register", this.authController.registerCustomer);
-        this.router.post("/customer/sign-in", this.authController.loginCustomer);
+        this.router.post("/customer/sign-in", this.authController.signInCustomer);
         this.router.post("/organizer/register", this.authController.registerOrganizer);
         this.router.post("/organizer/sign-in", this.authController.signInOrganizer);
         this.router.patch("/customer/verify/:token", this.authController.verifyCustomer);

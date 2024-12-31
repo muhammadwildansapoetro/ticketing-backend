@@ -26,22 +26,17 @@ app.get("/api", (req: Request, res: Response) => {
   res.status(200).send("Welcome to MatchTix API");
 });
 
+const authRouter = new AuthRouter();
+const organizerRouter = new OrganizerRouter();
+const customerRouter = new CustomerRouter();
 const eventRouter = new EventRouter();
 const ticketRouter = new TicketRouter();
 const orderRouter = new OrderRouter();
-const authRouter = new AuthRouter();
-const customerRouter = new CustomerRouter();
-const organizerRouter = new OrganizerRouter();
 
 app.use("/api/auth", authRouter.getRouter());
 app.use("/api/customers", customerRouter.getRouter());
-app.use("/api/organizer", organizerRouter.getRouter());
+app.use("/api/organizers", organizerRouter.getRouter());
 app.use("/api/events", eventRouter.getRouter());
-app.use("/api/tickets", ticketRouter.getRouter());
-app.use("/api/orders", orderRouter.getRouter());
-app.use("/api/events", eventRouter.getRouter());
-app.use("/api/tickets", ticketRouter.getRouter());
-app.use("/api/orders", orderRouter.getRouter());
 app.use("/api/tickets", ticketRouter.getRouter());
 app.use("/api/orders", orderRouter.getRouter());
 

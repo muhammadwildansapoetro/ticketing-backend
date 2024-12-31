@@ -95,7 +95,7 @@ export class AuthController {
     }
   }
 
-  async loginCustomer(req: Request, res: Response) {
+  async signInCustomer(req: Request, res: Response) {
     try {
       const { data, password } = req.body;
       const customer = await findCustomer(data, data);
@@ -113,10 +113,10 @@ export class AuthController {
       const cus = { ...customer, role: "customer" };
       res
         .status(200)
-        .send({ massage: "Login User Succesfully", customer: cus, token });
+        .send({ massage: "Signed in Succesfully", customer: cus, token });
     } catch (err) {
       console.error(err);
-      res.status(400).send("Login Failed");
+      res.status(400).send({ message: "Sign in Failed" });
     }
   }
 
@@ -124,7 +124,6 @@ export class AuthController {
     try {
       const { token } = req.params;
       const verifiedCustomer: any = verify(token, process.env.JWT_KEY!);
-      // console.log(verifiedCustomer)
 
       const customer = await prisma.customer.findUnique({
         where: { id: verifiedCustomer.id },
@@ -208,10 +207,10 @@ export class AuthController {
       const Orga = { ...organizer, role: "organizer" };
       res
         .status(200)
-        .send({ massage: "Login User Succesfully", organizer: Orga, token });
+        .send({ massage: "Sign in User Succesfully", organizer: Orga, token });
     } catch (err) {
       console.error(err);
-      res.status(400).send("Login Failed");
+      res.status(400).send("Sign in Failed");
     }
   }
 

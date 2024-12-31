@@ -25,21 +25,16 @@ app.use((0, cookie_parser_1.default)());
 app.get("/api", (req, res) => {
     res.status(200).send("Welcome to MatchTix API");
 });
+const authRouter = new auth_router_1.AuthRouter();
+const organizerRouter = new organizer_router_1.OrganizerRouter();
+const customerRouter = new customer_router_1.CustomerRouter();
 const eventRouter = new event_router_1.EventRouter();
 const ticketRouter = new ticket_router_1.TicketRouter();
 const orderRouter = new order_router_1.OrderRouter();
-const authRouter = new auth_router_1.AuthRouter();
-const customerRouter = new customer_router_1.CustomerRouter();
-const organizerRouter = new organizer_router_1.OrganizerRouter();
 app.use("/api/auth", authRouter.getRouter());
 app.use("/api/customers", customerRouter.getRouter());
-app.use("/api/organizer", organizerRouter.getRouter());
+app.use("/api/organizers", organizerRouter.getRouter());
 app.use("/api/events", eventRouter.getRouter());
-app.use("/api/tickets", ticketRouter.getRouter());
-app.use("/api/orders", orderRouter.getRouter());
-app.use("/api/events", eventRouter.getRouter());
-app.use("/api/tickets", ticketRouter.getRouter());
-app.use("/api/orders", orderRouter.getRouter());
 app.use("/api/tickets", ticketRouter.getRouter());
 app.use("/api/orders", orderRouter.getRouter());
 app.listen(PORT, () => {
