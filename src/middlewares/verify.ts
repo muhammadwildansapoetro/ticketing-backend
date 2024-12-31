@@ -21,3 +21,27 @@ export const verifyToken = async (
     res.status(400).send(error);
   }
 };
+
+export const organizerCheck = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  if (req.user?.role === "organizer") {
+    next();
+  } else {
+    res.status(400).send({ message: "Unauthorize, organizer only" });
+  }
+};
+
+export const customerCheck = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  if (req.user?.role === "customer") {
+    next();
+  } else {
+    res.status(400).send({ message: "Unauthorize, customer only" });
+  }
+};

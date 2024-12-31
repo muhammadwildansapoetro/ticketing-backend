@@ -17,13 +17,10 @@ app.use(express.json());
 app.use(
   cors({
     origin: process.env.BASE_URL_FE!,
-    // methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   })
 );
 app.use(cookieParser());
-
-console.log(process.env.BASE_URL_FE);
 
 app.get("/api", (req: Request, res: Response) => {
   res.status(200).send("Welcome to MatchTix API");

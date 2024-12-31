@@ -183,14 +183,14 @@ export class AuthController {
         html,
       });
 
-      res.status(201).send({ message: "Register Successfully ✅" });
+      res.status(201).send({ message: "Register Successfully" });
     } catch (err) {
       console.log(err);
       res.status(400).send(err);
     }
   }
 
-  async loginOrganizer(req: Request, res: Response) {
+  async signInOrganizer(req: Request, res: Response) {
     try {
       const { data, password } = req.body;
       const organizer = await findOrganizer(data, data);

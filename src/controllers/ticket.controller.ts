@@ -4,9 +4,14 @@ import prisma from "../prisma";
 export class TicketController {
   async createTicket(req: Request, res: Response) {
     try {
-      req.body.eventId = req.params.eventId;
+      const reqBody = {
+        ...req.body,
+        eventId: req.params.eventId,
+        discountStartDate: new Date(req.body.discountStartDate),
+        discountEndDate: new Date(req.body.discountEndDate),
+      };
       await prisma.ticket.create({
-        data: req.body,
+        data: reqBody,
       });
       res.status(201).send({ message: "Ticket created successfully" });
     } catch (error) {

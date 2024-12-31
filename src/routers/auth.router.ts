@@ -23,7 +23,7 @@ export class AuthRouter {
       "/organizer/register",
       this.authController.registerOrganizer
     );
-    this.router.post("/organizer/sign-in", this.authController.loginOrganizer);
+    this.router.post("/organizer/sign-in", this.authController.signInOrganizer);
 
     this.router.patch(
       "/customer/verify/:token",

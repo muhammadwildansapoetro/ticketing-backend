@@ -19,11 +19,9 @@ const app = (0, express_1.default)();
 app.use(express_1.default.json());
 app.use((0, cors_1.default)({
     origin: process.env.BASE_URL_FE,
-    // methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
 }));
 app.use((0, cookie_parser_1.default)());
-console.log(process.env.BASE_URL_FE);
 app.get("/api", (req, res) => {
     res.status(200).send("Welcome to MatchTix API");
 });

@@ -18,6 +18,7 @@ const prisma_1 = __importDefault(require("../prisma"));
 class EventController {
     createEvent(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
+            var _a;
             try {
                 if (!req.file)
                     throw { message: "Image is required" };
@@ -30,11 +31,8 @@ class EventController {
                 formatStartTime.setUTCHours(startHour - 7, startMinute, 0, 0);
                 const formatEndTime = new Date();
                 formatEndTime.setUTCHours(endHour - 7, endMinute, 0, 0);
-                console.log("Formatted Times:", {
-                    startTime: formatStartTime,
-                    endTime: formatEndTime,
-                });
-                const organizerId = 12;
+                const organizerId = (_a = req.user) === null || _a === void 0 ? void 0 : _a.id;
+                console.log("organizer ID", organizerId);
                 const { id } = yield prisma_1.default.event.create({
                     data: {
                         image: secure_url,
@@ -137,6 +135,9 @@ class EventController {
                                 price: true,
                                 quantity: true,
                                 description: true,
+                                discountPercentage: true,
+                                discountStartDate: true,
+                                discountEndDate: true,
                             },
                         },
                         organizer: {

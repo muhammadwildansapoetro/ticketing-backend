@@ -36,11 +36,11 @@ enum OrderStatus {
 }
 
 enum RatingRange {
-  One    @map("1")
-  Two    @map("2")
-  Three  @map("3")
-  Four   @map("4")
-  Delete @map("5")
+  One   @map("1")
+  Two   @map("2")
+  Three @map("3")
+  Four  @map("4")
+  Five  @map("5")
 }
 
 model Organizer {
@@ -78,14 +78,17 @@ model Event {
 }
 
 model Ticket {
-  id          Int            @id @default(autoincrement())
-  category    TicketCategory
-  description String
-  price       Int
-  quantity    Int
-  eventId     String
-  createdAt   DateTime       @default(now())
-  updatedAt   DateTime       @updatedAt
+  id                 Int            @id @default(autoincrement())
+  category           TicketCategory
+  description        String
+  price              Int
+  quantity           Int
+  discountPercentage Int?
+  discountStartDate  DateTime?
+  discountEndDate    DateTime?
+  eventId            String
+  createdAt          DateTime       @default(now())
+  updatedAt          DateTime       @updatedAt
 
   OrderDetail OrderDetail[]
 
