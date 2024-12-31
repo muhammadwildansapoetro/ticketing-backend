@@ -201,7 +201,7 @@ export class OrderController {
         data: { status: orderStatus },
       });
 
-      res.status(200).send({ message: "Order status updated successfully." });
+      res.status(200).send({ message: "Order status updated successfully" });
     } catch (error) {
       console.log("Error update order:", error);
       res.status(400).send(error);

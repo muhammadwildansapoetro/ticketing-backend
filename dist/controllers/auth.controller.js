@@ -31,7 +31,7 @@ class AuthController {
             try {
                 let { fullname, password, confirmPassword, username, email, referralCodeBy, } = req.body;
                 if (password != confirmPassword)
-                    throw { message: "Password not match!" };
+                    throw { message: "Password not match" };
                 const customer = yield (0, customer_service_1.findCustomer)(username, email);
                 if (customer)
                     throw { message: "Username or email has been used!" };

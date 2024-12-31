@@ -190,26 +190,11 @@ class OrderController {
                     : transaction_status === "pending"
                         ? "Unpaid"
                         : "Canceled";
-                if (orderStatus === "Canceled") {
-                    const tickets = yield prisma_1.default.orderDetail.findMany({
-                        where: { orderId: +order_id },
-                        select: {
-                            quantity: true,
-                            ticketId: true,
-                        },
-                    });
-                    for (const item of tickets) {
-                        yield prisma_1.default.ticket.update({
-                            where: { id: item.ticketId },
-                            data: { quantity: { increment: item.quantity } },
-                        });
-                    }
-                }
                 yield prisma_1.default.order.update({
                     where: { id: +order_id },
                     data: { status: orderStatus },
                 });
-                res.status(200).send({ message: "Payment success" });
+                res.status(200).send({ message: "Order status updated successfully" });
             }
             catch (error) {
                 console.log("Error update order:", error);
