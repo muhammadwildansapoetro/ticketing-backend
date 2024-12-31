@@ -23,6 +23,8 @@ const fs_1 = __importDefault(require("fs"));
 const handlebars_1 = __importDefault(require("handlebars"));
 const organizer_service_1 = require("../services/organizer.service");
 const auth_service_1 = require("../services/auth.service");
+const dotenv_1 = __importDefault(require("dotenv"));
+dotenv_1.default.config();
 class AuthController {
     registerCustomer(req, res) {
         return __awaiter(this, void 0, void 0, function* () {

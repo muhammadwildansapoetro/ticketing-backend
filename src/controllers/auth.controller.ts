@@ -23,7 +23,7 @@ export class AuthController {
         email,
         referralCodeBy,
       } = req.body;
-      if (password != confirmPassword) throw { message: "Password not match!" };
+      if (password != confirmPassword) throw { message: "Password not match" };
 
       const customer = await findCustomer(username, email);
       if (customer) throw { message: "Username or email has been used!" };
