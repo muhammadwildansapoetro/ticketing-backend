@@ -26,7 +26,9 @@ class OrganizerController {
                         { email: { contains: search, mode: "insensitive" } },
                     ];
                 }
-                const countOrganizer = yield prisma_1.default.organizer.aggregate({ _count: { _all: true } });
+                const countOrganizer = yield prisma_1.default.organizer.aggregate({
+                    _count: { _all: true },
+                });
                 const total_page = Math.ceil(countOrganizer._count._all / +limit);
                 const organizer = yield prisma_1.default.organizer.findMany({
                     where: filter,

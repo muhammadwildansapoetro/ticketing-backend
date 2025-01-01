@@ -91,17 +91,6 @@ export const OrderStatus: {
 
 export type OrderStatus = (typeof OrderStatus)[keyof typeof OrderStatus]
 
-
-export const RatingRange: {
-  One: 'One',
-  Two: 'Two',
-  Three: 'Three',
-  Four: 'Four',
-  Five: 'Five'
-};
-
-export type RatingRange = (typeof RatingRange)[keyof typeof RatingRange]
-
 }
 
 export type EventCategory = $Enums.EventCategory
@@ -115,10 +104,6 @@ export const TicketCategory: typeof $Enums.TicketCategory
 export type OrderStatus = $Enums.OrderStatus
 
 export const OrderStatus: typeof $Enums.OrderStatus
-
-export type RatingRange = $Enums.RatingRange
-
-export const RatingRange: typeof $Enums.RatingRange
 
 /**
  * ##  Prisma Client ʲˢ
@@ -390,7 +375,7 @@ export namespace Prisma {
   export import Exact = $Public.Exact
 
   /**
-   * Prisma Client JS version: 6.0.1
+   * Prisma Client JS version: 6.1.0
    * Query Engine version: 5dbef10bdbfb579e07d35cc85fb1518d357cb99e
    */
   export type PrismaVersion = {
@@ -10135,17 +10120,19 @@ export namespace Prisma {
 
   export type ReviewAvgAggregateOutputType = {
     customerId: number | null
+    rating: number | null
   }
 
   export type ReviewSumAggregateOutputType = {
     customerId: number | null
+    rating: number | null
   }
 
   export type ReviewMinAggregateOutputType = {
     customerId: number | null
     eventId: string | null
     review: string | null
-    rating: $Enums.RatingRange | null
+    rating: number | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -10154,7 +10141,7 @@ export namespace Prisma {
     customerId: number | null
     eventId: string | null
     review: string | null
-    rating: $Enums.RatingRange | null
+    rating: number | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -10172,10 +10159,12 @@ export namespace Prisma {
 
   export type ReviewAvgAggregateInputType = {
     customerId?: true
+    rating?: true
   }
 
   export type ReviewSumAggregateInputType = {
     customerId?: true
+    rating?: true
   }
 
   export type ReviewMinAggregateInputType = {
@@ -10296,7 +10285,7 @@ export namespace Prisma {
     customerId: number
     eventId: string
     review: string
-    rating: $Enums.RatingRange
+    rating: number
     createdAt: Date
     updatedAt: Date
     _count: ReviewCountAggregateOutputType | null
@@ -10370,7 +10359,7 @@ export namespace Prisma {
       customerId: number
       eventId: string
       review: string
-      rating: $Enums.RatingRange
+      rating: number
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["review"]>
@@ -10771,7 +10760,7 @@ export namespace Prisma {
     readonly customerId: FieldRef<"Review", 'Int'>
     readonly eventId: FieldRef<"Review", 'String'>
     readonly review: FieldRef<"Review", 'String'>
-    readonly rating: FieldRef<"Review", 'RatingRange'>
+    readonly rating: FieldRef<"Review", 'Int'>
     readonly createdAt: FieldRef<"Review", 'DateTime'>
     readonly updatedAt: FieldRef<"Review", 'DateTime'>
   }
@@ -11367,20 +11356,6 @@ export namespace Prisma {
    * Reference to a field of type 'OrderStatus[]'
    */
   export type ListEnumOrderStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OrderStatus[]'>
-    
-
-
-  /**
-   * Reference to a field of type 'RatingRange'
-   */
-  export type EnumRatingRangeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'RatingRange'>
-    
-
-
-  /**
-   * Reference to a field of type 'RatingRange[]'
-   */
-  export type ListEnumRatingRangeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'RatingRange[]'>
     
 
 
@@ -12039,7 +12014,7 @@ export namespace Prisma {
     customerId?: IntFilter<"Review"> | number
     eventId?: StringFilter<"Review"> | string
     review?: StringFilter<"Review"> | string
-    rating?: EnumRatingRangeFilter<"Review"> | $Enums.RatingRange
+    rating?: IntFilter<"Review"> | number
     createdAt?: DateTimeFilter<"Review"> | Date | string
     updatedAt?: DateTimeFilter<"Review"> | Date | string
     event?: XOR<EventScalarRelationFilter, EventWhereInput>
@@ -12065,7 +12040,7 @@ export namespace Prisma {
     customerId?: IntFilter<"Review"> | number
     eventId?: StringFilter<"Review"> | string
     review?: StringFilter<"Review"> | string
-    rating?: EnumRatingRangeFilter<"Review"> | $Enums.RatingRange
+    rating?: IntFilter<"Review"> | number
     createdAt?: DateTimeFilter<"Review"> | Date | string
     updatedAt?: DateTimeFilter<"Review"> | Date | string
     event?: XOR<EventScalarRelationFilter, EventWhereInput>
@@ -12093,7 +12068,7 @@ export namespace Prisma {
     customerId?: IntWithAggregatesFilter<"Review"> | number
     eventId?: StringWithAggregatesFilter<"Review"> | string
     review?: StringWithAggregatesFilter<"Review"> | string
-    rating?: EnumRatingRangeWithAggregatesFilter<"Review"> | $Enums.RatingRange
+    rating?: IntWithAggregatesFilter<"Review"> | number
     createdAt?: DateTimeWithAggregatesFilter<"Review"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Review"> | Date | string
   }
@@ -12772,7 +12747,7 @@ export namespace Prisma {
 
   export type ReviewCreateInput = {
     review: string
-    rating: $Enums.RatingRange
+    rating: number
     createdAt?: Date | string
     updatedAt?: Date | string
     event: EventCreateNestedOneWithoutReviewInput
@@ -12783,14 +12758,14 @@ export namespace Prisma {
     customerId: number
     eventId: string
     review: string
-    rating: $Enums.RatingRange
+    rating: number
     createdAt?: Date | string
     updatedAt?: Date | string
   }
 
   export type ReviewUpdateInput = {
     review?: StringFieldUpdateOperationsInput | string
-    rating?: EnumRatingRangeFieldUpdateOperationsInput | $Enums.RatingRange
+    rating?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     event?: EventUpdateOneRequiredWithoutReviewNestedInput
@@ -12801,7 +12776,7 @@ export namespace Prisma {
     customerId?: IntFieldUpdateOperationsInput | number
     eventId?: StringFieldUpdateOperationsInput | string
     review?: StringFieldUpdateOperationsInput | string
-    rating?: EnumRatingRangeFieldUpdateOperationsInput | $Enums.RatingRange
+    rating?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -12810,14 +12785,14 @@ export namespace Prisma {
     customerId: number
     eventId: string
     review: string
-    rating: $Enums.RatingRange
+    rating: number
     createdAt?: Date | string
     updatedAt?: Date | string
   }
 
   export type ReviewUpdateManyMutationInput = {
     review?: StringFieldUpdateOperationsInput | string
-    rating?: EnumRatingRangeFieldUpdateOperationsInput | $Enums.RatingRange
+    rating?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -12826,7 +12801,7 @@ export namespace Prisma {
     customerId?: IntFieldUpdateOperationsInput | number
     eventId?: StringFieldUpdateOperationsInput | string
     review?: StringFieldUpdateOperationsInput | string
-    rating?: EnumRatingRangeFieldUpdateOperationsInput | $Enums.RatingRange
+    rating?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -13535,13 +13510,6 @@ export namespace Prisma {
     subTotalPrice?: SortOrder
   }
 
-  export type EnumRatingRangeFilter<$PrismaModel = never> = {
-    equals?: $Enums.RatingRange | EnumRatingRangeFieldRefInput<$PrismaModel>
-    in?: $Enums.RatingRange[] | ListEnumRatingRangeFieldRefInput<$PrismaModel>
-    notIn?: $Enums.RatingRange[] | ListEnumRatingRangeFieldRefInput<$PrismaModel>
-    not?: NestedEnumRatingRangeFilter<$PrismaModel> | $Enums.RatingRange
-  }
-
   export type ReviewEventIdCustomerIdCompoundUniqueInput = {
     eventId: string
     customerId: number
@@ -13558,6 +13526,7 @@ export namespace Prisma {
 
   export type ReviewAvgOrderByAggregateInput = {
     customerId?: SortOrder
+    rating?: SortOrder
   }
 
   export type ReviewMaxOrderByAggregateInput = {
@@ -13580,16 +13549,7 @@ export namespace Prisma {
 
   export type ReviewSumOrderByAggregateInput = {
     customerId?: SortOrder
-  }
-
-  export type EnumRatingRangeWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.RatingRange | EnumRatingRangeFieldRefInput<$PrismaModel>
-    in?: $Enums.RatingRange[] | ListEnumRatingRangeFieldRefInput<$PrismaModel>
-    notIn?: $Enums.RatingRange[] | ListEnumRatingRangeFieldRefInput<$PrismaModel>
-    not?: NestedEnumRatingRangeWithAggregatesFilter<$PrismaModel> | $Enums.RatingRange
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumRatingRangeFilter<$PrismaModel>
-    _max?: NestedEnumRatingRangeFilter<$PrismaModel>
+    rating?: SortOrder
   }
 
   export type EventCreateNestedManyWithoutOrganizerInput = {
@@ -14118,10 +14078,6 @@ export namespace Prisma {
     connect?: CustomerWhereUniqueInput
   }
 
-  export type EnumRatingRangeFieldUpdateOperationsInput = {
-    set?: $Enums.RatingRange
-  }
-
   export type EventUpdateOneRequiredWithoutReviewNestedInput = {
     create?: XOR<EventCreateWithoutReviewInput, EventUncheckedCreateWithoutReviewInput>
     connectOrCreate?: EventCreateOrConnectWithoutReviewInput
@@ -14390,23 +14346,6 @@ export namespace Prisma {
     _max?: NestedEnumOrderStatusFilter<$PrismaModel>
   }
 
-  export type NestedEnumRatingRangeFilter<$PrismaModel = never> = {
-    equals?: $Enums.RatingRange | EnumRatingRangeFieldRefInput<$PrismaModel>
-    in?: $Enums.RatingRange[] | ListEnumRatingRangeFieldRefInput<$PrismaModel>
-    notIn?: $Enums.RatingRange[] | ListEnumRatingRangeFieldRefInput<$PrismaModel>
-    not?: NestedEnumRatingRangeFilter<$PrismaModel> | $Enums.RatingRange
-  }
-
-  export type NestedEnumRatingRangeWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.RatingRange | EnumRatingRangeFieldRefInput<$PrismaModel>
-    in?: $Enums.RatingRange[] | ListEnumRatingRangeFieldRefInput<$PrismaModel>
-    notIn?: $Enums.RatingRange[] | ListEnumRatingRangeFieldRefInput<$PrismaModel>
-    not?: NestedEnumRatingRangeWithAggregatesFilter<$PrismaModel> | $Enums.RatingRange
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumRatingRangeFilter<$PrismaModel>
-    _max?: NestedEnumRatingRangeFilter<$PrismaModel>
-  }
-
   export type EventCreateWithoutOrganizerInput = {
     id?: string
     title: string
@@ -14525,7 +14464,7 @@ export namespace Prisma {
 
   export type ReviewCreateWithoutEventInput = {
     review: string
-    rating: $Enums.RatingRange
+    rating: number
     createdAt?: Date | string
     updatedAt?: Date | string
     customer: CustomerCreateNestedOneWithoutReviewInput
@@ -14534,7 +14473,7 @@ export namespace Prisma {
   export type ReviewUncheckedCreateWithoutEventInput = {
     customerId: number
     review: string
-    rating: $Enums.RatingRange
+    rating: number
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -14631,7 +14570,7 @@ export namespace Prisma {
     customerId?: IntFilter<"Review"> | number
     eventId?: StringFilter<"Review"> | string
     review?: StringFilter<"Review"> | string
-    rating?: EnumRatingRangeFilter<"Review"> | $Enums.RatingRange
+    rating?: IntFilter<"Review"> | number
     createdAt?: DateTimeFilter<"Review"> | Date | string
     updatedAt?: DateTimeFilter<"Review"> | Date | string
   }
@@ -14887,7 +14826,7 @@ export namespace Prisma {
 
   export type ReviewCreateWithoutCustomerInput = {
     review: string
-    rating: $Enums.RatingRange
+    rating: number
     createdAt?: Date | string
     updatedAt?: Date | string
     event: EventCreateNestedOneWithoutReviewInput
@@ -14896,7 +14835,7 @@ export namespace Prisma {
   export type ReviewUncheckedCreateWithoutCustomerInput = {
     eventId: string
     review: string
-    rating: $Enums.RatingRange
+    rating: number
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -15675,7 +15614,7 @@ export namespace Prisma {
   export type ReviewCreateManyEventInput = {
     customerId: number
     review: string
-    rating: $Enums.RatingRange
+    rating: number
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -15722,7 +15661,7 @@ export namespace Prisma {
 
   export type ReviewUpdateWithoutEventInput = {
     review?: StringFieldUpdateOperationsInput | string
-    rating?: EnumRatingRangeFieldUpdateOperationsInput | $Enums.RatingRange
+    rating?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     customer?: CustomerUpdateOneRequiredWithoutReviewNestedInput
@@ -15731,7 +15670,7 @@ export namespace Prisma {
   export type ReviewUncheckedUpdateWithoutEventInput = {
     customerId?: IntFieldUpdateOperationsInput | number
     review?: StringFieldUpdateOperationsInput | string
-    rating?: EnumRatingRangeFieldUpdateOperationsInput | $Enums.RatingRange
+    rating?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -15739,7 +15678,7 @@ export namespace Prisma {
   export type ReviewUncheckedUpdateManyWithoutEventInput = {
     customerId?: IntFieldUpdateOperationsInput | number
     review?: StringFieldUpdateOperationsInput | string
-    rating?: EnumRatingRangeFieldUpdateOperationsInput | $Enums.RatingRange
+    rating?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -15798,7 +15737,7 @@ export namespace Prisma {
   export type ReviewCreateManyCustomerInput = {
     eventId: string
     review: string
-    rating: $Enums.RatingRange
+    rating: number
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -15862,7 +15801,7 @@ export namespace Prisma {
 
   export type ReviewUpdateWithoutCustomerInput = {
     review?: StringFieldUpdateOperationsInput | string
-    rating?: EnumRatingRangeFieldUpdateOperationsInput | $Enums.RatingRange
+    rating?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     event?: EventUpdateOneRequiredWithoutReviewNestedInput
@@ -15871,7 +15810,7 @@ export namespace Prisma {
   export type ReviewUncheckedUpdateWithoutCustomerInput = {
     eventId?: StringFieldUpdateOperationsInput | string
     review?: StringFieldUpdateOperationsInput | string
-    rating?: EnumRatingRangeFieldUpdateOperationsInput | $Enums.RatingRange
+    rating?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -15879,7 +15818,7 @@ export namespace Prisma {
   export type ReviewUncheckedUpdateManyWithoutCustomerInput = {
     eventId?: StringFieldUpdateOperationsInput | string
     review?: StringFieldUpdateOperationsInput | string
-    rating?: EnumRatingRangeFieldUpdateOperationsInput | $Enums.RatingRange
+    rating?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }

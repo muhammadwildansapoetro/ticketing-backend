@@ -35,14 +35,6 @@ enum OrderStatus {
   Canceled
 }
 
-enum RatingRange {
-  One   @map("1")
-  Two   @map("2")
-  Three @map("3")
-  Four  @map("4")
-  Five  @map("5")
-}
-
 model Organizer {
   id         Int      @id @default(autoincrement())
   name       String
@@ -169,9 +161,9 @@ model Review {
   customerId Int
   eventId    String
   review     String
-  rating     RatingRange
-  createdAt  DateTime    @default(now())
-  updatedAt  DateTime    @updatedAt
+  rating     Int
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
   event    Event    @relation(fields: [eventId], references: [id])
   customer Customer @relation(fields: [customerId], references: [id])

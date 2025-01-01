@@ -26,7 +26,9 @@ class CustomerController {
                         { email: { contains: search, mode: "insensitive" } },
                     ];
                 }
-                const countCostumer = yield prisma_1.default.customer.aggregate({ _count: { _all: true } });
+                const countCostumer = yield prisma_1.default.customer.aggregate({
+                    _count: { _all: true },
+                });
                 const total_page = Math.ceil(countCostumer._count._all / +limit);
                 const customers = yield prisma_1.default.customer.findMany({
                     where: filter,
@@ -92,6 +94,56 @@ class CustomerController {
             catch (err) {
                 console.log(err);
                 res.status(400).send(err);
+            }
+        });
+    }
+    getCustomerEvents(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            var _a, _b;
+            try {
+                if (((_a = req.user) === null || _a === void 0 ? void 0 : _a.role) === "organizer")
+                    throw { message: "Unauthorized access." };
+                const filter = {};
+                filter.Ticket = {
+                    some: {
+                        OrderDetail: {
+                            some: {
+                                order: {
+                                    AND: [{ customerId: (_b = req.user) === null || _b === void 0 ? void 0 : _b.id }, { status: "Paid" }],
+                                },
+                            },
+                        },
+                    },
+                };
+                const { status } = req.query;
+                if (status === "upcoming") {
+                    filter.date = {
+                        gt: new Date(),
+                    };
+                }
+                else if (status === "attended") {
+                    filter.date = {
+                        lt: new Date(),
+                    };
+                }
+                const events = yield prisma_1.default.event.findMany({
+                    where: filter,
+                    select: {
+                        id: true,
+                        title: true,
+                        image: true,
+                        date: true,
+                        startTime: true,
+                        endTime: true,
+                        location: true,
+                        venue: true,
+                    },
+                });
+                res.status(200).send({ events });
+            }
+            catch (error) {
+                console.log("Error get customer events:", error);
+                res.status(400).send({ message: "Error get customer events:", error });
             }
         });
     }

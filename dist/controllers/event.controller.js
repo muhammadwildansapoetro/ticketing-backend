@@ -25,21 +25,18 @@ class EventController {
                 const file = req.file;
                 const { secure_url } = yield (0, cloudinary_1.cloudinaryUpload)(file, "events");
                 const { title, category, date, startTime, endTime, location, venue, description, } = req.body;
-                const [startHour, startMinute] = startTime.split(":").map(Number);
-                const [endHour, endMinute] = endTime.split(":").map(Number);
-                const formatStartTime = new Date();
-                formatStartTime.setUTCHours(startHour - 7, startMinute, 0, 0);
-                const formatEndTime = new Date();
-                formatEndTime.setUTCHours(endHour - 7, endMinute, 0, 0);
+                const startDateTimeString = new Date(`${date}T${startTime}:00`);
+                const endDateTimeString = new Date(`${date}T${endTime}:00`);
+                const localDate = new Date(`${date}T00:00:00`);
                 const organizerId = (_a = req.user) === null || _a === void 0 ? void 0 : _a.id;
                 const { id } = yield prisma_1.default.event.create({
                     data: {
                         image: secure_url,
                         title,
                         category,
-                        date: new Date(date),
-                        startTime: formatStartTime,
-                        endTime: formatEndTime,
+                        date: localDate,
+                        startTime: startDateTimeString,
+                        endTime: endDateTimeString,
                         location,
                         venue,
                         description,

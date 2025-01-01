@@ -24,14 +24,10 @@ export class EventController {
         description,
       } = req.body;
 
-      const [startHour, startMinute] = startTime.split(":").map(Number);
-      const [endHour, endMinute] = endTime.split(":").map(Number);
+      const startDateTimeString = new Date(`${date}T${startTime}:00`);
+      const endDateTimeString = new Date(`${date}T${endTime}:00`);
 
-      const formatStartTime = new Date();
-      formatStartTime.setUTCHours(startHour - 7, startMinute, 0, 0);
-
-      const formatEndTime = new Date();
-      formatEndTime.setUTCHours(endHour - 7, endMinute, 0, 0);
+      const localDate = new Date(`${date}T00:00:00`);
 
       const organizerId = req.user?.id!;
 
@@ -40,9 +36,9 @@ export class EventController {
           image: secure_url,
           title,
           category,
-          date: new Date(date),
-          startTime: formatStartTime,
-          endTime: formatEndTime,
+          date: localDate,
+          startTime: startDateTimeString,
+          endTime: endDateTimeString,
           location,
           venue,
           description,

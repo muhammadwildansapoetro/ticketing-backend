@@ -23,6 +23,7 @@ export class AuthController {
         email,
         referralCodeBy,
       } = req.body;
+
       if (password != confirmPassword) throw { message: "Password not match" };
 
       const customer = await findCustomer(username, email);

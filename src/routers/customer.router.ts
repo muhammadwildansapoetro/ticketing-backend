@@ -20,6 +20,12 @@ export class CustomerRouter {
       this.customerController.getCustomerId
     );
     this.router.post("/", this.customerController.createCustomer);
+    this.router.get(
+      "/events",
+      verifyToken,
+      this.customerController.getCustomerEvents
+    );
+
     this.router.patch("/:id", this.customerController.editCustomer);
     this.router.delete("/:id", this.customerController.deleteCustomer);
   }
