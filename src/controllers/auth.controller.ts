@@ -91,7 +91,7 @@ export class AuthController {
         subject: "Welcome to MatchTix",
         html,
       });
-      res.status(201).send({ message: "Register Successfully" });
+      res.status(201).send({ message: "Registered successfully" });
     } catch (error) {
       console.log(error);
       res.status(400).send(error);
@@ -116,7 +116,7 @@ export class AuthController {
       const cus = { ...customer, role: "customer" };
       res
         .status(200)
-        .send({ massage: "Signed in Succesfully", customer: cus, token });
+        .send({ message: "Signed in succesfully", customer: cus, token });
     } catch (err) {
       console.error(err);
       res.status(400).send({ message: "Sign in Failed" });
@@ -185,7 +185,7 @@ export class AuthController {
         html,
       });
 
-      res.status(201).send({ message: "Register Successfully" });
+      res.status(201).send({ message: "Registered successfully" });
     } catch (err) {
       console.log(err);
       res.status(400).send(err);
@@ -210,7 +210,7 @@ export class AuthController {
       const Orga = { ...organizer, role: "organizer" };
       res
         .status(200)
-        .send({ massage: "Sign in User Succesfully", organizer: Orga, token });
+        .send({ message: "Signed in succesfully", organizer: Orga, token });
     } catch (err) {
       console.error(err);
       res.status(400).send("Sign in Failed");
@@ -221,7 +221,6 @@ export class AuthController {
     try {
       const { token } = req.params;
       const verifiedOrganizer: any = verify(token, process.env.JWT_KEY!);
-      // console.log(verifiedOrganizer)
 
       const organizer = await prisma.organizer.findUnique({
         where: { id: verifiedOrganizer.id },

@@ -99,7 +99,7 @@ class OrganizerController {
     }
     getOrganizerEvents(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            var _a;
+            var _a, _b;
             try {
                 if (((_a = req.user) === null || _a === void 0 ? void 0 : _a.role) === "customer")
                     throw { message: "Unauthorized access." };
@@ -116,7 +116,7 @@ class OrganizerController {
                     };
                 }
                 const events = yield prisma_1.default.event.findMany({
-                    where: filter,
+                    where: Object.assign({ organizerId: (_b = req.user) === null || _b === void 0 ? void 0 : _b.id }, filter),
                     select: {
                         id: true,
                         title: true,

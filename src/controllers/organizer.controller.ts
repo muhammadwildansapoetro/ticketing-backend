@@ -82,6 +82,7 @@ export class OrganizerController {
       const filter: Prisma.EventWhereInput = {};
 
       const { status } = req.query;
+
       if (status === "upcoming") {
         filter.date = {
           gt: new Date(),
@@ -93,7 +94,7 @@ export class OrganizerController {
       }
 
       const events = await prisma.event.findMany({
-        where: filter,
+        where: { organizerId: req.user?.id, ...filter },
         select: {
           id: true,
           title: true,

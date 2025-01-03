@@ -86,7 +86,7 @@ class AuthController {
                     subject: "Welcome to MatchTix",
                     html,
                 });
-                res.status(201).send({ message: "Register Successfully" });
+                res.status(201).send({ message: "Registered successfully" });
             }
             catch (error) {
                 console.log(error);
@@ -112,7 +112,7 @@ class AuthController {
                 const cus = Object.assign(Object.assign({}, customer), { role: "customer" });
                 res
                     .status(200)
-                    .send({ massage: "Signed in Succesfully", customer: cus, token });
+                    .send({ message: "Signed in succesfully", customer: cus, token });
             }
             catch (err) {
                 console.error(err);
@@ -173,7 +173,7 @@ class AuthController {
                     subject: "Welcome to MatchTix",
                     html,
                 });
-                res.status(201).send({ message: "Register Successfully" });
+                res.status(201).send({ message: "Registered successfully" });
             }
             catch (err) {
                 console.log(err);
@@ -199,7 +199,7 @@ class AuthController {
                 const Orga = Object.assign(Object.assign({}, organizer), { role: "organizer" });
                 res
                     .status(200)
-                    .send({ massage: "Sign in User Succesfully", organizer: Orga, token });
+                    .send({ message: "Signed in succesfully", organizer: Orga, token });
             }
             catch (err) {
                 console.error(err);
@@ -212,7 +212,6 @@ class AuthController {
             try {
                 const { token } = req.params;
                 const verifiedOrganizer = (0, jsonwebtoken_1.verify)(token, process.env.JWT_KEY);
-                // console.log(verifiedOrganizer)
                 const organizer = yield prisma_1.default.organizer.findUnique({
                     where: { id: verifiedOrganizer.id },
                 });
