@@ -45,10 +45,12 @@ class OrderController {
                         ? new Date(ticket.discountEndDate)
                         : null;
                     const isDiscountActive = currentDate >= discountStartDate && currentDate <= discountEndDate;
-                    const pricePerTicket = isDiscountActive && hasDiscount
-                        ? ticket.price - (ticket.price * ticket.discountPercentage) / 100
-                        : ticket.price;
-                    const subTotalPrice = pricePerTicket * order.quantity;
+                    const ticketPrice = ticket.price === 0
+                        ? 0
+                        : isDiscountActive && hasDiscount
+                            ? ticket.price - (ticket.price * ticket.discountPercentage) / 100
+                            : ticket.price;
+                    const subTotalPrice = ticketPrice * order.quantity;
                     yield prisma_1.default.orderDetail.create({
                         data: {
                             orderId: id,
@@ -78,6 +80,7 @@ class OrderController {
                 const order = yield prisma_1.default.order.findUnique({
                     where: { id: +req.params.orderId },
                     select: {
+                        id: true,
                         totalPrice: true,
                         finalPrice: true,
                         status: true,
@@ -190,6 +193,21 @@ class OrderController {
                     : transaction_status === "pending"
                         ? "Unpaid"
                         : "Canceled";
+                if (orderStatus === "Canceled") {
+                    const tickets = yield prisma_1.default.orderDetail.findMany({
+                        where: { orderId: +order_id },
+                        select: {
+                            ticketId: true,
+                            quantity: true,
+                        },
+                    });
+                    for (const item of tickets) {
+                        yield prisma_1.default.ticket.update({
+                            where: { id: item.ticketId },
+                            data: { quantity: { increment: item.quantity } },
+                        });
+                    }
+                }
                 yield prisma_1.default.order.update({
                     where: { id: +order_id },
                     data: { status: orderStatus },

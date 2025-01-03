@@ -73,4 +73,54 @@ export class OrganizerController {
       res.status(400).send(err);
     }
   }
+
+  async getOrganizerEvents(req: Request, res: Response) {
+    try {
+      if (req.user?.role === "customer")
+        throw { message: "Unauthorized access." };
+
+      const filter: Prisma.EventWhereInput = {};
+
+      const { status } = req.query;
+      if (status === "upcoming") {
+        filter.date = {
+          gt: new Date(),
+        };
+      } else if (status === "ended") {
+        filter.date = {
+          lt: new Date(),
+        };
+      }
+
+      const events = await prisma.event.findMany({
+        where: filter,
+        select: {
+          id: true,
+          title: true,
+          image: true,
+          date: true,
+          startTime: true,
+          endTime: true,
+          location: true,
+          venue: true,
+          Review: {
+            select: {
+              rating: true,
+              review: true,
+              customer: {
+                select: {
+                  fullname: true,
+                },
+              },
+            },
+          },
+        },
+      });
+
+      res.status(200).send({ events });
+    } catch (error) {
+      console.log("Error get organizer events:", error);
+      res.status(400).send({ message: "Error get organizer events:", error });
+    }
+  }
 }

@@ -41,12 +41,14 @@ export class OrderController {
         const isDiscountActive =
           currentDate >= discountStartDate! && currentDate <= discountEndDate!;
 
-        const pricePerTicket =
-          isDiscountActive && hasDiscount
+        const ticketPrice =
+          ticket.price === 0
+            ? 0
+            : isDiscountActive && hasDiscount
             ? ticket.price - (ticket.price * ticket.discountPercentage!) / 100
             : ticket.price;
 
-        const subTotalPrice = pricePerTicket * order.quantity;
+        const subTotalPrice = ticketPrice * order.quantity;
 
         await prisma.orderDetail.create({
           data: {
@@ -76,6 +78,7 @@ export class OrderController {
       const order = await prisma.order.findUnique({
         where: { id: +req.params.orderId },
         select: {
+          id: true,
           totalPrice: true,
           finalPrice: true,
           status: true,
@@ -195,6 +198,23 @@ export class OrderController {
           : transaction_status === "pending"
           ? "Unpaid"
           : "Canceled";
+
+      if (orderStatus === "Canceled") {
+        const tickets = await prisma.orderDetail.findMany({
+          where: { orderId: +order_id },
+          select: {
+            ticketId: true,
+            quantity: true,
+          },
+        });
+
+        for (const item of tickets) {
+          await prisma.ticket.update({
+            where: { id: item.ticketId },
+            data: { quantity: { increment: item.quantity } },
+          });
+        }
+      }
 
       await prisma.order.update({
         where: { id: +order_id },

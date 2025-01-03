@@ -14,13 +14,19 @@ export class OrganizerRouter {
   }
 
   private initializeRoutes() {
+    this.router.post("/", this.organizerController.createOrganizer);
     this.router.get("/", verifyToken, this.organizerController.getOrganizer);
     this.router.get(
-        "/profile",
-        verifyToken,
-        this.organizerController.getOrganizerId
+      "/profile",
+      verifyToken,
+      this.organizerController.getOrganizerId
     );
-    this.router.post("/", this.organizerController.createOrganizer);
+    this.router.get(
+      "/events",
+      verifyToken,
+      this.organizerController.getOrganizerEvents
+    );
+
     this.router.patch("/:id", this.organizerController.editOrganizer);
     this.router.delete("/:id", this.organizerController.deleteOrganizer);
   }

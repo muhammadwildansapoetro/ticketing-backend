@@ -97,5 +97,55 @@ class OrganizerController {
             }
         });
     }
+    getOrganizerEvents(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            var _a;
+            try {
+                if (((_a = req.user) === null || _a === void 0 ? void 0 : _a.role) === "customer")
+                    throw { message: "Unauthorized access." };
+                const filter = {};
+                const { status } = req.query;
+                if (status === "upcoming") {
+                    filter.date = {
+                        gt: new Date(),
+                    };
+                }
+                else if (status === "ended") {
+                    filter.date = {
+                        lt: new Date(),
+                    };
+                }
+                const events = yield prisma_1.default.event.findMany({
+                    where: filter,
+                    select: {
+                        id: true,
+                        title: true,
+                        image: true,
+                        date: true,
+                        startTime: true,
+                        endTime: true,
+                        location: true,
+                        venue: true,
+                        Review: {
+                            select: {
+                                rating: true,
+                                review: true,
+                                customer: {
+                                    select: {
+                                        fullname: true,
+                                    },
+                                },
+                            },
+                        },
+                    },
+                });
+                res.status(200).send({ events });
+            }
+            catch (error) {
+                console.log("Error get organizer events:", error);
+                res.status(400).send({ message: "Error get organizer events:", error });
+            }
+        });
+    }
 }
 exports.OrganizerController = OrganizerController;

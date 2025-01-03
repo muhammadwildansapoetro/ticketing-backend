@@ -12,9 +12,10 @@ class OrganizerRouter {
         this.initializeRoutes();
     }
     initializeRoutes() {
+        this.router.post("/", this.organizerController.createOrganizer);
         this.router.get("/", verify_1.verifyToken, this.organizerController.getOrganizer);
         this.router.get("/profile", verify_1.verifyToken, this.organizerController.getOrganizerId);
-        this.router.post("/", this.organizerController.createOrganizer);
+        this.router.get("/events", verify_1.verifyToken, this.organizerController.getOrganizerEvents);
         this.router.patch("/:id", this.organizerController.editOrganizer);
         this.router.delete("/:id", this.organizerController.deleteOrganizer);
     }

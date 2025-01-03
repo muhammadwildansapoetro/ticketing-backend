@@ -34,6 +34,7 @@ export class ReviewController {
           createdAt: true,
           customer: {
             select: {
+              id: true,
               fullname: true,
             },
           },

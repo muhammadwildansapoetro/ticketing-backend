@@ -14,12 +14,12 @@ export class CustomerRouter {
 
   private initializeRoutes() {
     this.router.get("/", verifyToken, this.customerController.getCustomers);
+    this.router.post("/", this.customerController.createCustomer);
     this.router.get(
       "/profile",
       verifyToken,
       this.customerController.getCustomerId
     );
-    this.router.post("/", this.customerController.createCustomer);
     this.router.get(
       "/events",
       verifyToken,
