@@ -93,7 +93,8 @@ export class EventController {
             endTime: true,
             organizer: {
               select: {
-                name: true,
+                fullname: true,
+                username: true,
                 avatar: true,
               },
             },
@@ -144,7 +145,8 @@ export class EventController {
           },
           organizer: {
             select: {
-              name: true,
+              fullname: true,
+              username: true,
               avatar: true,
             },
           },

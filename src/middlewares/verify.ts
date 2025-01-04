@@ -11,14 +11,14 @@ export const verifyToken = async (
     const token = req.header("Authorization")?.replace("Bearer ", "");
     if (!token) throw { message: "Unauthorize" };
 
-    const verifiedUser = verify(token, process.env.JWT_KEY!);
+    const verifiedUser = verify(token, process.env.JWT_KEY!) as UserPayload;
 
-    req.user = verifiedUser as UserPayload;
+    req.user = verifiedUser;
 
     next();
   } catch (error) {
-    console.log(error);
-    res.status(400).send(error);
+    console.error("Token verification error:", error);
+    res.status(401).send({ message: "Unauthorized: Invalid token" });
   }
 };
 

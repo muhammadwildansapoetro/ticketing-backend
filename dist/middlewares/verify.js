@@ -22,8 +22,8 @@ const verifyToken = (req, res, next) => __awaiter(void 0, void 0, void 0, functi
         next();
     }
     catch (error) {
-        console.log(error);
-        res.status(400).send(error);
+        console.error("Token verification error:", error);
+        res.status(401).send({ message: "Unauthorized: Invalid token" });
     }
 });
 exports.verifyToken = verifyToken;

@@ -78,7 +78,7 @@ class OrderController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const order = yield prisma_1.default.order.findUnique({
-                    where: { id: +req.params.orderId },
+                    where: { id: req.params.orderId },
                     select: {
                         id: true,
                         totalPrice: true,
@@ -195,7 +195,7 @@ class OrderController {
                         : "Canceled";
                 if (orderStatus === "Canceled") {
                     const tickets = yield prisma_1.default.orderDetail.findMany({
-                        where: { orderId: +order_id },
+                        where: { orderId: order_id },
                         select: {
                             ticketId: true,
                             quantity: true,
@@ -209,7 +209,7 @@ class OrderController {
                     }
                 }
                 yield prisma_1.default.order.update({
-                    where: { id: +order_id },
+                    where: { id: order_id },
                     data: { status: orderStatus },
                 });
                 res.status(200).send({ message: "Order status updated successfully" });

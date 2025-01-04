@@ -37,8 +37,6 @@ class AuthController {
                     throw { message: "Username or email has been used!" };
                 const salt = yield (0, bcrypt_1.genSalt)(10);
                 const hashPassword = yield (0, bcrypt_1.hash)(password, salt);
-                // Generate referral code for the new customer
-                // const generatedReferralCode = Math.random().toString(36).slice(2, 8).toUpperCase();
                 let newRefCode = (0, auth_service_1.generator)();
                 const refCode = yield (0, customer_service_1.findRefCode)(newRefCode);
                 if (refCode)
@@ -72,7 +70,6 @@ class AuthController {
                         expiredAt: couponExpiryDate,
                     },
                 });
-                // Send verification email
                 const payload = { id: newCustomer.id };
                 const token = (0, jsonwebtoken_1.sign)(payload, process.env.JWT_KEY, { expiresIn: "1d" });
                 const link = `${process.env.BASE_URL_FE}/customer/verify/${token}`;
@@ -149,16 +146,16 @@ class AuthController {
     registerOrganizer(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const { password, confirmPassword, name, email } = req.body;
+                const { password, confirmPassword, fullname, username, email } = req.body;
                 if (password != confirmPassword)
                     throw { message: "Password not match!" };
-                const organizer = yield (0, organizer_service_1.findOrganizer)(name, email);
+                const organizer = yield (0, organizer_service_1.findOrganizer)(username, email);
                 if (organizer)
                     throw { message: "username or email has been used !" };
                 const salt = yield (0, bcrypt_1.genSalt)(10);
                 const hashPasword = yield (0, bcrypt_1.hash)(password, salt);
                 const newOrganizer = yield prisma_1.default.organizer.create({
-                    data: { name, email, password: hashPasword },
+                    data: { fullname, username, email, password: hashPasword },
                 });
                 const payload = { id: newOrganizer.id };
                 const token = (0, jsonwebtoken_1.sign)(payload, process.env.JWT_KEY, { expiresIn: "1d" });
@@ -237,7 +234,7 @@ class AuthController {
             var _a, _b, _c;
             try {
                 const role = (_a = req.user) === null || _a === void 0 ? void 0 : _a.role;
-                let user = {};
+                let user = null;
                 if (role == "customer") {
                     user = yield prisma_1.default.customer.findUnique({
                         where: { id: (_b = req.user) === null || _b === void 0 ? void 0 : _b.id },

@@ -14,9 +14,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.findOrganizer = void 0;
 const prisma_1 = __importDefault(require("../prisma"));
-const findOrganizer = (name, email) => __awaiter(void 0, void 0, void 0, function* () {
+const findOrganizer = (username, email) => __awaiter(void 0, void 0, void 0, function* () {
     const organizer = yield prisma_1.default.organizer.findFirst({
-        where: { OR: [{ name: name }, { email: email }] },
+        where: { OR: [{ username: username }, { email: email }] },
     });
     return organizer;
 });

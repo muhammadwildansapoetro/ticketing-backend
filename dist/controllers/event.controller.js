@@ -89,7 +89,8 @@ class EventController {
                             endTime: true,
                             organizer: {
                                 select: {
-                                    name: true,
+                                    fullname: true,
+                                    username: true,
                                     avatar: true,
                                 },
                             },
@@ -140,7 +141,8 @@ class EventController {
                         },
                         organizer: {
                             select: {
-                                name: true,
+                                fullname: true,
+                                username: true,
                                 avatar: true,
                             },
                         },

@@ -9,7 +9,7 @@ export class OrganizerController {
       const filter: Prisma.OrganizerWhereInput = {};
       if (search) {
         filter.OR = [
-          { name: { contains: search as string, mode: "insensitive" } },
+          { username: { contains: search as string, mode: "insensitive" } },
           { email: { contains: search as string, mode: "insensitive" } },
         ];
       }

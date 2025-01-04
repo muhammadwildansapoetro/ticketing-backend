@@ -32,8 +32,6 @@ export class AuthController {
       const salt = await genSalt(10);
       const hashPassword = await hash(password, salt);
 
-      // Generate referral code for the new customer
-      // const generatedReferralCode = Math.random().toString(36).slice(2, 8).toUpperCase();
       let newRefCode = generator();
       const refCode = await findRefCode(newRefCode);
       if (refCode) newRefCode = generator();
@@ -70,7 +68,6 @@ export class AuthController {
         },
       });
 
-      // Send verification email
       const payload = { id: newCustomer.id };
       const token = sign(payload, process.env.JWT_KEY!, { expiresIn: "1d" });
 
@@ -151,17 +148,17 @@ export class AuthController {
 
   async registerOrganizer(req: Request, res: Response) {
     try {
-      const { password, confirmPassword, name, email } = req.body;
+      const { password, confirmPassword, fullname, username, email } = req.body;
       if (password != confirmPassword) throw { message: "Password not match!" };
 
-      const organizer = await findOrganizer(name, email);
+      const organizer = await findOrganizer(username, email);
       if (organizer) throw { message: "username or email has been used !" };
 
       const salt = await genSalt(10);
       const hashPasword = await hash(password, salt);
 
       const newOrganizer = await prisma.organizer.create({
-        data: { name, email, password: hashPasword },
+        data: { fullname, username, email, password: hashPasword },
       });
 
       const payload = { id: newOrganizer.id };
@@ -245,7 +242,7 @@ export class AuthController {
     try {
       const role = req.user?.role;
 
-      let user: any = {};
+      let user: any = null;
 
       if (role == "customer") {
         user = await prisma.customer.findUnique({
@@ -256,6 +253,7 @@ export class AuthController {
           where: { id: req.user?.id },
         });
       }
+
       user.role = role;
 
       res.status(200).send({ user });

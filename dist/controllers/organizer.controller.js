@@ -22,7 +22,7 @@ class OrganizerController {
                 const filter = {};
                 if (search) {
                     filter.OR = [
-                        { name: { contains: search, mode: "insensitive" } },
+                        { username: { contains: search, mode: "insensitive" } },
                         { email: { contains: search, mode: "insensitive" } },
                     ];
                 }

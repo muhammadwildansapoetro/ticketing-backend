@@ -76,7 +76,7 @@ export class OrderController {
   async getOrderDetail(req: Request, res: Response) {
     try {
       const order = await prisma.order.findUnique({
-        where: { id: +req.params.orderId },
+        where: { id: req.params.orderId },
         select: {
           id: true,
           totalPrice: true,
@@ -201,7 +201,7 @@ export class OrderController {
 
       if (orderStatus === "Canceled") {
         const tickets = await prisma.orderDetail.findMany({
-          where: { orderId: +order_id },
+          where: { orderId: order_id },
           select: {
             ticketId: true,
             quantity: true,
@@ -217,7 +217,7 @@ export class OrderController {
       }
 
       await prisma.order.update({
-        where: { id: +order_id },
+        where: { id: order_id },
         data: { status: orderStatus },
       });
 

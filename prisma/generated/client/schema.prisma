@@ -37,8 +37,9 @@ enum OrderStatus {
 
 model Organizer {
   id         Int      @id @default(autoincrement())
-  name       String
-  email      String
+  fullname   String
+  username   String
+  email      String   @unique
   password   String
   avatar     String?  @default("https://res.cloudinary.com/doiygpguv/image/upload/v1734129888/organizer-default-avatar_bm5kg0.png")
   isVerified Boolean  @default(false)
@@ -100,7 +101,7 @@ model Customer {
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 
-  CustomerCoupon CustomerCoupon?
+  CustomerCoupon CustomerCoupon[]
   CustomerPoint  CustomerPoint[]
   Order          Order[]
   Review         Review[]
@@ -130,7 +131,7 @@ model CustomerPoint {
 }
 
 model Order {
-  id         Int         @id @default(autoincrement())
+  id         String      @id @default(uuid())
   customerId Int
   totalPrice Int
   finalPrice Int
@@ -144,7 +145,7 @@ model Order {
 }
 
 model OrderDetail {
-  orderId       Int
+  orderId       String
   ticketId      Int
   quantity      Int
   subTotalPrice Int
