@@ -102,7 +102,7 @@ model Customer {
   username       String
   email          String   @unique
   password       String
-  avatar         String?  @default("https://res.cloudinary.com/doiygpguv/image/upload/v1734056062/avatar-default_efbdwf.png")
+  avatar         String?  @default("https://res.cloudinary.com/doiygpguv/image/upload/v1734129888/customer-default-avatar_kas8rt.png")
   isVerified     Boolean  @default(false)
   referralCode   String
   referralCodeBy String?
@@ -136,6 +136,8 @@ model CustomerPoint {
   updatedAt  DateTime @updatedAt
 
   customer Customer @relation(fields: [customerId], references: [id])
+
+  @@unique([customerId, expiredAt]) // Mencegah duplikasi poin
 }
 
 model Order {

@@ -8,6 +8,9 @@ import { EventRouter } from "./routers/event.router";
 import { TicketRouter } from "./routers/ticket.router";
 import { OrderRouter } from "./routers/order.router";
 import dotenv from "dotenv";
+import { DashboardRouter } from "./routers/dashboard.router";
+import { ReferralCodeController } from "./controllers/refCode.controller";
+import { ReferralCodeRouter } from "./routers/refCode.router";
 dotenv.config();
 
 const PORT: number = 8000;
@@ -32,6 +35,8 @@ const orderRouter = new OrderRouter();
 const authRouter = new AuthRouter();
 const customerRouter = new CustomerRouter();
 const organizerRouter = new OrganizerRouter();
+const dashboardRouter = new DashboardRouter();
+const referralCodeRouter = new ReferralCodeRouter();
 
 app.use("/api/auth", authRouter.getRouter());
 app.use("/api/customers", customerRouter.getRouter());
@@ -39,11 +44,9 @@ app.use("/api/organizer", organizerRouter.getRouter());
 app.use("/api/events", eventRouter.getRouter());
 app.use("/api/tickets", ticketRouter.getRouter());
 app.use("/api/orders", orderRouter.getRouter());
-app.use("/api/events", eventRouter.getRouter());
-app.use("/api/tickets", ticketRouter.getRouter());
-app.use("/api/orders", orderRouter.getRouter());
-app.use("/api/tickets", ticketRouter.getRouter());
-app.use("/api/orders", orderRouter.getRouter());
+app.use("/api/dashboard", dashboardRouter.getRouter())
+app.use("/api/referral-code", referralCodeRouter.getRouter());
+
 
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}/api`);

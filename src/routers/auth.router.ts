@@ -18,7 +18,7 @@ export class AuthRouter {
       "/customer/register",
       this.authController.registerCustomer
     );
-    this.router.post("/customer/sign-in", this.authController.loginCustomer);
+    this.router.post("/customer/sign-in", this.authController.SignInCustomer);
     this.router.post(
       "/organizer/register",
       this.authController.registerOrganizer

@@ -82,7 +82,7 @@ export class AuthController {
     }
   }
 
-  async loginCustomer(req: Request, res: Response) {
+  async SignInCustomer(req: Request, res: Response) {
     try {
       const { data, password } = req.body;
       const customer = await findCustomer(data, data);
@@ -97,73 +97,86 @@ export class AuthController {
 
       const payload = { id: customer.id, role: "customer" };
       const token = sign(payload, process.env.JWT_KEY!, { expiresIn: "1d" });
-      const cus = { ...customer, role: "customer" };
-      res
-        .status(200)
-        .send({ massage: "Login User Succesfully", customer: cus, token });
+      const Customer = { ...customer, role: "customer" };
+      res.status(200).send({
+        message: "Sign-In Customer Succesfully",
+        customer: Customer,
+        token,
+      });
     } catch (err) {
       console.error(err);
-      res.status(400).send("Login Failed");
+      res.status(400).send("Sign-In Failed");
     }
   }
 
   async verifyCustomer(req: Request, res: Response) {
     try {
       const { token } = req.params;
+
       const verifiedCustomer: any = verify(token, process.env.JWT_KEY!);
-      // console.log(verifiedCustomer)
 
       const customer = await prisma.customer.findUnique({
         where: { id: verifiedCustomer.id },
       });
-      if (customer?.isVerified == false) {
-        await prisma.customer.update({
-          data: { isVerified: true },
-          where: { id: customer?.id },
+
+      if (!customer) {
+        throw { message: "Customer not found" };
+      }
+
+      if (customer.isVerified) {
+        throw { message: "Your account is already verified" };
+      }
+
+      await prisma.customer.update({
+        data: { isVerified: true },
+        where: { id: customer.id },
+      });
+
+      const InputRefCode = customer.referralCodeBy;
+
+      if (InputRefCode) {
+        const RefCustomer = await prisma.customer.findFirst({
+          where: { referralCode: InputRefCode },
         });
-        const InputRefCode = customer?.referralCodeBy;
 
-        if (InputRefCode) {
-          //count the expired Date
-          const RefCustomer = await findRefCode(InputRefCode);
-          if (RefCustomer) {
-            const DateNow = new Date().getTime();
-            const expiredAt = new Date(DateNow + "3d");
+        if (RefCustomer) {
+          const DateNow = new Date();
+          const expiredAt = new Date();
+          expiredAt.setMonth(DateNow.getMonth() + 3);
 
-            //api posting refferall customer point
-            await prisma.customerPoint.create({
-              data: { customerId: RefCustomer.id, expiredAt: expiredAt },
-            });
-
-            //api posting verified customer coupon
-            await prisma.customerCoupon.create({
-              data: {
-                customerId: verifiedCustomer.id,
-                expiredAt: expiredAt,
-                isRedeem: false,
+          // Tambahkan validasi untuk mencegah duplikasi poin
+          await prisma.$transaction(async (prisma) => {
+            const existingPoint = await prisma.customerPoint.findFirst({
+              where: {
+                customerId: RefCustomer.id,
+                expiredAt,
               },
             });
-          }
-        }
-        // Create a 10% discount coupon for the new customer
-        // const couponExpiryDate = new Date();
-        // couponExpiryDate.setMonth(couponExpiryDate.getMonth() + 3);
 
-        // await prisma.customerCoupon.create({
-        //   data: {
-        //     customerId: newCustomer.id,
-        //     percentage: 10,
-        //     isRedeem: false,
-        //     expiredAt: couponExpiryDate,
-        //   },
-        // });
+            if (!existingPoint) {
+              await prisma.customerPoint.create({
+                data: {
+                  customerId: RefCustomer.id,
+                  expiredAt,
+                },
+              });
+            }
+          });
+
+          // Buat kupon untuk customer baru
+          await prisma.customerCoupon.create({
+            data: {
+              customerId: customer.id,
+              expiredAt,
+              isRedeem: false,
+            },
+          });
+        }
       }
-      if (customer?.isVerified == true) {
-        throw { message: "Your account have verified" };
-      }
+
       res.status(200).send({ message: "Verify Successfully" });
     } catch (err) {
-      console.log(err);
+      console.error(err);
       res.status(400).send(err);
     }
   }
@@ -228,13 +241,15 @@ export class AuthController {
 
       const payload = { id: organizer.id, role: "organizer" };
       const token = sign(payload, process.env.JWT_KEY!, { expiresIn: "1d" });
-      const Orga = { ...organizer, role: "organizer" };
-      res
-        .status(200)
-        .send({ massage: "Login User Succesfully", organizer: Orga, token });
+      const Organizer = { ...organizer, role: "organizer" };
+      res.status(200).send({
+        message: "Sign-In Organizer Succesfully",
+        organizer: Organizer,
+        token,
+      });
     } catch (err) {
       console.error(err);
-      res.status(400).send("Login Failed");
+      res.status(400).send("Sign-In Failed");
     }
   }
 

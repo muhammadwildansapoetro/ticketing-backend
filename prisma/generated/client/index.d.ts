@@ -11851,6 +11851,7 @@ export namespace Prisma {
 
   export type CustomerPointWhereUniqueInput = Prisma.AtLeast<{
     id?: number
+    customerId_expiredAt?: CustomerPointCustomerIdExpiredAtCompoundUniqueInput
     AND?: CustomerPointWhereInput | CustomerPointWhereInput[]
     OR?: CustomerPointWhereInput[]
     NOT?: CustomerPointWhereInput | CustomerPointWhereInput[]
@@ -11861,7 +11862,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"CustomerPoint"> | Date | string
     updatedAt?: DateTimeFilter<"CustomerPoint"> | Date | string
     customer?: XOR<CustomerScalarRelationFilter, CustomerWhereInput>
-  }, "id">
+  }, "id" | "customerId_expiredAt">
 
   export type CustomerPointOrderByWithAggregationInput = {
     id?: SortOrder
@@ -13371,6 +13372,11 @@ export namespace Prisma {
   export type CustomerCouponSumOrderByAggregateInput = {
     customerId?: SortOrder
     percentage?: SortOrder
+  }
+
+  export type CustomerPointCustomerIdExpiredAtCompoundUniqueInput = {
+    customerId: number
+    expiredAt: Date | string
   }
 
   export type CustomerPointCountOrderByAggregateInput = {
