@@ -83,7 +83,9 @@ class AuthController {
                     subject: "Welcome to MatchTix",
                     html,
                 });
-                res.status(201).send({ message: "Registered successfully" });
+                res.status(201).send({
+                    message: "Registered successfully. Check your email to verify account.",
+                });
             }
             catch (error) {
                 console.log(error);
@@ -163,14 +165,16 @@ class AuthController {
                 const templatePath = path_1.default.join(__dirname, "../templates", "verifyOrganizer.hbs");
                 const templateSource = fs_1.default.readFileSync(templatePath, "utf-8");
                 const compiledTemplate = handlebars_1.default.compile(templateSource);
-                const html = compiledTemplate({ name, link });
+                const html = compiledTemplate({ fullname, link });
                 yield mailer_1.transporter.sendMail({
                     from: "mirzaaliyusuf45@gmail.com",
                     to: email,
                     subject: "Welcome to MatchTix",
                     html,
                 });
-                res.status(201).send({ message: "Registered successfully" });
+                res.status(201).send({
+                    message: "Registered successfully. Check your email to verify account.",
+                });
             }
             catch (err) {
                 console.log(err);
@@ -221,7 +225,7 @@ class AuthController {
                 if ((organizer === null || organizer === void 0 ? void 0 : organizer.isVerified) == true) {
                     throw { message: "Your account have verified" };
                 }
-                res.status(200).send({ message: "Verify Successfully" });
+                res.status(200).send({ message: "Verified Successfully" });
             }
             catch (err) {
                 console.log(err);

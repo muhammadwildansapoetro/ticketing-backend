@@ -28,6 +28,11 @@ export class CustomerRouter {
 
     this.router.patch("/:id", this.customerController.editCustomer);
     this.router.delete("/:id", this.customerController.deleteCustomer);
+    this.router.get(
+      "/tickets/:eventId",
+      verifyToken,
+      this.customerController.getCustomerTickets
+    );
   }
 
   getRouter(): Router {

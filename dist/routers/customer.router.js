@@ -17,6 +17,7 @@ class CustomerRouter {
         this.router.get("/events", verify_1.verifyToken, this.customerController.getCustomerEvents);
         this.router.patch("/:id", this.customerController.editCustomer);
         this.router.delete("/:id", this.customerController.deleteCustomer);
+        this.router.get("/tickets/:eventId", verify_1.verifyToken, this.customerController.getCustomerTickets);
     }
     getRouter() {
         return this.router;

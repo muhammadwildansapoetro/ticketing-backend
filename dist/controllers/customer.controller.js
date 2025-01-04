@@ -147,5 +147,50 @@ class CustomerController {
             }
         });
     }
+    getCustomerTickets(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            var _a;
+            try {
+                const tickets = yield prisma_1.default.ticket.findMany({
+                    where: {
+                        AND: [
+                            { eventId: req.params.eventId },
+                            {
+                                OrderDetail: {
+                                    some: {
+                                        order: {
+                                            AND: [{ customerId: (_a = req.user) === null || _a === void 0 ? void 0 : _a.id }, { status: "Paid" }],
+                                        },
+                                    },
+                                },
+                            },
+                        ],
+                    },
+                    select: {
+                        id: true,
+                        category: true,
+                        description: true,
+                        price: true,
+                        event: {
+                            select: {
+                                id: true,
+                                title: true,
+                                venue: true,
+                                location: true,
+                                image: true,
+                                date: true,
+                                startTime: true,
+                            },
+                        },
+                    },
+                });
+                res.status(200).send({ tickets });
+            }
+            catch (error) {
+                console.log("Error get customer tickets:", error);
+                res.status(400).send({ message: "Error get customer tickets:", error });
+            }
+        });
+    }
 }
 exports.CustomerController = CustomerController;

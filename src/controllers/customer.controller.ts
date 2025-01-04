@@ -124,4 +124,47 @@ export class CustomerController {
       res.status(400).send({ message: "Error get customer events:", error });
     }
   }
+
+  async getCustomerTickets(req: Request, res: Response) {
+    try {
+      const tickets = await prisma.ticket.findMany({
+        where: {
+          AND: [
+            { eventId: req.params.eventId },
+            {
+              OrderDetail: {
+                some: {
+                  order: {
+                    AND: [{ customerId: req.user?.id }, { status: "Paid" }],
+                  },
+                },
+              },
+            },
+          ],
+        },
+        select: {
+          id: true,
+          category: true,
+          description: true,
+          price: true,
+          event: {
+            select: {
+              id: true,
+              title: true,
+              venue: true,
+              location: true,
+              image: true,
+              date: true,
+              startTime: true,
+            },
+          },
+        },
+      });
+
+      res.status(200).send({ tickets });
+    } catch (error) {
+      console.log("Error get customer tickets:", error);
+      res.status(400).send({ message: "Error get customer tickets:", error });
+    }
+  }
 }

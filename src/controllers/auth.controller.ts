@@ -88,7 +88,9 @@ export class AuthController {
         subject: "Welcome to MatchTix",
         html,
       });
-      res.status(201).send({ message: "Registered successfully" });
+      res.status(201).send({
+        message: "Registered successfully. Check your email to verify account.",
+      });
     } catch (error) {
       console.log(error);
       res.status(400).send(error);
@@ -173,7 +175,7 @@ export class AuthController {
       );
       const templateSource = fs.readFileSync(templatePath, "utf-8");
       const compiledTemplate = handlebars.compile(templateSource);
-      const html = compiledTemplate({ name, link });
+      const html = compiledTemplate({ fullname, link });
 
       await transporter.sendMail({
         from: "mirzaaliyusuf45@gmail.com",
@@ -182,7 +184,9 @@ export class AuthController {
         html,
       });
 
-      res.status(201).send({ message: "Registered successfully" });
+      res.status(201).send({
+        message: "Registered successfully. Check your email to verify account.",
+      });
     } catch (err) {
       console.log(err);
       res.status(400).send(err);
@@ -222,6 +226,7 @@ export class AuthController {
       const organizer = await prisma.organizer.findUnique({
         where: { id: verifiedOrganizer.id },
       });
+
       if (organizer?.isVerified == false) {
         await prisma.organizer.update({
           data: { isVerified: true },
@@ -231,7 +236,8 @@ export class AuthController {
       if (organizer?.isVerified == true) {
         throw { message: "Your account have verified" };
       }
-      res.status(200).send({ message: "Verify Successfully" });
+
+      res.status(200).send({ message: "Verified Successfully" });
     } catch (err) {
       console.log(err);
       res.status(400).send(err);
