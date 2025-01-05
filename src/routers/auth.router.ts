@@ -18,11 +18,11 @@ export class AuthRouter {
       "/customer/register",
       this.authController.registerCustomer
     );
-    this.router.post("/customer/sign-in", this.authController.signInCustomer);
     this.router.post(
       "/organizer/register",
       this.authController.registerOrganizer
     );
+    this.router.post("/customer/sign-in", this.authController.signInCustomer);
     this.router.post("/organizer/sign-in", this.authController.signInOrganizer);
 
     this.router.patch(

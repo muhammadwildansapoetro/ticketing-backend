@@ -1,18 +1,18 @@
 // import { Router } from "express";
-// import { StatisticsController } from "src/controllers/statistic.controller";
+// import { SystempointandcouponController } from "src/controllers/statistic.controller";
 
 // export class StatisticRouter {
-//   private statisticController: StatisticsController;
+//   private systempoinandcouponController: SystempointandcouponController;
 //   private router: Router;
 
 //   constructor() {
-//     this.statisticController = new StatisticsController();
+//     this.systempoinandcouponController = new SystempointandcouponController();
 //     this.router = Router();
 //     this.initialiazeRoutes();
 //   }
 
 //   private initialiazeRoutes() {
-//     this.router.post("/statistic", this.statisticController.getStatistics);
+//     this.router.post("/statistic", this.systempoinandcouponController.redeemPoints);
 //   }
 
 //   getRouter(): Router {

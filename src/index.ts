@@ -10,7 +10,6 @@ import { OrderRouter } from "./routers/order.router";
 import dotenv from "dotenv";
 import { ReviewRouter } from "./routers/review.router";
 import { DashboardRouter } from "./routers/dashboard.router";
-// import { StatisticRouter } from "./routers/statistic.router";
 dotenv.config();
 
 const PORT: number = 8000;

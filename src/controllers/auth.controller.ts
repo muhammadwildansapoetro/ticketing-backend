@@ -76,7 +76,7 @@ export class AuthController {
         subject: "Welcome to MatchTix",
         html,
       });
-      res.status(201).send({ message: "Register Successfully" });
+      res.status(201).send({ message: "Register Successfully, Check Your Email" });
     } catch (error) {
       console.log(error);
       res.status(400).send(error);
