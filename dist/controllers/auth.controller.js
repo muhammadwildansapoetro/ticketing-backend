@@ -59,17 +59,6 @@ class AuthController {
                         referralCodeBy,
                     },
                 });
-                // Create a 10% discount coupon for the new customer
-                const couponExpiryDate = new Date();
-                couponExpiryDate.setMonth(couponExpiryDate.getMonth() + 3);
-                yield prisma_1.default.customerCoupon.create({
-                    data: {
-                        customerId: newCustomer.id,
-                        percentage: 10,
-                        isRedeem: false,
-                        expiredAt: couponExpiryDate,
-                    },
-                });
                 const payload = { id: newCustomer.id };
                 const token = (0, jsonwebtoken_1.sign)(payload, process.env.JWT_KEY, { expiresIn: "1d" });
                 const link = `${process.env.BASE_URL_FE}/customer/verify/${token}`;
@@ -130,17 +119,40 @@ class AuthController {
                 if ((customer === null || customer === void 0 ? void 0 : customer.isVerified) == false) {
                     yield prisma_1.default.customer.update({
                         data: { isVerified: true },
-                        where: { id: customer.id },
+                        where: { id: customer === null || customer === void 0 ? void 0 : customer.id },
                     });
+                    const inputrefCode = customer === null || customer === void 0 ? void 0 : customer.referralCodeBy;
+                    console.log(inputrefCode);
+                    if (inputrefCode) {
+                        const refCustomer = yield (0, customer_service_1.findRefCode)(inputrefCode);
+                        if (refCustomer) {
+                            // count the expiry date
+                            const now = new Date();
+                            const expiredAt = new Date();
+                            expiredAt.setMonth(now.getMonth() + 3);
+                            // api posting referred user's point
+                            yield prisma_1.default.customerPoint.create({
+                                data: { customerId: refCustomer.id, expiredAt: expiredAt },
+                            });
+                            // api posting verified user's coupon
+                            yield prisma_1.default.customerCoupon.create({
+                                data: {
+                                    customerId: verifiedCustomer.id,
+                                    expiredAt: expiredAt,
+                                    isRedeem: false,
+                                },
+                            });
+                        }
+                    }
                 }
                 if ((customer === null || customer === void 0 ? void 0 : customer.isVerified) == true) {
-                    throw { message: "Your account have verified" };
+                    throw { message: "the account is already Verify Successfully" };
                 }
-                res.status(200).send({ message: "Verify Successfully" });
+                res.status(200).send({ message: "The Process is verify Succesfully" });
             }
-            catch (err) {
-                console.log(err);
-                res.status(400).send(err);
+            catch (error) {
+                console.log(error);
+                res.status(400).send(error);
             }
         });
     }

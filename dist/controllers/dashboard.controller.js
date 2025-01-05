@@ -92,10 +92,10 @@ class DashboardController {
                 }
                 for (const item of jumlahTiket) {
                     if (!JSON.stringify(chartData).includes(`${item}`)) {
-                        chartData.push({ year: `${item}`, totalTiket: 1 });
+                        chartData.push({ year: `${item}`, totalTicket: 1 });
                     }
                     else {
-                        chartData[chartData.length - 1].totalTiket += 1;
+                        chartData[chartData.length - 1].totalTicket += 1;
                     }
                 }
                 console.log(chartData);

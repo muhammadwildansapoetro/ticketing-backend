@@ -55,19 +55,6 @@ export class AuthController {
         },
       });
 
-      // Create a 10% discount coupon for the new customer
-      const couponExpiryDate = new Date();
-      couponExpiryDate.setMonth(couponExpiryDate.getMonth() + 3);
-
-      await prisma.customerCoupon.create({
-        data: {
-          customerId: newCustomer.id,
-          percentage: 10,
-          isRedeem: false,
-          expiredAt: couponExpiryDate,
-        },
-      });
-
       const payload = { id: newCustomer.id };
       const token = sign(payload, process.env.JWT_KEY!, { expiresIn: "1d" });
 
@@ -88,6 +75,7 @@ export class AuthController {
         subject: "Welcome to MatchTix",
         html,
       });
+
       res.status(201).send({
         message: "Registered successfully. Check your email to verify account.",
       });
@@ -130,19 +118,49 @@ export class AuthController {
       const customer = await prisma.customer.findUnique({
         where: { id: verifiedCustomer.id },
       });
+
       if (customer?.isVerified == false) {
         await prisma.customer.update({
           data: { isVerified: true },
-          where: { id: customer.id },
+          where: { id: customer?.id },
         });
+        const inputrefCode = customer?.referralCodeBy;
+        console.log(inputrefCode);
+
+        if (inputrefCode) {
+          const refCustomer = await findRefCode(inputrefCode);
+
+          if (refCustomer) {
+            // count the expiry date
+            const now = new Date();
+            const expiredAt = new Date();
+            expiredAt.setMonth(now.getMonth() + 3);
+
+            // api posting referred user's point
+            await prisma.customerPoint.create({
+              data: { customerId: refCustomer.id, expiredAt: expiredAt },
+            });
+
+            // api posting verified user's coupon
+            await prisma.customerCoupon.create({
+              data: {
+                customerId: verifiedCustomer.id,
+                expiredAt: expiredAt,
+                isRedeem: false,
+              },
+            });
+          }
+        }
       }
+
       if (customer?.isVerified == true) {
-        throw { message: "Your account have verified" };
+        throw { message: "the account is already Verify Successfully" };
       }
-      res.status(200).send({ message: "Verify Successfully" });
-    } catch (err) {
-      console.log(err);
-      res.status(400).send(err);
+
+      res.status(200).send({ message: "The Process is verify Succesfully" });
+    } catch (error) {
+      console.log(error);
+      res.status(400).send(error);
     }
   }
 
