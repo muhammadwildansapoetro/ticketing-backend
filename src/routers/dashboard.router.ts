@@ -16,6 +16,7 @@ export class DashboardRouter {
     this.router.get("/eventGrafik", verifyToken,this.dashboardcontroller.getEventAktif);
     this.router.get("/transactionGrafik", verifyToken, this.dashboardcontroller.getTransaction)
     this.router.get("/ticketchart", verifyToken, this.dashboardcontroller.getTicket)
+    this.router.get("/statistic", verifyToken, this.dashboardcontroller.getStatistics)
   }
 
   getRouter(): Router {
