@@ -23,8 +23,7 @@ export class AuthController {
         email,
         referralCodeBy,
       } = req.body;
-
-      if (password != confirmPassword) throw { message: "Password not match" };
+      if (password != confirmPassword) throw { message: "Password not match!" };
 
       const customer = await findCustomer(username, email);
       if (customer) throw { message: "Username or email has been used!" };
@@ -32,15 +31,16 @@ export class AuthController {
       const salt = await genSalt(10);
       const hashPassword = await hash(password, salt);
 
+      // const generatedReferralCode = Math.random().toString(36).slice(2, 8).toUpperCase();
       let newRefCode = generator();
       const refCode = await findRefCode(newRefCode);
       if (refCode) newRefCode = generator();
-
+      
       if (referralCodeBy) {
         const isRefCode = await findRefCode(referralCodeBy);
         if (!isRefCode) throw { message: "ReferralCode is not found" };
       }
-
+      
       if (referralCodeBy == "") referralCodeBy = null;
 
       // Create new customer
@@ -55,19 +55,7 @@ export class AuthController {
         },
       });
 
-      // Create a 10% discount coupon for the new customer
-      const couponExpiryDate = new Date();
-      couponExpiryDate.setMonth(couponExpiryDate.getMonth() + 3);
-
-      await prisma.customerCoupon.create({
-        data: {
-          customerId: newCustomer.id,
-          percentage: 10,
-          isRedeem: false,
-          expiredAt: couponExpiryDate,
-        },
-      });
-
+      // Send verification email
       const payload = { id: newCustomer.id };
       const token = sign(payload, process.env.JWT_KEY!, { expiresIn: "1d" });
 
@@ -88,7 +76,7 @@ export class AuthController {
         subject: "Welcome to MatchTix",
         html,
       });
-      res.status(201).send({ message: "Registered successfully" });
+      res.status(201).send({ message: "Register Successfully" });
     } catch (error) {
       console.log(error);
       res.status(400).send(error);
@@ -110,12 +98,12 @@ export class AuthController {
 
       const payload = { id: customer.id, role: "customer" };
       const token = sign(payload, process.env.JWT_KEY!, { expiresIn: "1d" });
-      const cus = { ...customer, role: "customer" };
+      const Customer = { ...customer, role: "customer" };
       res
         .status(200)
-        .send({ message: "Signed in succesfully", customer: cus, token });
-    } catch (err) {
-      console.error(err);
+        .send({ message: "Signed in succesfully", customer: Customer, token });
+    } catch (error) {
+      console.log(error);
       res.status(400).send({ message: "Sign in Failed" });
     }
   }
@@ -128,19 +116,51 @@ export class AuthController {
       const customer = await prisma.customer.findUnique({
         where: { id: verifiedCustomer.id },
       });
+
       if (customer?.isVerified == false) {
         await prisma.customer.update({
           data: { isVerified: true },
-          where: { id: customer.id },
+          where: { id: customer?.id },
         });
+        const inputrefCode = customer?.referralCodeBy;
+        console.log(inputrefCode);
+
+        if (inputrefCode) {
+          const refCustomer = await findRefCode(inputrefCode);
+
+          if (refCustomer) {
+            // count the expiry date
+            const now = new Date();
+            const expiredAt = new Date();
+            expiredAt.setMonth(now.getMonth() + 3);
+
+            // api posting referred user's point
+            await prisma.customerPoint.create({
+              data: { customerId: refCustomer.id, expiredAt: expiredAt },
+            });
+
+            // api posting verified user's coupon
+            await prisma.customerCoupon.create({
+              data: {
+                customerId: verifiedCustomer.id,
+                expiredAt: expiredAt,
+                isRedeem: false,
+              },
+            });
+          }
+        }
       }
+
       if (customer?.isVerified == true) {
-        throw { message: "Your account have verified" };
+        throw { message: "the account is already Verify Successfully" };
       }
-      res.status(200).send({ message: "Verify Successfully" });
-    } catch (err) {
-      console.log(err);
-      res.status(400).send(err);
+
+      res
+        .status(200)
+        .send({ message: "The Process is verify Succesfully" });
+    } catch (error) {
+      console.log(error);
+      res.status(400).send(error);
     }
   }
 
@@ -204,12 +224,12 @@ export class AuthController {
 
       const payload = { id: organizer.id, role: "organizer" };
       const token = sign(payload, process.env.JWT_KEY!, { expiresIn: "1d" });
-      const Orga = { ...organizer, role: "organizer" };
+      const Organizer = { ...organizer, role: "organizer" };
       res
         .status(200)
-        .send({ message: "Signed in succesfully", organizer: Orga, token });
-    } catch (err) {
-      console.error(err);
+        .send({ message: "Signed in succesfully", organizer: Organizer, token });
+    } catch (error) {
+      console.log(error);
       res.status(400).send("Sign in Failed");
     }
   }

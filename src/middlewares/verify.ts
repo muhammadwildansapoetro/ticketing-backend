@@ -11,9 +11,9 @@ export const verifyToken = async (
     const token = req.header("Authorization")?.replace("Bearer ", "");
     if (!token) throw { message: "Unauthorize" };
 
-    const verifiedUser = verify(token, process.env.JWT_KEY!) as UserPayload;
+    const verifiedUser = verify(token, process.env.JWT_KEY!);
 
-    req.user = verifiedUser;
+    req.user = verifiedUser as UserPayload;
 
     next();
   } catch (error) {

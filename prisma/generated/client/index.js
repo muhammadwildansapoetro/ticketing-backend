@@ -32,11 +32,11 @@ exports.$Enums = {}
 
 /**
  * Prisma Client JS version: 6.1.0
- * Query Engine version: 5dbef10bdbfb579e07d35cc85fb1518d357cb99e
+ * Query Engine version: 11f085a2012c0f4778414c8db2651556ee0ef959
  */
 Prisma.prismaVersion = {
   client: "6.1.0",
-  engine: "5dbef10bdbfb579e07d35cc85fb1518d357cb99e"
+  engine: "11f085a2012c0f4778414c8db2651556ee0ef959"
 }
 
 Prisma.PrismaClientKnownRequestError = PrismaClientKnownRequestError;
@@ -249,7 +249,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "/Users/muhammadwildansapoetro/Documents/Learning/JCWD0508/Ticketing-Backend/matchtix-api/prisma/generated/client",
+      "value": "E:\\Git-Collab\\ticketing-backend\\prisma\\generated\\client",
       "fromEnvVar": null
     },
     "config": {
@@ -258,12 +258,12 @@ const config = {
     "binaryTargets": [
       {
         "fromEnvVar": null,
-        "value": "darwin-arm64",
+        "value": "windows",
         "native": true
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "/Users/muhammadwildansapoetro/Documents/Learning/JCWD0508/Ticketing-Backend/matchtix-api/prisma/schema.prisma",
+    "sourceFilePath": "E:\\Git-Collab\\ticketing-backend\\prisma\\schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
@@ -272,11 +272,12 @@ const config = {
   },
   "relativePath": "../..",
   "clientVersion": "6.1.0",
-  "engineVersion": "5dbef10bdbfb579e07d35cc85fb1518d357cb99e",
+  "engineVersion": "11f085a2012c0f4778414c8db2651556ee0ef959",
   "datasourceNames": [
     "db"
   ],
   "activeProvider": "postgresql",
+  "postinstall": false,
   "inlineDatasources": {
     "db": {
       "url": {
@@ -324,8 +325,8 @@ exports.PrismaClient = PrismaClient
 Object.assign(exports, Prisma)
 
 // file annotations for bundling tools to include these files
-path.join(__dirname, "libquery_engine-darwin-arm64.dylib.node");
-path.join(process.cwd(), "prisma/generated/client/libquery_engine-darwin-arm64.dylib.node")
+path.join(__dirname, "query_engine-windows.dll.node");
+path.join(process.cwd(), "prisma/generated/client/query_engine-windows.dll.node")
 // file annotations for bundling tools to include these files
 path.join(__dirname, "schema.prisma");
 path.join(process.cwd(), "prisma/generated/client/schema.prisma")
