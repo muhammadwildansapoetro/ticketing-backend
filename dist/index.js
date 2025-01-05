@@ -35,6 +35,7 @@ const ticketRouter = new ticket_router_1.TicketRouter();
 const orderRouter = new order_router_1.OrderRouter();
 const reviewRouter = new review_router_1.ReviewRouter();
 const dashboardRouter = new dashboard_router_1.DashboardRouter();
+// const statisticRouter = new StatisticRouter();
 app.use("/api/auth", authRouter.getRouter());
 app.use("/api/customers", customerRouter.getRouter());
 app.use("/api/organizers", organizerRouter.getRouter());
@@ -43,6 +44,7 @@ app.use("/api/tickets", ticketRouter.getRouter());
 app.use("/api/orders", orderRouter.getRouter());
 app.use("/api/reviews", reviewRouter.getRouter());
 app.use("/api/dashboard", dashboardRouter.getRouter());
+// app.use("/api/statistics", statisticRouter.getRouter());
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}/api`);
 });

@@ -14,6 +14,8 @@ class DashboardRouter {
         this.router.get("/eventGrafik", verify_1.verifyToken, this.dashboardcontroller.getEventAktif);
         this.router.get("/transactionGrafik", verify_1.verifyToken, this.dashboardcontroller.getTransaction);
         this.router.get("/ticketchart", verify_1.verifyToken, this.dashboardcontroller.getTicket);
+        this.router.get("/statistic", verify_1.verifyToken, this.dashboardcontroller.getStatistics);
+        this.router.get("/customerdetail", verify_1.verifyToken, this.dashboardcontroller.getCustomerRewards);
     }
     getRouter() {
         return this.router;

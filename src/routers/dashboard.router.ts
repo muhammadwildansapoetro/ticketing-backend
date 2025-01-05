@@ -28,6 +28,16 @@ export class DashboardRouter {
       verifyToken,
       this.dashboardcontroller.getTicket
     );
+    this.router.get(
+      "/statistic",
+      verifyToken,
+      this.dashboardcontroller.getStatistics
+    );
+    this.router.get(
+      "/customerdetail",
+      verifyToken,
+      this.dashboardcontroller.getCustomerRewards
+    );
   }
 
   getRouter(): Router {
