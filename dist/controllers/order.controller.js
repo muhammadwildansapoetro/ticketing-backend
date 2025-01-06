@@ -23,13 +23,28 @@ class OrderController {
             var _a;
             try {
                 const customerId = (_a = req.user) === null || _a === void 0 ? void 0 : _a.id;
-                const { totalPrice, finalPrice, orderCart } = req.body;
+                const { totalPrice, finalPrice, orderCart, customerCoupon, customerPoints, } = req.body;
                 const expiredAt = new Date(new Date().getTime() + 10 * 60 * 1000);
                 console.log("customer ID:", customerId);
                 const { id } = yield prisma_1.default.order.create({
                     data: { customerId: customerId, totalPrice, finalPrice, expiredAt },
                 });
                 const currentDate = new Date();
+                const customerPointData = yield prisma_1.default.customerPoint.findMany({
+                    where: {
+                        customerId: customerId,
+                        expiredAt: {
+                            gte: currentDate,
+                        },
+                        isUsed: false,
+                    },
+                    select: {
+                        point: true,
+                        expiredAt: true,
+                    },
+                });
+                const totalAvailablePoints = customerPointData.reduce((acc, point) => acc + point.point, 0);
+                let totalSubTotalPrice = 0;
                 for (const order of orderCart) {
                     const ticket = yield prisma_1.default.ticket.findUnique({
                         where: { id: order.ticket.id },
@@ -51,6 +66,7 @@ class OrderController {
                             ? ticket.price - (ticket.price * ticket.discountPercentage) / 100
                             : ticket.price;
                     const subTotalPrice = ticketPrice * order.quantity;
+                    totalSubTotalPrice += subTotalPrice;
                     yield prisma_1.default.orderDetail.create({
                         data: {
                             orderId: id,
@@ -62,6 +78,38 @@ class OrderController {
                     yield prisma_1.default.ticket.update({
                         data: { quantity: { decrement: order.quantity } },
                         where: { id: order.ticket.id },
+                    });
+                }
+                if (totalAvailablePoints > 0) {
+                    const discountAmount = Math.min(totalAvailablePoints, totalSubTotalPrice);
+                    totalSubTotalPrice -= discountAmount;
+                }
+                yield prisma_1.default.order.update({
+                    where: { id: id },
+                    data: {
+                        finalPrice: finalPrice,
+                    },
+                });
+                if (customerCoupon) {
+                    yield prisma_1.default.customerCoupon.updateMany({
+                        where: {
+                            customerId: customerId,
+                            isRedeem: false,
+                        },
+                        data: {
+                            isRedeem: true,
+                        },
+                    });
+                }
+                if (customerPoints) {
+                    yield prisma_1.default.customerPoint.updateMany({
+                        where: {
+                            customerId: customerId,
+                            isUsed: false,
+                        },
+                        data: {
+                            isUsed: true,
+                        },
                     });
                 }
                 res
@@ -144,23 +192,25 @@ class OrderController {
                 const customer = yield prisma_1.default.customer.findUnique({
                     where: { id: (_a = req.user) === null || _a === void 0 ? void 0 : _a.id },
                 });
+                let totalGrossAmount = 0;
                 for (const ticket of orderDetail) {
+                    const itemPrice = ticket.subTotalPrice / ticket.quantity;
                     item_details.push({
                         id: ticket.ticketId.toString(),
                         name: ticket.ticket.category + " Stand",
-                        price: ticket.subTotalPrice / ticket.quantity,
+                        price: itemPrice,
                         quantity: ticket.quantity,
                     });
+                    totalGrossAmount += ticket.subTotalPrice;
                 }
                 const snap = new midtransClient.Snap({
                     isProduction: false,
                     serverKey: `${process.env.MIDTRANS_SERVER_KEY}`,
                 });
-                console.log("req body:", req.body);
                 const parameter = {
                     transaction_details: {
                         order_id: order_id.toString(),
-                        gross_amount: req.body.gross_amount,
+                        gross_amount: totalGrossAmount,
                     },
                     customer_details: {
                         first_name: customer === null || customer === void 0 ? void 0 : customer.fullname,
@@ -173,7 +223,6 @@ class OrderController {
                     },
                 };
                 const order = yield snap.createTransaction(parameter);
-                console.log("Midtrans response:", order);
                 res.status(200).send({ orderToken: order.token });
             }
             catch (error) {

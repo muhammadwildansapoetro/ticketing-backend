@@ -8,7 +8,14 @@ export class OrderController {
   async createOrder(req: Request, res: Response) {
     try {
       const customerId = req.user?.id!;
-      const { totalPrice, finalPrice, orderCart } = req.body;
+      const {
+        totalPrice,
+        finalPrice,
+        orderCart,
+        customerCoupon,
+        customerPoints,
+      } = req.body;
+
       const expiredAt = new Date(new Date().getTime() + 10 * 60 * 1000);
       console.log("customer ID:", customerId);
 
@@ -17,6 +24,27 @@ export class OrderController {
       });
 
       const currentDate = new Date();
+
+      const customerPointData = await prisma.customerPoint.findMany({
+        where: {
+          customerId: customerId,
+          expiredAt: {
+            gte: currentDate,
+          },
+          isUsed: false,
+        },
+        select: {
+          point: true,
+          expiredAt: true,
+        },
+      });
+
+      const totalAvailablePoints = customerPointData.reduce(
+        (acc, point) => acc + point.point,
+        0
+      );
+
+      let totalSubTotalPrice = 0;
 
       for (const order of orderCart) {
         const ticket = await prisma.ticket.findUnique({
@@ -49,6 +77,7 @@ export class OrderController {
             : ticket.price;
 
         const subTotalPrice = ticketPrice * order.quantity;
+        totalSubTotalPrice += subTotalPrice;
 
         await prisma.orderDetail.create({
           data: {
@@ -61,6 +90,45 @@ export class OrderController {
         await prisma.ticket.update({
           data: { quantity: { decrement: order.quantity } },
           where: { id: order.ticket.id },
+        });
+      }
+
+      if (totalAvailablePoints > 0) {
+        const discountAmount = Math.min(
+          totalAvailablePoints,
+          totalSubTotalPrice
+        );
+        totalSubTotalPrice -= discountAmount;
+      }
+
+      await prisma.order.update({
+        where: { id: id },
+        data: {
+          finalPrice: finalPrice,
+        },
+      });
+
+      if (customerCoupon) {
+        await prisma.customerCoupon.updateMany({
+          where: {
+            customerId: customerId,
+            isRedeem: false,
+          },
+          data: {
+            isRedeem: true,
+          },
+        });
+      }
+
+      if (customerPoints) {
+        await prisma.customerPoint.updateMany({
+          where: {
+            customerId: customerId,
+            isUsed: false,
+          },
+          data: {
+            isUsed: true,
+          },
         });
       }
 
@@ -133,6 +201,7 @@ export class OrderController {
         (new Date(activeOrder!.expiredAt).getTime() - new Date().getTime()) /
           60000
       );
+
       const orderDetail = await prisma.orderDetail.findMany({
         where: { orderId: order_id },
         include: {
@@ -146,25 +215,28 @@ export class OrderController {
         where: { id: req.user?.id! },
       });
 
+      let totalGrossAmount = 0;
+
       for (const ticket of orderDetail) {
+        const itemPrice = ticket.subTotalPrice / ticket.quantity;
         item_details.push({
           id: ticket.ticketId.toString(),
           name: ticket.ticket.category + " Stand",
-          price: ticket.subTotalPrice / ticket.quantity,
+          price: itemPrice,
           quantity: ticket.quantity,
         });
+        totalGrossAmount += ticket.subTotalPrice;
       }
 
       const snap = new midtransClient.Snap({
         isProduction: false,
         serverKey: `${process.env.MIDTRANS_SERVER_KEY}`,
       });
-      console.log("req body:", req.body);
 
       const parameter = {
         transaction_details: {
           order_id: order_id.toString(),
-          gross_amount: req.body.gross_amount,
+          gross_amount: totalGrossAmount,
         },
         customer_details: {
           first_name: customer?.fullname,
@@ -178,7 +250,6 @@ export class OrderController {
       };
 
       const order = await snap.createTransaction(parameter);
-      console.log("Midtrans response:", order);
 
       res.status(200).send({ orderToken: order.token });
     } catch (error) {

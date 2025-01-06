@@ -25,6 +25,16 @@ export class CustomerRouter {
       verifyToken,
       this.customerController.getCustomerEvents
     );
+    this.router.get(
+      "/coupon",
+      verifyToken,
+      this.customerController.getCustomerCoupon
+    );
+    this.router.get(
+      "/points",
+      verifyToken,
+      this.customerController.getCustomerPoints
+    );
 
     this.router.patch("/:id", this.customerController.editCustomer);
     this.router.delete("/:id", this.customerController.deleteCustomer);

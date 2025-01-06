@@ -60,7 +60,6 @@ class EventController {
                 const { page = "1" } = req.query;
                 const { search, category, location } = req.query;
                 const filter = {};
-                const currentDate = new Date();
                 if (search) {
                     filter.title = { contains: search, mode: "insensitive" };
                 }
@@ -70,6 +69,7 @@ class EventController {
                 if (location) {
                     filter.location = { equals: location, mode: "insensitive" };
                 }
+                const currentDate = new Date();
                 filter.date = { gt: currentDate };
                 const [events, totalEvents] = yield Promise.all([
                     prisma_1.default.event.findMany({

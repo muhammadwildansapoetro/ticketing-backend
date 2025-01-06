@@ -61,8 +61,6 @@ export class EventController {
       const { search, category, location } = req.query;
       const filter: Prisma.EventWhereInput = {};
 
-      const currentDate = new Date();
-
       if (search) {
         filter.title = { contains: search as string, mode: "insensitive" };
       }
@@ -73,6 +71,7 @@ export class EventController {
         filter.location = { equals: location as string, mode: "insensitive" };
       }
 
+      const currentDate = new Date();
       filter.date = { gt: currentDate };
 
       const [events, totalEvents] = await Promise.all([

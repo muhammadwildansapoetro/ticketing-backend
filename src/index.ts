@@ -1,3 +1,5 @@
+import dotenv from "dotenv";
+dotenv.config();
 import express, { Application, Request, Response } from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
@@ -7,10 +9,9 @@ import { OrganizerRouter } from "./routers/organizer.router";
 import { EventRouter } from "./routers/event.router";
 import { TicketRouter } from "./routers/ticket.router";
 import { OrderRouter } from "./routers/order.router";
-import dotenv from "dotenv";
 import { ReviewRouter } from "./routers/review.router";
 import { DashboardRouter } from "./routers/dashboard.router";
-dotenv.config();
+
 
 const PORT: number = 8000;
 

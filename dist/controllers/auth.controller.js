@@ -65,7 +65,7 @@ class AuthController {
                 const templatePath = path_1.default.join(__dirname, "../templates", "verifyCustomer.hbs");
                 const templateSource = fs_1.default.readFileSync(templatePath, "utf-8");
                 const compiledTemplate = handlebars_1.default.compile(templateSource);
-                const html = compiledTemplate({ username, link });
+                const html = compiledTemplate({ fullname, link });
                 yield mailer_1.transporter.sendMail({
                     from: "mirzaaliyusuf45@gmail.com",
                     to: email,

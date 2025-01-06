@@ -15,6 +15,8 @@ class CustomerRouter {
         this.router.post("/", this.customerController.createCustomer);
         this.router.get("/profile", verify_1.verifyToken, this.customerController.getCustomerId);
         this.router.get("/events", verify_1.verifyToken, this.customerController.getCustomerEvents);
+        this.router.get("/coupon", verify_1.verifyToken, this.customerController.getCustomerCoupon);
+        this.router.get("/points", verify_1.verifyToken, this.customerController.getCustomerPoints);
         this.router.patch("/:id", this.customerController.editCustomer);
         this.router.delete("/:id", this.customerController.deleteCustomer);
         this.router.get("/tickets/:eventId", verify_1.verifyToken, this.customerController.getCustomerTickets);

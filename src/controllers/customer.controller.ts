@@ -167,4 +167,44 @@ export class CustomerController {
       res.status(400).send({ message: "Error get customer tickets:", error });
     }
   }
+
+  async getCustomerCoupon(req: Request, res: Response) {
+    try {
+      const coupon = await prisma.customerCoupon.findFirst({
+        where: {
+          AND: [
+            { customerId: req.user?.id },
+            { expiredAt: { gt: new Date() } },
+            { isRedeem: false },
+          ],
+        },
+        select: { percentage: true },
+      });
+
+      res.status(200).send({ coupon: coupon?.percentage || 0 });
+    } catch (error) {
+      console.log("Error get customer coupon:", error);
+      res.status(400).send(error);
+    }
+  }
+
+  async getCustomerPoints(req: Request, res: Response) {
+    try {
+      const points = await prisma.customerPoint.aggregate({
+        where: {
+          AND: [
+            { customerId: req.user?.id },
+            { expiredAt: { gt: new Date() } },
+            { isUsed: false },
+          ],
+        },
+        _sum: { point: true },
+      });
+
+      res.status(200).send({ totalPoints: points._sum.point });
+    } catch (error) {
+      console.log("Error get customer points:", error);
+      res.status(400).send(error);
+    }
+  }
 }

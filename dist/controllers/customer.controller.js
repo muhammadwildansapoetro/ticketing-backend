@@ -192,5 +192,49 @@ class CustomerController {
             }
         });
     }
+    getCustomerCoupon(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            var _a;
+            try {
+                const coupon = yield prisma_1.default.customerCoupon.findFirst({
+                    where: {
+                        AND: [
+                            { customerId: (_a = req.user) === null || _a === void 0 ? void 0 : _a.id },
+                            { expiredAt: { gt: new Date() } },
+                            { isRedeem: false },
+                        ],
+                    },
+                    select: { percentage: true },
+                });
+                res.status(200).send({ coupon: (coupon === null || coupon === void 0 ? void 0 : coupon.percentage) || 0 });
+            }
+            catch (error) {
+                console.log("Error get customer coupon:", error);
+                res.status(400).send(error);
+            }
+        });
+    }
+    getCustomerPoints(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            var _a;
+            try {
+                const points = yield prisma_1.default.customerPoint.aggregate({
+                    where: {
+                        AND: [
+                            { customerId: (_a = req.user) === null || _a === void 0 ? void 0 : _a.id },
+                            { expiredAt: { gt: new Date() } },
+                            { isUsed: false },
+                        ],
+                    },
+                    _sum: { point: true },
+                });
+                res.status(200).send({ totalPoints: points._sum.point });
+            }
+            catch (error) {
+                console.log("Error get customer points:", error);
+                res.status(400).send(error);
+            }
+        });
+    }
 }
 exports.CustomerController = CustomerController;

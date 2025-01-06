@@ -67,7 +67,7 @@ export class AuthController {
       );
       const templateSource = fs.readFileSync(templatePath, "utf-8");
       const compiledTemplate = handlebars.compile(templateSource);
-      const html = compiledTemplate({ username, link });
+      const html = compiledTemplate({ fullname, link });
 
       await transporter.sendMail({
         from: "mirzaaliyusuf45@gmail.com",

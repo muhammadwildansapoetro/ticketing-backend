@@ -12512,7 +12512,7 @@ export namespace Prisma {
 
   export type CustomerCouponCreateInput = {
     percentage?: number
-    isRedeem: boolean
+    isRedeem?: boolean
     expiredAt: Date | string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -12522,7 +12522,7 @@ export namespace Prisma {
   export type CustomerCouponUncheckedCreateInput = {
     customerId: number
     percentage?: number
-    isRedeem: boolean
+    isRedeem?: boolean
     expiredAt: Date | string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -12549,7 +12549,7 @@ export namespace Prisma {
   export type CustomerCouponCreateManyInput = {
     customerId: number
     percentage?: number
-    isRedeem: boolean
+    isRedeem?: boolean
     expiredAt: Date | string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -14799,7 +14799,7 @@ export namespace Prisma {
 
   export type CustomerCouponCreateWithoutCustomerInput = {
     percentage?: number
-    isRedeem: boolean
+    isRedeem?: boolean
     expiredAt: Date | string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -14807,7 +14807,7 @@ export namespace Prisma {
 
   export type CustomerCouponUncheckedCreateWithoutCustomerInput = {
     percentage?: number
-    isRedeem: boolean
+    isRedeem?: boolean
     expiredAt: Date | string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -15778,7 +15778,7 @@ export namespace Prisma {
 
   export type CustomerCouponCreateManyCustomerInput = {
     percentage?: number
-    isRedeem: boolean
+    isRedeem?: boolean
     expiredAt: Date | string
     createdAt?: Date | string
     updatedAt?: Date | string
