@@ -1,6 +1,8 @@
 import prisma from "../prisma";
 import { Request, Response } from "express";
 import { Prisma } from "prisma/generated/client";
+import { cloudinaryUpload } from "../services/cloudinary";
+import { Readable } from "stream";
 
 export class CustomerController {
   async getCustomers(req: Request, res: Response) {

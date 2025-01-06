@@ -25,7 +25,6 @@ export class CustomerRouter {
       verifyToken,
       this.customerController.getCustomerEvents
     );
-
     this.router.patch("/:id", this.customerController.editCustomer);
     this.router.delete("/:id", this.customerController.deleteCustomer);
   }

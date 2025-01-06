@@ -5,6 +5,7 @@ import "express";
 export type UserPayload = {
   id: number;
   email: string
+  avatar: string
   role: "customer" | "organizer";
 };
 

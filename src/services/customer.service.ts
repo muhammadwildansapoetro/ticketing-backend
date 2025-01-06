@@ -12,3 +12,4 @@ export const findRefCode = async (referralCode: string) => {
   const refCodeData = await prisma.customer.findFirst({ where: {referralCode: referralCode}})
   return refCodeData
 }
+

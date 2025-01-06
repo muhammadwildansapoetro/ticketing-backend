@@ -151,46 +151,7 @@ export class DashboardController {
       res.status(400).send(error);
     }
   }
-  // async getCustomerDetails(req: Request, res: Response) {
-  //   const id = req.user?.id;
-
-  //   try {
-  //     // Ambil data CustomerCoupon berdasarkan customerId
-  //     const coupons = await prisma.customerCoupon.findMany({
-  //       where: { customerId: id },
-  //       select: {
-  //         percentage: true,
-  //         isRedeem: true,
-  //         expiredAt: true,
-  //         createdAt: true,
-  //         updatedAt: true,
-  //       },
-  //     });
-
-  //     // Ambil data CustomerPoint berdasarkan customerId
-  //     const points = await prisma.customerPoint.findMany({
-  //       where: { customerId: id },
-  //       select: {
-  //         point: true,
-  //         isUsed: true,
-  //         expiredAt: true,
-  //         createdAt: true,
-  //         updatedAt: true,
-  //       },
-  //     });
-
-  //     res.status(200).send({
-  //       coupons,
-  //       points,
-  //     });
-  //   } catch (error) {
-  //     console.error(error);
-  //     res.status(400).send({
-  //       message: "Failed to fetch customer details.",
-  //       error,
-  //     });
-  //   }
-  // }
+  
   async getCustomerRewards(req: Request, res: Response): Promise<void> {
     try {
       const customerId = req.user?.id;
