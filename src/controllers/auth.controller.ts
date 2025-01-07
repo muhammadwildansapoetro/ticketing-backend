@@ -90,12 +90,13 @@ export class AuthController {
       const { data, password } = req.body;
       const customer = await findCustomer(data, data);
 
-      if (!customer) throw { massage: "User not found !" };
-      if (!customer.isVerified) throw { massage: "User not Verif !" };
+      if (!customer) throw { message: "Customer not found" };
+      if (!customer.isVerified)
+        throw { message: "Customer not verified, please check your email" };
 
       const isValidPass = await compare(password, customer.password);
       if (!isValidPass) {
-        throw { massage: "Incorrect Password" };
+        throw { message: "Incorrect password" };
       }
 
       const payload = { id: customer.id, role: "customer" };
@@ -104,9 +105,9 @@ export class AuthController {
       res
         .status(200)
         .send({ message: "Signed in succesfully", customer: cus, token });
-    } catch (err) {
-      console.error(err);
-      res.status(400).send({ message: "Sign in Failed" });
+    } catch (error) {
+      console.error(error);
+      res.status(400).send(error);
     }
   }
 

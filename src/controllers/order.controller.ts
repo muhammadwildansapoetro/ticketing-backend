@@ -186,8 +186,7 @@ export class OrderController {
 
   async getOrderToken(req: Request, res: Response) {
     try {
-      const { order_id } = req.body;
-      const item_details = [];
+      const { order_id, gross_amount } = req.body;
 
       const activeOrder = await prisma.order.findUnique({
         where: { id: order_id },
@@ -215,19 +214,6 @@ export class OrderController {
         where: { id: req.user?.id! },
       });
 
-      let totalGrossAmount = 0;
-
-      for (const ticket of orderDetail) {
-        const itemPrice = ticket.subTotalPrice / ticket.quantity;
-        item_details.push({
-          id: ticket.ticketId.toString(),
-          name: ticket.ticket.category + " Stand",
-          price: itemPrice,
-          quantity: ticket.quantity,
-        });
-        totalGrossAmount += ticket.subTotalPrice;
-      }
-
       const snap = new midtransClient.Snap({
         isProduction: false,
         serverKey: `${process.env.MIDTRANS_SERVER_KEY}`,
@@ -236,13 +222,12 @@ export class OrderController {
       const parameter = {
         transaction_details: {
           order_id: order_id.toString(),
-          gross_amount: totalGrossAmount,
+          gross_amount: gross_amount,
         },
         customer_details: {
           first_name: customer?.fullname,
           email: customer?.email,
         },
-        item_details: item_details,
         expiry: {
           unit: "minutes",
           duration: orderExpireMinute,

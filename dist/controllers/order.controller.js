@@ -171,8 +171,7 @@ class OrderController {
         return __awaiter(this, void 0, void 0, function* () {
             var _a;
             try {
-                const { order_id } = req.body;
-                const item_details = [];
+                const { order_id, gross_amount } = req.body;
                 const activeOrder = yield prisma_1.default.order.findUnique({
                     where: { id: order_id },
                     select: { status: true, expiredAt: true },
@@ -192,17 +191,6 @@ class OrderController {
                 const customer = yield prisma_1.default.customer.findUnique({
                     where: { id: (_a = req.user) === null || _a === void 0 ? void 0 : _a.id },
                 });
-                let totalGrossAmount = 0;
-                for (const ticket of orderDetail) {
-                    const itemPrice = ticket.subTotalPrice / ticket.quantity;
-                    item_details.push({
-                        id: ticket.ticketId.toString(),
-                        name: ticket.ticket.category + " Stand",
-                        price: itemPrice,
-                        quantity: ticket.quantity,
-                    });
-                    totalGrossAmount += ticket.subTotalPrice;
-                }
                 const snap = new midtransClient.Snap({
                     isProduction: false,
                     serverKey: `${process.env.MIDTRANS_SERVER_KEY}`,
@@ -210,13 +198,12 @@ class OrderController {
                 const parameter = {
                     transaction_details: {
                         order_id: order_id.toString(),
-                        gross_amount: totalGrossAmount,
+                        gross_amount: gross_amount,
                     },
                     customer_details: {
                         first_name: customer === null || customer === void 0 ? void 0 : customer.fullname,
                         email: customer === null || customer === void 0 ? void 0 : customer.email,
                     },
-                    item_details: item_details,
                     expiry: {
                         unit: "minutes",
                         duration: orderExpireMinute,

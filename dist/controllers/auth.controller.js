@@ -88,12 +88,12 @@ class AuthController {
                 const { data, password } = req.body;
                 const customer = yield (0, customer_service_1.findCustomer)(data, data);
                 if (!customer)
-                    throw { massage: "User not found !" };
+                    throw { message: "Customer not found" };
                 if (!customer.isVerified)
-                    throw { massage: "User not Verif !" };
+                    throw { message: "Customer not verified, please check your email" };
                 const isValidPass = yield (0, bcrypt_1.compare)(password, customer.password);
                 if (!isValidPass) {
-                    throw { massage: "Incorrect Password" };
+                    throw { message: "Incorrect password" };
                 }
                 const payload = { id: customer.id, role: "customer" };
                 const token = (0, jsonwebtoken_1.sign)(payload, process.env.JWT_KEY, { expiresIn: "1d" });
@@ -102,9 +102,9 @@ class AuthController {
                     .status(200)
                     .send({ message: "Signed in succesfully", customer: cus, token });
             }
-            catch (err) {
-                console.error(err);
-                res.status(400).send({ message: "Sign in Failed" });
+            catch (error) {
+                console.error(error);
+                res.status(400).send(error);
             }
         });
     }
