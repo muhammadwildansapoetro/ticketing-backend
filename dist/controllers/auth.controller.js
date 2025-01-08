@@ -96,7 +96,7 @@ class AuthController {
                     throw { message: "Incorrect password" };
                 }
                 const payload = { id: customer.id, role: "customer" };
-                const token = (0, jsonwebtoken_1.sign)(payload, process.env.JWT_KEY, { expiresIn: "10s" });
+                const token = (0, jsonwebtoken_1.sign)(payload, process.env.JWT_KEY, { expiresIn: "1d" });
                 const cus = Object.assign(Object.assign({}, customer), { role: "customer" });
                 res
                     .status(200)

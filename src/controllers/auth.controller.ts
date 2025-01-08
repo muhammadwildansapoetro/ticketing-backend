@@ -100,7 +100,7 @@ export class AuthController {
       }
 
       const payload = { id: customer.id, role: "customer" };
-      const token = sign(payload, process.env.JWT_KEY!, { expiresIn: "10s" });
+      const token = sign(payload, process.env.JWT_KEY!, { expiresIn: "1d" });
       const cus = { ...customer, role: "customer" };
       res
         .status(200)
