@@ -39,7 +39,6 @@ class DashboardController {
                         chartData[chartData.length - 1].event_active += 1;
                     }
                 }
-                console.log(chartData);
                 res.status(200).send({ result: chartData });
             }
             catch (error) {

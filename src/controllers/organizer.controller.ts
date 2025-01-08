@@ -24,9 +24,9 @@ export class OrganizerController {
         skip: +limit * (+page - 1),
       });
       res.status(200).send({ total_page, page, organizer });
-    } catch (err) {
-      console.log(err);
-      res.status(400).send(err);
+    } catch (error) {
+      console.log(error);
+      res.status(400).send(error);
     }
   }
 
@@ -36,9 +36,9 @@ export class OrganizerController {
         where: { id: req.user?.id },
       });
       res.status(200).send({ organizer });
-    } catch (err) {
-      console.log(err);
-      res.status(400).send(err);
+    } catch (error) {
+      console.log(error);
+      res.status(400).send(error);
     }
   }
 
@@ -46,9 +46,9 @@ export class OrganizerController {
     try {
       await prisma.organizer.create({ data: req.body });
       res.status(201).send({ message: "User created ✅" });
-    } catch (err) {
-      console.log(err);
-      res.status(400).send(err);
+    } catch (error) {
+      console.log(error);
+      res.status(400).send(error);
     }
   }
 
@@ -57,9 +57,9 @@ export class OrganizerController {
       const { id } = req.params;
       await prisma.organizer.update({ data: req.body, where: { id: +id } });
       res.status(200).send({ message: "User updated ✅" });
-    } catch (err) {
-      console.log(err);
-      res.status(400).send(err);
+    } catch (error) {
+      console.log(error);
+      res.status(400).send(error);
     }
   }
 
@@ -68,9 +68,9 @@ export class OrganizerController {
       const { id } = req.params;
       await prisma.organizer.delete({ where: { id: +id } });
       res.status(200).send({ message: "User deleted ✅" });
-    } catch (err) {
-      console.log(err);
-      res.status(400).send(err);
+    } catch (error) {
+      console.log(error);
+      res.status(400).send(error);
     }
   }
 

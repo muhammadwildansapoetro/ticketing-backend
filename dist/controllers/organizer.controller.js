@@ -38,9 +38,9 @@ class OrganizerController {
                 });
                 res.status(200).send({ total_page, page, organizer });
             }
-            catch (err) {
-                console.log(err);
-                res.status(400).send(err);
+            catch (error) {
+                console.log(error);
+                res.status(400).send(error);
             }
         });
     }
@@ -53,9 +53,9 @@ class OrganizerController {
                 });
                 res.status(200).send({ organizer });
             }
-            catch (err) {
-                console.log(err);
-                res.status(400).send(err);
+            catch (error) {
+                console.log(error);
+                res.status(400).send(error);
             }
         });
     }
@@ -65,9 +65,9 @@ class OrganizerController {
                 yield prisma_1.default.organizer.create({ data: req.body });
                 res.status(201).send({ message: "User created ✅" });
             }
-            catch (err) {
-                console.log(err);
-                res.status(400).send(err);
+            catch (error) {
+                console.log(error);
+                res.status(400).send(error);
             }
         });
     }
@@ -78,9 +78,9 @@ class OrganizerController {
                 yield prisma_1.default.organizer.update({ data: req.body, where: { id: +id } });
                 res.status(200).send({ message: "User updated ✅" });
             }
-            catch (err) {
-                console.log(err);
-                res.status(400).send(err);
+            catch (error) {
+                console.log(error);
+                res.status(400).send(error);
             }
         });
     }
@@ -91,9 +91,9 @@ class OrganizerController {
                 yield prisma_1.default.organizer.delete({ where: { id: +id } });
                 res.status(200).send({ message: "User deleted ✅" });
             }
-            catch (err) {
-                console.log(err);
-                res.status(400).send(err);
+            catch (error) {
+                console.log(error);
+                res.status(400).send(error);
             }
         });
     }

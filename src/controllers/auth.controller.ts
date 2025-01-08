@@ -100,7 +100,7 @@ export class AuthController {
       }
 
       const payload = { id: customer.id, role: "customer" };
-      const token = sign(payload, process.env.JWT_KEY!, { expiresIn: "1d" });
+      const token = sign(payload, process.env.JWT_KEY!, { expiresIn: "10s" });
       const cus = { ...customer, role: "customer" };
       res
         .status(200)
@@ -126,7 +126,6 @@ export class AuthController {
           where: { id: customer?.id },
         });
         const inputrefCode = customer?.referralCodeBy;
-        console.log(inputrefCode);
 
         if (inputrefCode) {
           const refCustomer = await findRefCode(inputrefCode);
@@ -155,10 +154,10 @@ export class AuthController {
       }
 
       if (customer?.isVerified == true) {
-        throw { message: "the account is already Verify Successfully" };
+        throw { message: "The account is already verified." };
       }
 
-      res.status(200).send({ message: "The Process is verify Succesfully" });
+      res.status(200).send({ message: "Account verified succesfully" });
     } catch (error) {
       console.log(error);
       res.status(400).send(error);
@@ -206,9 +205,9 @@ export class AuthController {
       res.status(201).send({
         message: "Registered successfully. Check your email to verify account.",
       });
-    } catch (err) {
-      console.log(err);
-      res.status(400).send(err);
+    } catch (error) {
+      console.log(error);
+      res.status(400).send(error);
     }
   }
 
@@ -257,9 +256,9 @@ export class AuthController {
       }
 
       res.status(200).send({ message: "Verified Successfully" });
-    } catch (err) {
-      console.log(err);
-      res.status(400).send(err);
+    } catch (error) {
+      console.log(error);
+      res.status(400).send(error);
     }
   }
 

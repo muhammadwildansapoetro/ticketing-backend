@@ -25,7 +25,6 @@ class OrderController {
                 const customerId = (_a = req.user) === null || _a === void 0 ? void 0 : _a.id;
                 const { totalPrice, finalPrice, orderCart, customerCoupon, customerPoints, } = req.body;
                 const expiredAt = new Date(new Date().getTime() + 10 * 60 * 1000);
-                console.log("customer ID:", customerId);
                 const { id } = yield prisma_1.default.order.create({
                     data: { customerId: customerId, totalPrice, finalPrice, expiredAt },
                 });

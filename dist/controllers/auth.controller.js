@@ -96,7 +96,7 @@ class AuthController {
                     throw { message: "Incorrect password" };
                 }
                 const payload = { id: customer.id, role: "customer" };
-                const token = (0, jsonwebtoken_1.sign)(payload, process.env.JWT_KEY, { expiresIn: "1d" });
+                const token = (0, jsonwebtoken_1.sign)(payload, process.env.JWT_KEY, { expiresIn: "10s" });
                 const cus = Object.assign(Object.assign({}, customer), { role: "customer" });
                 res
                     .status(200)
@@ -122,7 +122,6 @@ class AuthController {
                         where: { id: customer === null || customer === void 0 ? void 0 : customer.id },
                     });
                     const inputrefCode = customer === null || customer === void 0 ? void 0 : customer.referralCodeBy;
-                    console.log(inputrefCode);
                     if (inputrefCode) {
                         const refCustomer = yield (0, customer_service_1.findRefCode)(inputrefCode);
                         if (refCustomer) {
@@ -146,9 +145,9 @@ class AuthController {
                     }
                 }
                 if ((customer === null || customer === void 0 ? void 0 : customer.isVerified) == true) {
-                    throw { message: "the account is already Verify Successfully" };
+                    throw { message: "The account is already verified." };
                 }
-                res.status(200).send({ message: "The Process is verify Succesfully" });
+                res.status(200).send({ message: "Account verified succesfully" });
             }
             catch (error) {
                 console.log(error);
@@ -188,9 +187,9 @@ class AuthController {
                     message: "Registered successfully. Check your email to verify account.",
                 });
             }
-            catch (err) {
-                console.log(err);
-                res.status(400).send(err);
+            catch (error) {
+                console.log(error);
+                res.status(400).send(error);
             }
         });
     }
@@ -239,9 +238,9 @@ class AuthController {
                 }
                 res.status(200).send({ message: "Verified Successfully" });
             }
-            catch (err) {
-                console.log(err);
-                res.status(400).send(err);
+            catch (error) {
+                console.log(error);
+                res.status(400).send(error);
             }
         });
     }

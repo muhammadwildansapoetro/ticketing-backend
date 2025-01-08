@@ -17,7 +17,6 @@ export class OrderController {
       } = req.body;
 
       const expiredAt = new Date(new Date().getTime() + 10 * 60 * 1000);
-      console.log("customer ID:", customerId);
 
       const { id } = await prisma.order.create({
         data: { customerId: customerId, totalPrice, finalPrice, expiredAt },
