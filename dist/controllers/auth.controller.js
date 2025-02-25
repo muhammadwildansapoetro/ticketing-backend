@@ -31,7 +31,12 @@ class AuthController {
             try {
                 let { fullname, password, confirmPassword, username, email, referralCodeBy, } = req.body;
                 if (password != confirmPassword)
-                    throw { message: "Password not match" };
+                    throw { message: "Confirm password not match" };
+                if (!/(?=.*[A-Z])(?=.*[!@#$%^&*])/.test(password)) {
+                    throw {
+                        message: "Password must contain at least on UPPERCASE letter and one special character",
+                    };
+                }
                 const customer = yield (0, customer_service_1.findCustomer)(username, email);
                 if (customer)
                     throw { message: "Username or email has been used!" };
@@ -48,7 +53,6 @@ class AuthController {
                 }
                 if (referralCodeBy == "")
                     referralCodeBy = null;
-                // Create new customer
                 const newCustomer = yield prisma_1.default.customer.create({
                     data: {
                         fullname,
@@ -155,7 +159,7 @@ class AuthController {
             }
         });
     }
-    ////////////////////////////////////////////// Organizer //////////////////////////////////////////////////////
+    // Organizer
     registerOrganizer(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {

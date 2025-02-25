@@ -25,99 +25,98 @@ class OrderController {
                 const customerId = (_a = req.user) === null || _a === void 0 ? void 0 : _a.id;
                 const { totalPrice, finalPrice, orderCart, customerCoupon, customerPoints, } = req.body;
                 const expiredAt = new Date(new Date().getTime() + 10 * 60 * 1000);
-                const { id } = yield prisma_1.default.order.create({
-                    data: { customerId: customerId, totalPrice, finalPrice, expiredAt },
-                });
                 const currentDate = new Date();
-                const customerPointData = yield prisma_1.default.customerPoint.findMany({
-                    where: {
-                        customerId: customerId,
-                        expiredAt: {
-                            gte: currentDate,
-                        },
-                        isUsed: false,
-                    },
-                    select: {
-                        point: true,
-                        expiredAt: true,
-                    },
-                });
-                const totalAvailablePoints = customerPointData.reduce((acc, point) => acc + point.point, 0);
-                let totalSubTotalPrice = 0;
-                for (const order of orderCart) {
-                    const ticket = yield prisma_1.default.ticket.findUnique({
-                        where: { id: order.ticket.id },
+                const order = yield prisma_1.default.$transaction((tx) => __awaiter(this, void 0, void 0, function* () {
+                    // Create Order
+                    const order = yield tx.order.create({
+                        data: { customerId, totalPrice, finalPrice, expiredAt },
                     });
-                    if (!ticket) {
-                        throw new Error(`Ticket with ID ${order.ticket.id} not found`);
-                    }
-                    const hasDiscount = ticket.discountPercentage && ticket.discountPercentage > 0;
-                    const discountStartDate = ticket.discountStartDate
-                        ? new Date(ticket.discountStartDate)
-                        : null;
-                    const discountEndDate = ticket.discountEndDate
-                        ? new Date(ticket.discountEndDate)
-                        : null;
-                    const isDiscountActive = currentDate >= discountStartDate && currentDate <= discountEndDate;
-                    const ticketPrice = ticket.price === 0
-                        ? 0
-                        : isDiscountActive && hasDiscount
-                            ? ticket.price - (ticket.price * ticket.discountPercentage) / 100
-                            : ticket.price;
-                    const subTotalPrice = ticketPrice * order.quantity;
-                    totalSubTotalPrice += subTotalPrice;
-                    yield prisma_1.default.orderDetail.create({
-                        data: {
-                            orderId: id,
-                            ticketId: order.ticket.id,
-                            quantity: order.quantity,
-                            subTotalPrice: subTotalPrice,
-                        },
-                    });
-                    yield prisma_1.default.ticket.update({
-                        data: { quantity: { decrement: order.quantity } },
-                        where: { id: order.ticket.id },
-                    });
-                }
-                if (totalAvailablePoints > 0) {
-                    const discountAmount = Math.min(totalAvailablePoints, totalSubTotalPrice);
-                    totalSubTotalPrice -= discountAmount;
-                }
-                yield prisma_1.default.order.update({
-                    where: { id: id },
-                    data: {
-                        finalPrice: finalPrice,
-                    },
-                });
-                if (customerCoupon) {
-                    yield prisma_1.default.customerCoupon.updateMany({
+                    // Fetch Customer Points within the transaction
+                    const customerPointData = yield tx.customerPoint.findMany({
                         where: {
-                            customerId: customerId,
-                            isRedeem: false,
-                        },
-                        data: {
-                            isRedeem: true,
-                        },
-                    });
-                }
-                if (customerPoints) {
-                    yield prisma_1.default.customerPoint.updateMany({
-                        where: {
-                            customerId: customerId,
+                            customerId,
+                            expiredAt: { gte: currentDate },
                             isUsed: false,
                         },
-                        data: {
-                            isUsed: true,
-                        },
+                        select: { point: true },
                     });
-                }
-                res
-                    .status(201)
-                    .send({ message: "Order created successfully", orderId: id });
+                    const totalAvailablePoints = customerPointData.reduce((acc, point) => acc + point.point, 0);
+                    // Process Tickets in Bulk
+                    const orderDetails = [];
+                    const ticketUpdates = [];
+                    let totalSubTotalPrice = 0;
+                    for (const orderItem of orderCart) {
+                        const ticket = yield tx.ticket.findUnique({
+                            where: { id: orderItem.ticket.id },
+                        });
+                        if (!ticket) {
+                            throw new Error(`Ticket with ID ${orderItem.ticket.id} not found`);
+                        }
+                        // Calculate discount if applicable
+                        const hasDiscount = ticket.discountPercentage && ticket.discountPercentage > 0;
+                        const discountStartDate = ticket.discountStartDate
+                            ? new Date(ticket.discountStartDate)
+                            : null;
+                        const discountEndDate = ticket.discountEndDate
+                            ? new Date(ticket.discountEndDate)
+                            : null;
+                        const isDiscountActive = currentDate >= discountStartDate &&
+                            currentDate <= discountEndDate;
+                        const ticketPrice = ticket.price === 0
+                            ? 0
+                            : isDiscountActive && hasDiscount
+                                ? ticket.price - (ticket.price * ticket.discountPercentage) / 100
+                                : ticket.price;
+                        const subTotalPrice = ticketPrice * orderItem.quantity;
+                        totalSubTotalPrice += subTotalPrice;
+                        orderDetails.push({
+                            orderId: order.id,
+                            ticketId: orderItem.ticket.id,
+                            quantity: orderItem.quantity,
+                            subTotalPrice,
+                        });
+                        ticketUpdates.push(tx.ticket.update({
+                            where: { id: orderItem.ticket.id },
+                            data: { quantity: { decrement: orderItem.quantity } },
+                        }));
+                    }
+                    // Apply customer points
+                    if (totalAvailablePoints > 0) {
+                        const discountAmount = Math.min(totalAvailablePoints, totalSubTotalPrice);
+                        totalSubTotalPrice -= discountAmount;
+                    }
+                    // Batch insert order details
+                    yield tx.orderDetail.createMany({ data: orderDetails });
+                    // Batch update tickets
+                    yield Promise.all(ticketUpdates);
+                    // Update Order Final Price
+                    yield tx.order.update({
+                        where: { id: order.id },
+                        data: { finalPrice },
+                    });
+                    // Update Customer Coupon & Points
+                    if (customerCoupon) {
+                        yield tx.customerCoupon.updateMany({
+                            where: { customerId, isRedeem: false },
+                            data: { isRedeem: true },
+                        });
+                    }
+                    if (customerPoints) {
+                        yield tx.customerPoint.updateMany({
+                            where: { customerId, isUsed: false },
+                            data: { isUsed: true },
+                        });
+                    }
+                    return order; // Return order to use order.id outside the transaction
+                }));
+                res.status(201).send({
+                    message: "Order created successfully",
+                    orderId: order.id,
+                });
             }
             catch (error) {
-                console.log(error);
-                res.status(400).send(error);
+                console.error(error);
+                res.status(400).send({ message: "Order creation failed", error });
             }
         });
     }
