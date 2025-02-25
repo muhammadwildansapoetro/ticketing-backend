@@ -26,6 +26,7 @@ export class OrderRouter {
       this.orderController.getOrderToken
     );
     this.router.post("/midtrans-webhook", this.orderController.updateOrder);
+
     this.router.get("/:orderId", this.orderController.getOrderDetail);
   }
 

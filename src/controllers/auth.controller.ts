@@ -24,7 +24,15 @@ export class AuthController {
         referralCodeBy,
       } = req.body;
 
-      if (password != confirmPassword) throw { message: "Password not match" };
+      if (password != confirmPassword)
+        throw { message: "Confirm password not match" };
+
+      if (!/(?=.*[A-Z])(?=.*[!@#$%^&*])/.test(password)) {
+        throw {
+          message:
+            "Password must contain at least on UPPERCASE letter and one special character",
+        };
+      }
 
       const customer = await findCustomer(username, email);
       if (customer) throw { message: "Username or email has been used!" };
@@ -43,7 +51,6 @@ export class AuthController {
 
       if (referralCodeBy == "") referralCodeBy = null;
 
-      // Create new customer
       const newCustomer = await prisma.customer.create({
         data: {
           fullname,
@@ -164,7 +171,7 @@ export class AuthController {
     }
   }
 
-  ////////////////////////////////////////////// Organizer //////////////////////////////////////////////////////
+  // Organizer
 
   async registerOrganizer(req: Request, res: Response) {
     try {
